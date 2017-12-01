@@ -1,0 +1,12 @@
+use_frameworks!
+
+target 'SkyBoxUI_Example' do
+  pod 'SkyBoxUI', :path => '../'
+
+  target 'SkyBoxUI_Tests' do
+    inherit! :search_paths
+
+    pod 'Kiwi'
+  pod 'FBSnapshotTestCase'
+  end
+end

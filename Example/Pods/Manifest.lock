@@ -1,0 +1,26 @@
+PODS:
+  - FBSnapshotTestCase (2.1.4):
+    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
+  - FBSnapshotTestCase/Core (2.1.4)
+  - FBSnapshotTestCase/SwiftSupport (2.1.4):
+    - FBSnapshotTestCase/Core
+  - Kiwi (2.4.0)
+  - SkyBoxUI (0.1.0)
+
+DEPENDENCIES:
+  - FBSnapshotTestCase
+  - Kiwi
+  - SkyBoxUI (from `../`)
+
+EXTERNAL SOURCES:
+  SkyBoxUI:
+    :path: ../
+
+SPEC CHECKSUMS:
+  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
+  Kiwi: f49c9d54b28917df5928fe44968a39ed198cb8a8
+  SkyBoxUI: 94720ea40bccec14ddc16a8bfd2f5fb2158e1203
+
+PODFILE CHECKSUM: efad3a1ad9b63b28fe07419dc4ac3e21ec8e7b5d
+
+COCOAPODS: 1.3.1
