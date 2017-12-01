@@ -45,4 +45,11 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
   s.dependency 'SDWebImage'
   s.dependency 'Masonry'
 
+  s.prefix_header_contents = <<-EOS
+    #ifdef __OBJC__
+        #import "SPColorUtil.h"
+        #import <Masonry/Masonry.h>
+    #endif /* __OBJC__*/
+  EOS
+
 end
