@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'SkyBoxUI'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of SkyBoxUI.'
+  s.summary          = 'SkyBoxUI UI 插件'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+SkyBoxUI 使用cocoapods 管理的 UI插件
                        DESC
 
   s.homepage         = 'https://github.com/appleMini/SkyBoxUI'
