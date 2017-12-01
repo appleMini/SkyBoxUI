@@ -1,8 +1,8 @@
 {
   "name": "SkyBoxUI",
   "version": "0.1.0",
-  "summary": "A short description of SkyBoxUI.",
-  "description": "TODO: Add long description of the pod here.",
+  "summary": "SkyBoxUI UI 插件",
+  "description": "SkyBoxUI 使用cocoapods 管理的 UI插件",
   "homepage": "https://github.com/appleMini/SkyBoxUI",
   "license": {
     "type": "MIT",
@@ -16,7 +16,25 @@
     "tag": "0.1.0"
   },
   "platforms": {
-    "ios": "8.0"
+    "ios": "9.0"
   },
-  "source_files": "SkyBoxUI/Classes/**/*"
+  "source_files": "SkyBoxUI/Classes/**/*",
+  "frameworks": [
+    "UIKit",
+    "Foundation"
+  ],
+  "dependencies": {
+    "AFNetworking": [
+
+    ],
+    "MJExtension": [
+
+    ],
+    "SDWebImage": [
+
+    ],
+    "Masonry": [
+
+    ]
+  }
 }

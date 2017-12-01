@@ -31,12 +31,18 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
   s.ios.deployment_target = '9.0'
 
   s.source_files = 'SkyBoxUI/Classes/**/*'
+  s.source_files = 'SkyBoxUI/Classes/**/**/*.{h,m}'
   
   # s.resource_bundles = {
   #   'SkyBoxUI' => ['SkyBoxUI/Assets/*.png']
   # }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.frameworks = "UIKit", "Foundation"
+# s.libraries = "iconv", "xml2"
+  s.dependency 'AFNetworking'
+  s.dependency 'MJExtension'
+  s.dependency 'SDWebImage'
+  s.dependency 'Masonry'
+
 end

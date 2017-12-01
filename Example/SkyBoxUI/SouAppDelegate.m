@@ -7,12 +7,22 @@
 //
 
 #import "SouAppDelegate.h"
+#import <SkyBoxUI/SkyBoxUI.h>
 
 @implementation SouAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.backgroundColor = [UIColor whiteColor];
+    
+    SPMainTabBarController *mainVC = [[SPMainTabBarController alloc] init];
+    
+    self.window.rootViewController = mainVC;
+    
+    [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
