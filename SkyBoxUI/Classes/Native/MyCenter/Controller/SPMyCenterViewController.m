@@ -31,7 +31,8 @@
 }
 
 - (void)click:(UIButton *)sender {
-    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:testType]};
+    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:nativeToUnityType],
+                             kTopViewController: self};
     
     [sender bubbleEventWithUserInfo:notify];
 }
