@@ -1,6 +1,6 @@
 {
   "name": "SkyBoxUI",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "summary": "SkyBoxUI UI 插件",
   "description": "SkyBoxUI 使用cocoapods 管理的 UI插件",
   "homepage": "https://github.com/appleMini/SkyBoxUI",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/appleMini/SkyBoxUI.git",
-    "tag": "0.2.0"
+    "tag": "0.2.1"
   },
   "platforms": {
     "ios": "9.0"
@@ -35,7 +35,10 @@
     ],
     "Masonry": [
       "~> 1.1.0"
+    ],
+    "MBProgressHUD": [
+      "~> 1.1.0"
     ]
   },
-  "prefix_header_contents": "#ifdef __OBJC__\n    #import \"SPColorUtil.h\"\n    #import <Masonry/Masonry.h>\n#endif /* __OBJC__*/"
+  "prefix_header_contents": "#ifdef __OBJC__\n    #import \"UIResponder+SPCategory.h\"\n    #import \"Commons.h\"\n    #import \"SPColorUtil.h\"\n    #import <Masonry/Masonry.h>\n    #import \"MBProgressHUD.h\"\n#endif /* __OBJC__*/"
 }

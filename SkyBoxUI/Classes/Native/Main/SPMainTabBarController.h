@@ -8,6 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol SPMainJumpDelegate;
+
 @interface SPMainTabBarController : UITabBarController
+
+@property (weak, nonatomic) id<SPMainJumpDelegate> jumpDelegate;
+@end
+
+@protocol SPMainJumpDelegate <NSObject>
+
+@optional
+- (void)nativeToUnity:(UIViewController *)viewController;
 
 @end

@@ -95,5 +95,33 @@
     
     return retImage;
 }
+
+#pragma mark UIResponder bubble
+- (void)bubbleEventWithUserInfo:(NSDictionary *)userInfo {
+    NSInteger respType = (ResponderType)[[userInfo objectForKey:kEventType] unsignedIntegerValue];
+    UIViewController *viewController = (UIViewController *)[userInfo objectForKey:kTopViewController];
     
+    switch (respType) {
+       case nativeToUnityType:
+        {
+            if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity:)]) {
+                [self.jumpDelegate nativeToUnity:viewController];
+            }
+        }
+            break;
+       case testType:
+        {
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
+            label.font = [UIFont systemFontOfSize:18.0];
+            label.text = @"测试";
+            label.textAlignment = NSTextAlignmentCenter;
+            [MBProgressHUD showHUDAddedTo:label animated:YES];
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
+
 @end

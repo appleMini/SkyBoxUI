@@ -19,6 +19,7 @@
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
     [btn setTitle:@"Click" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
     btn.frame = CGRectZero;
     
     [self.view addSubview:btn];
@@ -27,6 +28,12 @@
         make.height.mas_equalTo(60);
         make.center.mas_equalTo(0);
     }];
+}
+
+- (void)click:(UIButton *)sender {
+    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:testType]};
+    
+    [sender bubbleEventWithUserInfo:notify];
 }
 
 - (NSString *)titleOfLabelView {

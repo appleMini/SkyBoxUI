@@ -10,10 +10,3 @@
 #endif
 #endif
 
-#ifdef __OBJC__
-    #import "UIResponder+SPCategory.h"
-    #import "Commons.h"
-    #import "SPColorUtil.h"
-    #import <Masonry/Masonry.h>
-    #import "MBProgressHUD.h"
-#endif /* __OBJC__*/

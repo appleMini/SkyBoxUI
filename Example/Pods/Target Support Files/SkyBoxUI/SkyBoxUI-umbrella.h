@@ -10,6 +10,7 @@
 #endif
 #endif
 
+#import "UIResponder+SPCategory.h"
 #import "SPGameViewController.h"
 #import "SPHomeViewController.h"
 #import "SPBaseNavigationController.h"
@@ -18,6 +19,7 @@
 #import "SPNavigationController.h"
 #import "SPMyCenterViewController.h"
 #import "SPSearchViewController.h"
+#import "Commons.h"
 #import "SPColorUtil.h"
 #import "SkyBoxUI.h"
 

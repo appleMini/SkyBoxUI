@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SkyBoxUI'
-  s.version          = '0.2.1'
+  s.version          = '0.2.2'
   s.summary          = 'SkyBoxUI UI 插件'
 
 # This description is used to generate tags and improve search results.
@@ -44,11 +44,15 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
   s.dependency 'MJExtension', '~> 3.0.13'
   s.dependency 'SDWebImage', '~> 4.2.2'
   s.dependency 'Masonry', '~> 1.1.0'
+  s.dependency 'MBProgressHUD', '~> 1.1.0'
 
   s.prefix_header_contents = <<-EOS
     #ifdef __OBJC__
+        #import "UIResponder+SPCategory.h"
+        #import "Commons.h"
         #import "SPColorUtil.h"
         #import <Masonry/Masonry.h>
+        #import "MBProgressHUD.h"
     #endif /* __OBJC__*/
   EOS
 

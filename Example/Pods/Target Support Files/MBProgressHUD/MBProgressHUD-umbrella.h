@@ -10,10 +10,8 @@
 #endif
 #endif
 
-#ifdef __OBJC__
-    #import "UIResponder+SPCategory.h"
-    #import "Commons.h"
-    #import "SPColorUtil.h"
-    #import <Masonry/Masonry.h>
-    #import "MBProgressHUD.h"
-#endif /* __OBJC__*/
+#import "MBProgressHUD.h"
+
+FOUNDATION_EXPORT double MBProgressHUDVersionNumber;
+FOUNDATION_EXPORT const unsigned char MBProgressHUDVersionString[];
+
