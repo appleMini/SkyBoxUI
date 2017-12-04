@@ -9,6 +9,7 @@
 
 #define kEventType      @"kEventTypeNotification"
 #define kTopViewController      @"kTopViewControllerNotification"
+#define kSelectTabBarItem      @"kSelectTabBarItemNotification"
 
 typedef enum : NSUInteger {
     nativeToUnityType = 1,

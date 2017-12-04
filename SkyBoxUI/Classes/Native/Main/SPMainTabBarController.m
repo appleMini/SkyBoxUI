@@ -100,15 +100,15 @@
 - (void)bubbleEventWithUserInfo:(NSDictionary *)userInfo {
     NSInteger respType = (ResponderType)[[userInfo objectForKey:kEventType] unsignedIntegerValue];
     UIViewController *viewController = (UIViewController *)[userInfo objectForKey:kTopViewController];
-    
+    NSUInteger selectedIndex = [[userInfo objectForKey:kSelectTabBarItem] unsignedIntegerValue];
     UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
     
     switch (respType) {
        case nativeToUnityType:
         {
             [MBProgressHUD hideHUDForView:keyWindow animated:YES];
-            if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity:)]) {
-                [self.jumpDelegate nativeToUnity:viewController];
+            if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity:selectedIndex:)]) {
+                [self.jumpDelegate nativeToUnity:viewController selectedIndex:selectedIndex];
             }
         }
             break;

@@ -31,8 +31,11 @@
 }
 
 - (void)click:(UIButton *)sender {
+    NSUInteger selectedIndex = self.tabBarController.selectedIndex;
     NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:nativeToUnityType],
-                             kTopViewController: self};
+                             kTopViewController: self,
+                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+                                 };
     
     [sender bubbleEventWithUserInfo:notify];
 }

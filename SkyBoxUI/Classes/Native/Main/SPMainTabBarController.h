@@ -18,6 +18,6 @@
 @protocol SPMainJumpDelegate <NSObject>
 
 @optional
-- (void)nativeToUnity:(UIViewController *)viewController;
+- (void)nativeToUnity:(UIViewController *)viewController selectedIndex:(NSUInteger)index;
 
 @end
