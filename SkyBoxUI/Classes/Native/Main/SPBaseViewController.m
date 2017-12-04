@@ -22,7 +22,15 @@
         [self setupTitleView:til];
     }
 }
-    
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return 1 << UIDeviceOrientationPortrait;
+}
+
+- (BOOL)shouldAutorotate {
+    return NO;
+}
+
 - (void)setupTitleView:(NSString *)til {
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
     label.text = til;

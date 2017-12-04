@@ -27,6 +27,14 @@
     
 }
 
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return 1 << UIDeviceOrientationPortrait;
+}
+
+- (BOOL)shouldAutorotate {
+    return NO;
+}
+
 #pragma -mark PrivateMethod
 - (void)setupTabBarChildController {
     // 设置tabbar字体大小
