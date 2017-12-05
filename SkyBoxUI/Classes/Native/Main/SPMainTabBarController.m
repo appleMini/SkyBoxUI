@@ -12,6 +12,7 @@
 #import "SPGameViewController.h"
 #import "SPMyCenterViewController.h"
 #import "SPNavigationController.h"
+#import "SPTabBar.h"
 
 #define TTFNAME @"Helvetica"
 
@@ -21,10 +22,34 @@
 
 @implementation SPMainTabBarController
 
+- (BOOL)prefersStatusBarHidden {
+    return NO;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [UIApplication sharedApplication].statusBarOrientation = UIInterfaceOrientationPortrait;
+    [self forceAutorotateInterfaceOrientation:UIInterfaceOrientationPortrait];
+}
+
+- (void)forceAutorotateInterfaceOrientation:(UIInterfaceOrientation)orientation{
+    if([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
+        SEL selector  =NSSelectorFromString(@"setOrientation:");
+        NSInvocation*invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
+        [invocation setSelector:selector];
+        [invocation setTarget:[UIDevice currentDevice]];
+        int val = orientation;
+        // 从2开始是因为0 1 两个参数已经被selector和target占用
+        [invocation setArgument:&val atIndex:2];
+        [invocation invoke];
+    }
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupTabBarChildController];
     
+    [self setValue:[[SPTabBar alloc] init] forKeyPath:@"tabBar"];
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
@@ -42,8 +67,6 @@
     NSDictionary *selectedDict = @{NSForegroundColorAttributeName:[SPColorUtil getColor:@"31B3EF" alpha:1],NSFontAttributeName:[UIFont systemFontOfSize:10]};
     [[UITabBarItem appearance] setTitleTextAttributes:normalDict forState:UIControlStateNormal];
     [[UITabBarItem appearance] setTitleTextAttributes:selectedDict forState:UIControlStateSelected];
-    
-    
     
     NSArray *tabbarTtf = @[@"\ue612",@"\ue610",@"\ue610",@"\ue60c",@"\ue60e"];
     NSArray *tabbarSelTtf = @[@"\ue611",@"\ue60f",@"\ue60f",@"\ue60b",@"\ue60d"];

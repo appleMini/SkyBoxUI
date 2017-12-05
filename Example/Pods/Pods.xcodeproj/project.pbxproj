@@ -164,6 +164,8 @@
 		5E89ED15FDB4CE7F92544DDF4589C242 /* MJPropertyType.h in Headers */ = {isa = PBXBuildFile; fileRef = 746782E55E1FE5A61F16C5794850A27F /* MJPropertyType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5EFE3C1316AE3DF65B81286439987953 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92B5D99E77166D403EEB9ED360295579 /* QuartzCore.framework */; };
 		5F15304F06BAA09E176CEF6238DA8AAC /* KWValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AECA44D3724047E250D5F51DAAFE6 /* KWValue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6061B2E31FD6460100FA8D0A /* SPTabBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 6061B2E11FD6460100FA8D0A /* SPTabBar.h */; };
+		6061B2E41FD6460100FA8D0A /* SPTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6061B2E21FD6460100FA8D0A /* SPTabBar.m */; };
 		609F9FFA1FD5362A00D6FAF5 /* UIView+ZZZProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 609F9FEC1FD5362A00D6FAF5 /* UIView+ZZZProgress.m */; };
 		609F9FFB1FD5362A00D6FAF5 /* ZZZProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 609F9FED1FD5362A00D6FAF5 /* ZZZProgressView.m */; };
 		609F9FFC1FD5362A00D6FAF5 /* UIView+ZZZProgress.h in Headers */ = {isa = PBXBuildFile; fileRef = 609F9FEE1FD5362A00D6FAF5 /* UIView+ZZZProgress.h */; };
@@ -676,6 +678,8 @@
 		5DB85E8AB11C5509C79EACFA59C14181 /* AFNetworking.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AFNetworking.xcconfig; sourceTree = "<group>"; };
 		5E2A7D2886255F78E1A613E0128B633E /* NSInvocation+KiwiAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSInvocation+KiwiAdditions.h"; path = "Classes/Core/NSInvocation+KiwiAdditions.h"; sourceTree = "<group>"; };
 		5EB9D69F5D66052C8D8702DA9717E8B4 /* SPMainTabBarController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SPMainTabBarController.m; sourceTree = "<group>"; };
+		6061B2E11FD6460100FA8D0A /* SPTabBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPTabBar.h; sourceTree = "<group>"; };
+		6061B2E21FD6460100FA8D0A /* SPTabBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPTabBar.m; sourceTree = "<group>"; };
 		60738FDDC90BAD965DA5E1DFE7D60840 /* SDWebImageDownloader.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SDWebImageDownloader.h; path = SDWebImage/SDWebImageDownloader.h; sourceTree = "<group>"; };
 		6075710134CCB4848CBB374BAA2CDA2D /* MASConstraint.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MASConstraint.h; path = Masonry/MASConstraint.h; sourceTree = "<group>"; };
 		609F9FEC1FD5362A00D6FAF5 /* UIView+ZZZProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ZZZProgress.m"; sourceTree = "<group>"; };
@@ -1482,6 +1486,8 @@
 				5EB9D69F5D66052C8D8702DA9717E8B4 /* SPMainTabBarController.m */,
 				7FAD684D34359EE2A24567854721F70B /* SPNavigationController.h */,
 				D7F08C5B8A93ADC479C45A02C98EED10 /* SPNavigationController.m */,
+				6061B2E11FD6460100FA8D0A /* SPTabBar.h */,
+				6061B2E21FD6460100FA8D0A /* SPTabBar.m */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -1946,6 +1952,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2AD8604CF4D527D88F3E4D0AC7652926 /* Commons.h in Headers */,
+				6061B2E31FD6460100FA8D0A /* SPTabBar.h in Headers */,
 				8C2A53246EFD6434E7CA5AD5C3D62C80 /* SkyBoxUI-umbrella.h in Headers */,
 				B70D5CBAE875923A1C0F9514B4813BC0 /* SkyBoxUI.h in Headers */,
 				609F9FFD1FD5362A00D6FAF5 /* ZZZProgressView.h in Headers */,
@@ -2593,6 +2600,7 @@
 				EC9D48B8A84B3647860C4C172A64D848 /* SPColorUtil.m in Sources */,
 				18E9234BA04DA29C5403493FA6512B18 /* SPGameViewController.m in Sources */,
 				490A1B29549A93422807163E797A0CC7 /* SPHomeViewController.m in Sources */,
+				6061B2E41FD6460100FA8D0A /* SPTabBar.m in Sources */,
 				103129F7CFC3A45D57A51FFFBCC6065D /* SPMainTabBarController.m in Sources */,
 				B48DADD04EE9C904E051AA1AC5859ED5 /* SPMyCenterViewController.m in Sources */,
 				B3C3B5FFBFF2E3FA77224923AAB69427 /* SPNavigationController.m in Sources */,
