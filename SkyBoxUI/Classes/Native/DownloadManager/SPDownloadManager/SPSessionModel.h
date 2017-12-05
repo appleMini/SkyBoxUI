@@ -1,6 +1,6 @@
 //
-//  HSNSURLSession.h
-//  HSDownloadManagerExample
+//  SPNSURLSession.h
+//  SPDownloadManagerExample
 //
 //  Created by hans on 15/8/4.
 //  Copyright © 2015年 kl. All rights reserved.
@@ -14,7 +14,7 @@ typedef enum {
 }DownloadState;
 
 #import <UIKit/UIKit.h>
-@interface HSSessionModel : NSObject
+@interface SPSessionModel : NSObject
 
 /** 流 */
 @property (nonatomic, strong) NSOutputStream *stream;

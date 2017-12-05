@@ -1,15 +1,15 @@
 //
-//  HSDownloadManager.h
-//  HSDownloadManagerExample
+//  SPDownloadManager.h
+//  SPDownloadManagerExample
 //
 //  Created by hans on 15/8/4.
 //  Copyright © 2015年 kl. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "HSSessionModel.h"
+#import "SPSessionModel.h"
 
-@interface HSDownloadManager : NSObject
+@interface SPDownloadManager : NSObject
 
 @property (nonatomic, copy) NSString *fileType;
 
@@ -27,7 +27,7 @@
  *  @param fillType       下载文件后缀 ，默认为.zip
  *  @param progressBlock 回调下载进度
  *  @param stateBlock    下载状态
- *  [HSDownloadManager sharedInstance].fileType = @".zip" 使用时设置下载文件后缀
+ *  [SPDownloadManager sharedInstance].fileType = @".zip" 使用时设置下载文件后缀
  */
 - (void)downloadfillType:(NSString *)fillType saveFIleaPath:(NSString *)saveFIleaPath downloadUrl:(NSString *)downloadUrl progress:(void (^)(NSInteger receivedSize, NSInteger expectedSize, CGFloat progress))progressBlock state:(void (^)(DownloadState state))stateBlock;
 /**

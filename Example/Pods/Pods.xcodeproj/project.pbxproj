@@ -166,16 +166,18 @@
 		5F15304F06BAA09E176CEF6238DA8AAC /* KWValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8AECA44D3724047E250D5F51DAAFE6 /* KWValue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6061B2E31FD6460100FA8D0A /* SPTabBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 6061B2E11FD6460100FA8D0A /* SPTabBar.h */; };
 		6061B2E41FD6460100FA8D0A /* SPTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 6061B2E21FD6460100FA8D0A /* SPTabBar.m */; };
+		6061B2EA1FD6838700FA8D0A /* SPDeviceUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 6061B2E81FD6838700FA8D0A /* SPDeviceUtil.h */; };
+		6061B2EB1FD6838700FA8D0A /* SPDeviceUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 6061B2E91FD6838700FA8D0A /* SPDeviceUtil.m */; };
 		609F9FFA1FD5362A00D6FAF5 /* UIView+ZZZProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 609F9FEC1FD5362A00D6FAF5 /* UIView+ZZZProgress.m */; };
 		609F9FFB1FD5362A00D6FAF5 /* ZZZProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 609F9FED1FD5362A00D6FAF5 /* ZZZProgressView.m */; };
 		609F9FFC1FD5362A00D6FAF5 /* UIView+ZZZProgress.h in Headers */ = {isa = PBXBuildFile; fileRef = 609F9FEE1FD5362A00D6FAF5 /* UIView+ZZZProgress.h */; };
 		609F9FFD1FD5362A00D6FAF5 /* ZZZProgressView.h in Headers */ = {isa = PBXBuildFile; fileRef = 609F9FEF1FD5362A00D6FAF5 /* ZZZProgressView.h */; };
-		609F9FFF1FD5362A00D6FAF5 /* HSSessionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 609F9FF21FD5362A00D6FAF5 /* HSSessionModel.m */; };
+		609F9FFF1FD5362A00D6FAF5 /* SPSessionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 609F9FF21FD5362A00D6FAF5 /* SPSessionModel.m */; };
 		609FA0001FD5362A00D6FAF5 /* NSString+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 609F9FF41FD5362A00D6FAF5 /* NSString+Hash.m */; };
 		609FA0011FD5362A00D6FAF5 /* NSString+Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 609F9FF51FD5362A00D6FAF5 /* NSString+Hash.h */; };
-		609FA0021FD5362A00D6FAF5 /* HSDownloadManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 609F9FF61FD5362A00D6FAF5 /* HSDownloadManager.h */; };
-		609FA0031FD5362A00D6FAF5 /* HSSessionModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 609F9FF71FD5362A00D6FAF5 /* HSSessionModel.h */; };
-		609FA0041FD5362A00D6FAF5 /* HSDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 609F9FF81FD5362A00D6FAF5 /* HSDownloadManager.m */; };
+		609FA0021FD5362A00D6FAF5 /* SPDownloadManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 609F9FF61FD5362A00D6FAF5 /* SPDownloadManager.h */; };
+		609FA0031FD5362A00D6FAF5 /* SPSessionModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 609F9FF71FD5362A00D6FAF5 /* SPSessionModel.h */; };
+		609FA0041FD5362A00D6FAF5 /* SPDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 609F9FF81FD5362A00D6FAF5 /* SPDownloadManager.m */; };
 		6354E985F067260A78A2B3431C73E81F /* SDWebImageManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 114DB98CDF1087DC9255708D0F44ACA0 /* SDWebImageManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		636BBA734C1A17A734761D674FAE8800 /* MASViewAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A67016866FB80DFD0F5621EAF5163DC /* MASViewAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		64298620A2F1EFAB12386F3861E08D40 /* NSObject+MJCoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A6426C300FE21863DF0F1AAA8BB68EA /* NSObject+MJCoding.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -680,18 +682,20 @@
 		5EB9D69F5D66052C8D8702DA9717E8B4 /* SPMainTabBarController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SPMainTabBarController.m; sourceTree = "<group>"; };
 		6061B2E11FD6460100FA8D0A /* SPTabBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPTabBar.h; sourceTree = "<group>"; };
 		6061B2E21FD6460100FA8D0A /* SPTabBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPTabBar.m; sourceTree = "<group>"; };
+		6061B2E81FD6838700FA8D0A /* SPDeviceUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPDeviceUtil.h; sourceTree = "<group>"; };
+		6061B2E91FD6838700FA8D0A /* SPDeviceUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPDeviceUtil.m; sourceTree = "<group>"; };
 		60738FDDC90BAD965DA5E1DFE7D60840 /* SDWebImageDownloader.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SDWebImageDownloader.h; path = SDWebImage/SDWebImageDownloader.h; sourceTree = "<group>"; };
 		6075710134CCB4848CBB374BAA2CDA2D /* MASConstraint.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MASConstraint.h; path = Masonry/MASConstraint.h; sourceTree = "<group>"; };
 		609F9FEC1FD5362A00D6FAF5 /* UIView+ZZZProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ZZZProgress.m"; sourceTree = "<group>"; };
 		609F9FED1FD5362A00D6FAF5 /* ZZZProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZZZProgressView.m; sourceTree = "<group>"; };
 		609F9FEE1FD5362A00D6FAF5 /* UIView+ZZZProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ZZZProgress.h"; sourceTree = "<group>"; };
 		609F9FEF1FD5362A00D6FAF5 /* ZZZProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZZProgressView.h; sourceTree = "<group>"; };
-		609F9FF21FD5362A00D6FAF5 /* HSSessionModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSSessionModel.m; sourceTree = "<group>"; };
+		609F9FF21FD5362A00D6FAF5 /* SPSessionModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPSessionModel.m; sourceTree = "<group>"; };
 		609F9FF41FD5362A00D6FAF5 /* NSString+Hash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hash.m"; sourceTree = "<group>"; };
 		609F9FF51FD5362A00D6FAF5 /* NSString+Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hash.h"; sourceTree = "<group>"; };
-		609F9FF61FD5362A00D6FAF5 /* HSDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSDownloadManager.h; sourceTree = "<group>"; };
-		609F9FF71FD5362A00D6FAF5 /* HSSessionModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSSessionModel.h; sourceTree = "<group>"; };
-		609F9FF81FD5362A00D6FAF5 /* HSDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSDownloadManager.m; sourceTree = "<group>"; };
+		609F9FF61FD5362A00D6FAF5 /* SPDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPDownloadManager.h; sourceTree = "<group>"; };
+		609F9FF71FD5362A00D6FAF5 /* SPSessionModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPSessionModel.h; sourceTree = "<group>"; };
+		609F9FF81FD5362A00D6FAF5 /* SPDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPDownloadManager.m; sourceTree = "<group>"; };
 		61A6CC0A87028CBD8B5BE00A67903705 /* KWMessagePattern.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = KWMessagePattern.m; path = Classes/Core/KWMessagePattern.m; sourceTree = "<group>"; };
 		624B1B490123A4A55761A20F90D3B2AE /* NSObject+KiwiMockAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSObject+KiwiMockAdditions.h"; path = "Classes/Mocking/NSObject+KiwiMockAdditions.h"; sourceTree = "<group>"; };
 		627B734F965FAED373AEF64F223B4FC9 /* MJExtensionConst.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MJExtensionConst.m; path = MJExtension/MJExtensionConst.m; sourceTree = "<group>"; };
@@ -1197,7 +1201,7 @@
 			isa = PBXGroup;
 			children = (
 				609F9FEB1FD5362A00D6FAF5 /* ZZZProgressView */,
-				609F9FF11FD5362A00D6FAF5 /* HSDownloadManager */,
+				609F9FF11FD5362A00D6FAF5 /* SPDownloadManager */,
 			);
 			path = DownloadManager;
 			sourceTree = "<group>";
@@ -1213,16 +1217,16 @@
 			path = ZZZProgressView;
 			sourceTree = "<group>";
 		};
-		609F9FF11FD5362A00D6FAF5 /* HSDownloadManager */ = {
+		609F9FF11FD5362A00D6FAF5 /* SPDownloadManager */ = {
 			isa = PBXGroup;
 			children = (
-				609F9FF21FD5362A00D6FAF5 /* HSSessionModel.m */,
+				609F9FF21FD5362A00D6FAF5 /* SPSessionModel.m */,
 				609F9FF31FD5362A00D6FAF5 /* MD5 */,
-				609F9FF61FD5362A00D6FAF5 /* HSDownloadManager.h */,
-				609F9FF71FD5362A00D6FAF5 /* HSSessionModel.h */,
-				609F9FF81FD5362A00D6FAF5 /* HSDownloadManager.m */,
+				609F9FF61FD5362A00D6FAF5 /* SPDownloadManager.h */,
+				609F9FF71FD5362A00D6FAF5 /* SPSessionModel.h */,
+				609F9FF81FD5362A00D6FAF5 /* SPDownloadManager.m */,
 			);
-			path = HSDownloadManager;
+			path = SPDownloadManager;
 			sourceTree = "<group>";
 		};
 		609F9FF31FD5362A00D6FAF5 /* MD5 */ = {
@@ -1837,6 +1841,8 @@
 				BF00205C542209A071773AC382354E13 /* Commons.h */,
 				FD08F8D1717EFDA3B238081296B5FD47 /* SPColorUtil.h */,
 				C5DDC43BEDA4B59D3B471C8F5F72D882 /* SPColorUtil.m */,
+				6061B2E81FD6838700FA8D0A /* SPDeviceUtil.h */,
+				6061B2E91FD6838700FA8D0A /* SPDeviceUtil.m */,
 			);
 			path = UtilTools;
 			sourceTree = "<group>";
@@ -1960,13 +1966,14 @@
 				F88E343969011C160C446F602B1D9903 /* SPBaseViewController.h in Headers */,
 				1C4658B54DEE86CA50320BF0D7AAA622 /* SPColorUtil.h in Headers */,
 				E069F58F2E5DA31F6067E33AD6951511 /* SPGameViewController.h in Headers */,
-				609FA0031FD5362A00D6FAF5 /* HSSessionModel.h in Headers */,
+				609FA0031FD5362A00D6FAF5 /* SPSessionModel.h in Headers */,
 				04BD8DF068818ED31C614E65869E1837 /* SPHomeViewController.h in Headers */,
 				CEAD84887E09E4BD21791D97D86162EF /* SPMainTabBarController.h in Headers */,
 				7761FE54848145E4E8DF5884AE5F62E3 /* SPMyCenterViewController.h in Headers */,
+				6061B2EA1FD6838700FA8D0A /* SPDeviceUtil.h in Headers */,
 				82704C4F21F7BF07F1BF501E4178A0DC /* SPNavigationController.h in Headers */,
 				609FA0011FD5362A00D6FAF5 /* NSString+Hash.h in Headers */,
-				609FA0021FD5362A00D6FAF5 /* HSDownloadManager.h in Headers */,
+				609FA0021FD5362A00D6FAF5 /* SPDownloadManager.h in Headers */,
 				816EBDFC8A879CB27E9180BF69DEAAE7 /* SPSearchViewController.h in Headers */,
 				7C8F3B242A97D5324398C583F7BE95B9 /* UIResponder+SPCategory.h in Headers */,
 				609F9FFC1FD5362A00D6FAF5 /* UIView+ZZZProgress.h in Headers */,
@@ -2595,8 +2602,9 @@
 				609F9FFA1FD5362A00D6FAF5 /* UIView+ZZZProgress.m in Sources */,
 				0DBF80B575263E496242F3DA072B2BB9 /* SPBaseViewController.m in Sources */,
 				609F9FFB1FD5362A00D6FAF5 /* ZZZProgressView.m in Sources */,
-				609FA0041FD5362A00D6FAF5 /* HSDownloadManager.m in Sources */,
-				609F9FFF1FD5362A00D6FAF5 /* HSSessionModel.m in Sources */,
+				609FA0041FD5362A00D6FAF5 /* SPDownloadManager.m in Sources */,
+				609F9FFF1FD5362A00D6FAF5 /* SPSessionModel.m in Sources */,
+				6061B2EB1FD6838700FA8D0A /* SPDeviceUtil.m in Sources */,
 				EC9D48B8A84B3647860C4C172A64D848 /* SPColorUtil.m in Sources */,
 				18E9234BA04DA29C5403493FA6512B18 /* SPGameViewController.m in Sources */,
 				490A1B29549A93422807163E797A0CC7 /* SPHomeViewController.m in Sources */,

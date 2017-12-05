@@ -6,6 +6,8 @@
 //
 
 #import "SPTabBar.h"
+#import "SPDeviceUtil.h"
+
 #define WIDTH 60
 #define HEIGHT 60
 
@@ -45,20 +47,11 @@
         CGFloat width = WIDTH;
         CGFloat height = HEIGHT;
         CGFloat x = centerX - WIDTH / 2;
-        CGFloat y = self.bounds.size.height - height;
         
-        UIButton *vrBtn = [[UIButton alloc] initWithFrame:CGRectZero];
-        [vrBtn setTitle:@"VR" forState:UIControlStateNormal];
-        [vrBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-        [vrBtn setBackgroundColor:[UIColor greenColor]];
-        vrBtn.frame = CGRectMake(x, y, width, height);
-        vrBtn.layer.cornerRadius = WIDTH / 2;
-        vrBtn.layer.masksToBounds = YES;
-        [vrBtn addTarget:self action:@selector(vrBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+        CGFloat y = [SPDeviceUtil isiPhoneX] ? (self.bounds.size.height - 34 - height)
+        : self.bounds.size.height - height;
         
-        [self addSubview:vrBtn];
-        [self bringSubviewToFront:vrBtn];
-        [self setClipsToBounds:NO];
+        self.centerBtn.frame = CGRectMake(x, y, width, height);
     }
 }
 

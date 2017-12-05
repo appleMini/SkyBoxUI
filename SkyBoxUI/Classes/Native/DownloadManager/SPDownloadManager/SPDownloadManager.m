@@ -1,6 +1,6 @@
 //
-//  HSDownloadManager.m
-//  HSDownloadManagerExample
+//  SPDownloadManager.m
+//  SPDownloadManagerExample
 //
 //  Created by hans on 15/8/4.
 //  Copyright © 2015年 kl. All rights reserved.
@@ -9,24 +9,24 @@
 // 缓存主目录
 // 文件后缀
 //static NSString *fileType = @".zip";
-#define HSCachesDirectory [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"HSCache"]
+#define SPCachesDirectory [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"SPCache"]
 // 保存文件名
-#define HSFileName(url) [url.md5String stringByAppendingString:self.fileType]
+#define SPFileName(url) [url.md5String stringByAppendingString:self.fileType]
 
 
 // 文件的存放路径（caches）
-#define HSFileFullpath(url) [HSCachesDirectory stringByAppendingPathComponent:HSFileName(url)]
+#define SPFileFullpath(url) [SPCachesDirectory stringByAppendingPathComponent:SPFileName(url)]
 
 // 文件的已下载长度
-#define HSDownloadLength(url) [[[NSFileManager defaultManager] attributesOfItemAtPath:HSFileFullpath(url) error:nil][NSFileSize] integerValue]
+#define SPDownloadLength(url) [[[NSFileManager defaultManager] attributesOfItemAtPath:SPFileFullpath(url) error:nil][NSFileSize] integerValue]
 
 // 存储文件总长度的文件路径（caches）
-#define HSTotalLengthFullpath [HSCachesDirectory stringByAppendingPathComponent:@"totalLength.plist"]
+#define SPTotalLengthFullpath [SPCachesDirectory stringByAppendingPathComponent:@"totalLength.plist"]
 
-#import "HSDownloadManager.h"
+#import "SPDownloadManager.h"
 #import "NSString+Hash.h"
 
-@interface HSDownloadManager()<NSCopying, NSURLSessionDelegate>
+@interface SPDownloadManager()<NSCopying, NSURLSessionDelegate>
 
 /** 保存所有任务(注：用下载地址md5后作为key) */
 @property (nonatomic, strong) NSMutableDictionary *tasks;
@@ -34,7 +34,7 @@
 @property (nonatomic, strong) NSMutableDictionary *sessionModels;
 @end
 
-@implementation HSDownloadManager
+@implementation SPDownloadManager
 
 - (NSMutableDictionary *)tasks
 {
@@ -52,7 +52,7 @@
     return _sessionModels;
 }
 
-static HSDownloadManager *_downloadManager;
+static SPDownloadManager *_downloadManager;
 
 + (instancetype)allocWithZone:(struct _NSZone *)zone
 {
@@ -86,8 +86,8 @@ static HSDownloadManager *_downloadManager;
 - (void)createCacheDirectory
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    if (![fileManager fileExistsAtPath:HSCachesDirectory]) {
-        [fileManager createDirectoryAtPath:HSCachesDirectory withIntermediateDirectories:YES attributes:nil error:NULL];
+    if (![fileManager fileExistsAtPath:SPCachesDirectory]) {
+        [fileManager createDirectoryAtPath:SPCachesDirectory withIntermediateDirectories:YES attributes:nil error:NULL];
     }
 }
 
@@ -108,7 +108,7 @@ static HSDownloadManager *_downloadManager;
     }
     
     // 暂停
-    if ([self.tasks valueForKey:HSFileName(saveFIleaPath)]) {
+    if ([self.tasks valueForKey:SPFileName(saveFIleaPath)]) {
         [self handle:saveFIleaPath];
         
         return;
@@ -120,14 +120,14 @@ static HSDownloadManager *_downloadManager;
    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[[NSOperationQueue alloc] init]];
     
     // 创建流
-    NSOutputStream *stream = [NSOutputStream outputStreamToFileAtPath:HSFileFullpath(saveFIleaPath) append:YES];
+    NSOutputStream *stream = [NSOutputStream outputStreamToFileAtPath:SPFileFullpath(saveFIleaPath) append:YES];
     
     // 创建请求
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:downloadUrl]];
     request.timeoutInterval = 60;
     
     // 设置请求头
-    NSString *range = [NSString stringWithFormat:@"bytes=%zd-", HSDownloadLength(saveFIleaPath)];
+    NSString *range = [NSString stringWithFormat:@"bytes=%zd-", SPDownloadLength(saveFIleaPath)];
     [request setValue:range forHTTPHeaderField:@"Range"];
     
 ////    NSString *token=[YYAccount getobjc:TOKENKEY];
@@ -143,9 +143,9 @@ static HSDownloadManager *_downloadManager;
     [task setValue:@(taskIdentifier) forKeyPath:@"taskIdentifier"];
 
     // 保存任务
-    [self.tasks setValue:task forKey:HSFileName(saveFIleaPath)];
+    [self.tasks setValue:task forKey:SPFileName(saveFIleaPath)];
 
-    HSSessionModel *sessionModel = [[HSSessionModel alloc] init];
+    SPSessionModel *sessionModel = [[SPSessionModel alloc] init];
     sessionModel.url = saveFIleaPath;
     sessionModel.progressBlock = progressBlock;
     sessionModel.stateBlock = stateBlock;
@@ -235,15 +235,15 @@ static HSDownloadManager *_downloadManager;
  */
 - (NSURLSessionDataTask *)getTask:(NSString *)url
 {
-    return (NSURLSessionDataTask *)[self.tasks valueForKey:HSFileName(url)];
+    return (NSURLSessionDataTask *)[self.tasks valueForKey:SPFileName(url)];
 }
 
 /**
  *  根据url获取对应的下载信息模型
  */
-- (HSSessionModel *)getSessionModel:(NSUInteger)taskIdentifier
+- (SPSessionModel *)getSessionModel:(NSUInteger)taskIdentifier
 {
-    return (HSSessionModel *)[self.sessionModels valueForKey:@(taskIdentifier).stringValue];
+    return (SPSessionModel *)[self.sessionModels valueForKey:@(taskIdentifier).stringValue];
 }
 
 /**
@@ -251,7 +251,7 @@ static HSDownloadManager *_downloadManager;
  */
 - (BOOL)isCompletion:(NSString *)url
 {
-    NSInteger downlength = HSDownloadLength(url);
+    NSInteger downlength = SPDownloadLength(url);
     NSInteger plistLength = [self fileTotalLength:url];
     if (plistLength <= downlength && plistLength != 0) {
         return YES;
@@ -264,7 +264,7 @@ static HSDownloadManager *_downloadManager;
  */
 - (CGFloat)progress:(NSString *)url
 {
-    return [self fileTotalLength:url] == 0 ? 0.0 : 1.0 * HSDownloadLength(url) /  [self fileTotalLength:url];
+    return [self fileTotalLength:url] == 0 ? 0.0 : 1.0 * SPDownloadLength(url) /  [self fileTotalLength:url];
 }
 
 int getFileSizeFromPath(char * path)
@@ -312,7 +312,7 @@ int getFileSizeFromPath(char * path)
  */
 -(float)fileToCachesLength
 {
-    return [self folderSizeAtPath:HSCachesDirectory];
+    return [self folderSizeAtPath:SPCachesDirectory];
 }
 
 /**
@@ -320,14 +320,14 @@ int getFileSizeFromPath(char * path)
  */
 - (NSInteger)fileTotalLength:(NSString *)url
 {
-    return [[NSDictionary dictionaryWithContentsOfFile:HSTotalLengthFullpath][HSFileName(url)] integerValue];
+    return [[NSDictionary dictionaryWithContentsOfFile:SPTotalLengthFullpath][SPFileName(url)] integerValue];
 }
 /**
  *  文件路径
  */
 - (NSString *)filePath:(NSString *)url
 {
-    return HSFileFullpath(url);
+    return SPFileFullpath(url);
 }
 
 #pragma mark - 删除
@@ -337,19 +337,19 @@ int getFileSizeFromPath(char * path)
 - (void)deleteFile:(NSString *)url
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([fileManager fileExistsAtPath:HSFileFullpath(url)]) {
+    if ([fileManager fileExistsAtPath:SPFileFullpath(url)]) {
 
         // 删除沙盒中的资源
-        [fileManager removeItemAtPath:HSFileFullpath(url) error:nil];
+        [fileManager removeItemAtPath:SPFileFullpath(url) error:nil];
         // 删除任务
-        [self.tasks removeObjectForKey:HSFileName(url)];
+        [self.tasks removeObjectForKey:SPFileName(url)];
         [self.sessionModels removeObjectForKey:@([self getTask:url].taskIdentifier).stringValue];
         // 删除资源总长度
-        if ([fileManager fileExistsAtPath:HSTotalLengthFullpath]) {
+        if ([fileManager fileExistsAtPath:SPTotalLengthFullpath]) {
             
-            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:HSTotalLengthFullpath];
-            [dict removeObjectForKey:HSFileName(url)];
-            [dict writeToFile:HSTotalLengthFullpath atomically:YES];
+            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:SPTotalLengthFullpath];
+            [dict removeObjectForKey:SPFileName(url)];
+            [dict writeToFile:SPTotalLengthFullpath atomically:YES];
         
         }
     }
@@ -361,21 +361,21 @@ int getFileSizeFromPath(char * path)
 - (void)deleteAllFile
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([fileManager fileExistsAtPath:HSCachesDirectory]) {
+    if ([fileManager fileExistsAtPath:SPCachesDirectory]) {
         // 删除沙盒中所有资源
-        [fileManager removeItemAtPath:HSCachesDirectory error:nil];
+        [fileManager removeItemAtPath:SPCachesDirectory error:nil];
         // 删除任务
         [[self.tasks allValues] makeObjectsPerformSelector:@selector(cancel)];
         [self.tasks removeAllObjects];
         
-        for (HSSessionModel *sessionModel in [self.sessionModels allValues]) {
+        for (SPSessionModel *sessionModel in [self.sessionModels allValues]) {
             [sessionModel.stream close];
         }
         [self.sessionModels removeAllObjects];
         
         // 删除资源总长度
-        if ([fileManager fileExistsAtPath:HSTotalLengthFullpath]) {
-            [fileManager removeItemAtPath:HSTotalLengthFullpath error:nil];
+        if ([fileManager fileExistsAtPath:SPTotalLengthFullpath]) {
+            [fileManager removeItemAtPath:SPTotalLengthFullpath error:nil];
         }
     }
 }
@@ -388,20 +388,20 @@ int getFileSizeFromPath(char * path)
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSHTTPURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
 {
     
-    HSSessionModel *sessionModel = [self getSessionModel:dataTask.taskIdentifier];
+    SPSessionModel *sessionModel = [self getSessionModel:dataTask.taskIdentifier];
     
     // 打开流
     [sessionModel.stream open];
     
     // 获得服务器这次请求 返回数据的总长度
-    NSInteger totalLength = [response.allHeaderFields[@"Content-Length"] integerValue] + HSDownloadLength(sessionModel.url);
+    NSInteger totalLength = [response.allHeaderFields[@"Content-Length"] integerValue] + SPDownloadLength(sessionModel.url);
     sessionModel.totalLength = totalLength;
     
     // 存储总长度
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:HSTotalLengthFullpath];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:SPTotalLengthFullpath];
     if (dict == nil) dict = [NSMutableDictionary dictionary];
-    dict[HSFileName(sessionModel.url)] = @(totalLength);
-    [dict writeToFile:HSTotalLengthFullpath atomically:YES];
+    dict[SPFileName(sessionModel.url)] = @(totalLength);
+    [dict writeToFile:SPTotalLengthFullpath atomically:YES];
     
     // 接收这个请求，允许接收服务器的数据
     completionHandler(NSURLSessionResponseAllow);
@@ -412,13 +412,13 @@ int getFileSizeFromPath(char * path)
  */
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
-    HSSessionModel *sessionModel = [self getSessionModel:dataTask.taskIdentifier];
+    SPSessionModel *sessionModel = [self getSessionModel:dataTask.taskIdentifier];
     
     // 写入数据
     [sessionModel.stream write:data.bytes maxLength:data.length];
     
     // 下载进度
-    NSUInteger receivedSize = HSDownloadLength(sessionModel.url);
+    NSUInteger receivedSize = SPDownloadLength(sessionModel.url);
     NSUInteger expectedSize = sessionModel.totalLength;
     CGFloat progress = 1.0 * receivedSize / expectedSize;
 
@@ -430,7 +430,7 @@ int getFileSizeFromPath(char * path)
  */
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
-    HSSessionModel *sessionModel = [self getSessionModel:task.taskIdentifier];
+    SPSessionModel *sessionModel = [self getSessionModel:task.taskIdentifier];
     if (!sessionModel) return;
     BOOL isCompletion = [self isCompletion:sessionModel.url];
     if (isCompletion) {
@@ -447,7 +447,7 @@ int getFileSizeFromPath(char * path)
     sessionModel.stream = nil;
     
     // 清除任务
-    [self.tasks removeObjectForKey:HSFileName(sessionModel.url)];
+    [self.tasks removeObjectForKey:SPFileName(sessionModel.url)];
     [self.sessionModels removeObjectForKey:@(task.taskIdentifier).stringValue];
 }
 
