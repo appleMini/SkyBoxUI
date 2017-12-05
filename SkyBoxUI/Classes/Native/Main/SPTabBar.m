@@ -27,6 +27,7 @@
         vrBtn.frame = CGRectMake(0, 0, WIDTH, HEIGHT);
         vrBtn.layer.cornerRadius = WIDTH / 2;
         vrBtn.layer.masksToBounds = YES;
+        [vrBtn addTarget:self action:@selector(vrBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         
         [self addSubview:vrBtn];
         [self bringSubviewToFront:vrBtn];

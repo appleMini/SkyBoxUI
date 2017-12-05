@@ -20,8 +20,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
     [UIApplication sharedApplication].statusBarOrientation = UIInterfaceOrientationPortrait;
     [self forceAutorotateInterfaceOrientation:UIInterfaceOrientationPortrait];
+    [UIViewController attemptRotationToDeviceOrientation];
 }
 
 - (void)forceAutorotateInterfaceOrientation:(UIInterfaceOrientation)orientation{
@@ -51,7 +53,7 @@
 }
 
 - (BOOL)shouldAutorotate {
-    return NO;
+    return YES;
 }
 
 - (void)setupTitleView:(NSString *)til {
