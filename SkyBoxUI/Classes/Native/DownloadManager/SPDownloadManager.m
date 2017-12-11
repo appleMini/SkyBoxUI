@@ -134,6 +134,7 @@
     return _downloadManager;
 }
 
+#pragma -mark DownloadManager
 - (instancetype)init
 {
     self = [super init];
