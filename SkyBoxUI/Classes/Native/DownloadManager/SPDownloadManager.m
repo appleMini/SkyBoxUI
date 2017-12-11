@@ -125,6 +125,7 @@
     }
 }
 
+#pragma -mark DownloadManager
 + (SPDownloadManager *)shareInstance {
     static SPDownloadManager *_downloadManager = nil;
     if (!_downloadManager) {
@@ -134,7 +135,6 @@
     return _downloadManager;
 }
 
-#pragma -mark DownloadManager
 - (instancetype)init
 {
     self = [super init];

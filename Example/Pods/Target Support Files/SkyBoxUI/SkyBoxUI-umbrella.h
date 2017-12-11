@@ -19,6 +19,7 @@
 #import "UIView+ZZZProgress.h"
 #import "ZZZProgressView.h"
 #import "SPGameViewController.h"
+#import "HYBVideoCell.h"
 #import "SPHomeViewController.h"
 #import "SPBaseNavigationController.h"
 #import "SPBaseViewController.h"

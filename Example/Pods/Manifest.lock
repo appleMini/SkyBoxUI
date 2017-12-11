@@ -29,7 +29,7 @@ PODS:
   - SDWebImage (4.2.2):
     - SDWebImage/Core (= 4.2.2)
   - SDWebImage/Core (4.2.2)
-  - SkyBoxUI (0.2.9):
+  - SkyBoxUI (0.2.10):
     - AFNetworking (~> 3.1.0)
     - FMDB (~> 2.7.2)
     - Masonry (~> 1.1.0)
@@ -55,7 +55,7 @@ SPEC CHECKSUMS:
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   MJExtension: 5932755f451458eefa24239358817f8d291240c7
   SDWebImage: 89a9d32cd520bbb46eb14e541d5109b3564af198
-  SkyBoxUI: 106579b868d423bb70b6fbcf85208aac73716e00
+  SkyBoxUI: 087b8f3387150296d6cdbc457a840d0dd1a59ae4
 
 PODFILE CHECKSUM: efad3a1ad9b63b28fe07419dc4ac3e21ec8e7b5d
 
