@@ -32,7 +32,7 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
   s.requires_arc = true
 
   s.source_files = 'SkyBoxUI/Classes/**/*'
-  s.source_files = 'SkyBoxUI/Classes/**/**/*.{h,m}'
+  s.source_files = 'SkyBoxUI/Classes/**/**/*.{h,m,mm}'
 
   s.resource_bundles = {
     'SkyBoxUI' => ['SkyBoxUI/Classes/**/**/*.{storyboard,xib,png}']
@@ -68,6 +68,8 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
         #import <Masonry/Masonry.h>
         #import "MBProgressHUD.h"
         #import "SPBaseViewController.h"
+        #import "ServiceCall.h"
+        #import <MJExtension/MJExtension.h>
     #endif /* __OBJC__*/
   EOS
 

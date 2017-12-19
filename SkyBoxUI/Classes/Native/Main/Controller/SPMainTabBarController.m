@@ -124,7 +124,7 @@
 #pragma mark UIResponder bubble
 - (void)bubbleEventWithUserInfo:(NSDictionary *)userInfo {
     NSInteger respType = (ResponderType)[[userInfo objectForKey:kEventType] unsignedIntegerValue];
-    UIViewController *viewController = (UIViewController *)[userInfo objectForKey:kTopViewController];
+    id target = (UIViewController *)[userInfo objectForKey:kTopViewController];
     NSUInteger selectedIndex = [[userInfo objectForKey:kSelectTabBarItem] unsignedIntegerValue];
     UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
     
@@ -133,13 +133,18 @@
         {
             [MBProgressHUD hideHUDForView:keyWindow animated:YES];
             if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity:selectedIndex:)]) {
-                [self.jumpDelegate nativeToUnity:viewController selectedIndex:selectedIndex];
+                [self.jumpDelegate nativeToUnity:target selectedIndex:selectedIndex];
             }
         }
             break;
        case testType:
         {
-            [MBProgressHUD showHUDAddedTo:keyWindow animated:YES];
+//            [MBProgressHUD showHUDAddedTo:keyWindow animated:YES];
+            NSString *mName = [userInfo objectForKey:kFunctionName];
+            NSString *param =  [userInfo objectForKey:kParams];
+            if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity: methodName: param:)]) {
+                    [self.jumpDelegate nativeToUnity:target methodName:mName param:param];
+             }
         }
             break;
             

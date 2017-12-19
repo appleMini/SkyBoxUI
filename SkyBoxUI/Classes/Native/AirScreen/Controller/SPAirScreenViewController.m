@@ -7,6 +7,7 @@
 
 #import "SPAirScreenViewController.h"
 #import "SPAirScreenHelpViewController.h"
+#import "ServiceCall.h"
 
 typedef enum : NSUInteger {
     StartupStatus,
@@ -145,6 +146,11 @@ typedef enum : NSUInteger {
         case StartupStatus:
         {
             _status = SearchStatus;
+            
+            [ServiceCall callGetActionParams:nil requestUrl:@"http://192.168.7.241:8080/REST/json" resultctxCall:^(NSDictionary *result) {
+                
+            } errorCall:nil];
+            
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 _dataArr = @[@"AndyAW", @"GQ", @"DESTOP", @"ABCD", @"scaasda", @"fdgdfdfd", @"vdddgd", @"dvdfddfg"];
                 

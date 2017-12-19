@@ -19,5 +19,6 @@
 
 @optional
 - (void)nativeToUnity:(UIViewController *)viewController selectedIndex:(NSUInteger)index;
+- (void)nativeToUnity:(id)opaque methodName:(NSString *)func param:(NSString *)params;
 
 @end

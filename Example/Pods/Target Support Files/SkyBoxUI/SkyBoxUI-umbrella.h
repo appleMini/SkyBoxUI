@@ -10,8 +10,11 @@
 #endif
 #endif
 
+#import "DismissAnimationController.h"
+#import "PresentAnimationController.h"
 #import "SPAirScreenHelpViewController.h"
 #import "SPAirScreenViewController.h"
+#import "SPPluginBridge.h"
 #import "UIImage+Radius.h"
 #import "UIResponder+SPCategory.h"
 #import "UIView+Radius.h"
@@ -40,6 +43,7 @@
 #import "SPMainViewController.h"
 #import "SPMuliteViewController.h"
 #import "SPNavigationController.h"
+#import "SPVideoInfo.h"
 #import "SPSwitchBar.h"
 #import "SPTabBar.h"
 #import "SPMenuViewController.h"

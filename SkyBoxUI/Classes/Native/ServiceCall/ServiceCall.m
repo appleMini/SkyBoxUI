@@ -26,12 +26,21 @@
     
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     manager.requestSerializer.stringEncoding = NSUTF8StringEncoding;
+//    manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    manager.responseSerializer.acceptableContentTypes = nil;
     
     [manager POST:url parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (responseObject) {
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+            
+            NSLog(@"%@", dict);
+        }
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (error) {
-            errorBlock([error userInfo]);
+            if (errorBlock) {
+                errorBlock([error userInfo]);
+            }
         }
     }];
 }
@@ -49,15 +58,25 @@
     manager.securityPolicy = securityPolicy;
     //    //关闭缓存避免干扰测试
     manager.requestSerializer.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-    
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     manager.requestSerializer.stringEncoding = NSUTF8StringEncoding;
+//    manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    manager.responseSerializer.acceptableContentTypes = nil;
     
     [manager GET:url parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (responseObject) {
+            NSDictionary *dict = (NSDictionary *)responseObject;
+            
+            if (successBlock) {
+                successBlock(dict);
+            }
+        }
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (error) {
-            errorBlock([error userInfo]);
+            if (errorBlock) {
+                errorBlock([error userInfo]);
+            }
         }
     }];
 }

@@ -27,9 +27,11 @@
 #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
 
 
-#define kEventType      @"kEventTypeNotification"
+#define kEventType              @"kEventTypeNotification"
 #define kTopViewController      @"kTopViewControllerNotification"
-#define kSelectTabBarItem      @"kSelectTabBarItemNotification"
+#define kSelectTabBarItem       @"kSelectTabBarItemNotification"
+#define kFunctionName           @"kFunctionNameNotification"
+#define kParams                 @"kParamsNotification"
 
 typedef enum : NSUInteger {
     nativeToUnityType = 1,
