@@ -18,7 +18,13 @@
   "platforms": {
     "ios": "9.0"
   },
+  "requires_arc": true,
   "source_files": "SkyBoxUI/Classes/**/**/*.{h,m}",
+  "resource_bundles": {
+    "SkyBoxUI": [
+      "SkyBoxUI/Classes/**/**/*.{storyboard,xib,png}"
+    ]
+  },
   "frameworks": [
     "UIKit",
     "Foundation"
@@ -42,7 +48,10 @@
     ],
     "FMDB": [
       "~> 2.7.2"
+    ],
+    "MMDrawerController": [
+      "~> 0.6.0"
     ]
   },
-  "prefix_header_contents": "#ifdef __OBJC__\n    #import \"UIResponder+SPCategory.h\"\n    #import \"SPSingle.h\"\n    #import \"Commons.h\"\n    #import \"SPColorUtil.h\"\n    #import <Masonry/Masonry.h>\n    #import \"MBProgressHUD.h\"\n#endif /* __OBJC__*/"
+  "prefix_header_contents": "#ifdef __OBJC__\n    #import \"SPSwitchBar.h\"\n    #import \"SPDeviceUtil.h\"\n    #import \"UIResponder+SPCategory.h\"\n    #import \"SPSingle.h\"\n    #import \"Commons.h\"\n    #import \"SPColorUtil.h\"\n    #import <Masonry/Masonry.h>\n    #import \"MBProgressHUD.h\"\n    #import \"SPBaseViewController.h\"\n#endif /* __OBJC__*/"
 }

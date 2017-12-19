@@ -6,8 +6,8 @@
 //
 
 #import <SkyBoxUI/SkyBoxUI.h>
-#import "SPBaseViewController.h"
+#import "SPMuliteViewController.h"
 
-@interface SPHomeViewController : SPBaseViewController
+@interface SPHomeViewController : SPMuliteViewController
 
 @end

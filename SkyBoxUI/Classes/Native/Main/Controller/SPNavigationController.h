@@ -6,8 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPBaseNavigationController.h"
 
-@interface SPNavigationController : SPBaseNavigationController
+@interface SPNavigationController : UINavigationController
 
 @end

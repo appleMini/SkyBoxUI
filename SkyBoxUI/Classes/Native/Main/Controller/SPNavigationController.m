@@ -9,5 +9,12 @@
 #import "SPNavigationController.h"
 
 @implementation SPNavigationController
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
+- (UIViewController *)childViewControllerForStatusBarStyle{
+    return self.topViewController;
+}
 
 @end

@@ -9,3 +9,7 @@
 
 #import "SPMainTabBarController.h"
 #import "SPNavigationController.h"
+#import "SPMenuViewController.h"
+#import "SPHomeViewController.h"
+#import "SPHistoryViewController.h"
+#import "SPMainViewController.h"

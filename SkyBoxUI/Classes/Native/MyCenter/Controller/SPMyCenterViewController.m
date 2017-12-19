@@ -6,6 +6,7 @@
 //
 
 #import "SPMyCenterViewController.h"
+#import "SPSwitchBar.h"
 
 @interface SPMyCenterViewController ()
 
@@ -28,6 +29,8 @@
         make.height.mas_equalTo(60);
         make.center.mas_equalTo(0);
     }];
+    
+    [self.view addSubview:[SPSwitchBar shareSPSwitchBar]];
 }
 
 - (void)click:(UIButton *)sender {

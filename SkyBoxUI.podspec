@@ -29,13 +29,20 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '9.0'
+  s.requires_arc = true
 
   s.source_files = 'SkyBoxUI/Classes/**/*'
   s.source_files = 'SkyBoxUI/Classes/**/**/*.{h,m}'
-  
-  # s.resource_bundles = {
-  #   'SkyBoxUI' => ['SkyBoxUI/Assets/*.png']
-  # }
+
+  s.resource_bundles = {
+    'SkyBoxUI' => ['SkyBoxUI/Classes/**/**/*.{storyboard,xib,png}']
+  }
+
+#s.user_target_xcconfig =   {'OTHER_LDFLAGS' => ['-lObjC','-all_load']}
+#s.resource_bundles = {
+#'SkyBoxUI' => ['SkyBoxUI/Assets/*.png']
+#'SkyBoxUI' => ['SkyBoxUI/Classes/**/*.xib']
+#}
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   s.frameworks = "UIKit", "Foundation"
@@ -48,15 +55,19 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
   s.dependency 'Masonry', '~> 1.1.0'
   s.dependency 'MBProgressHUD', '~> 1.1.0'
   s.dependency 'FMDB', '~> 2.7.2'
+  s.dependency 'MMDrawerController', '~> 0.6.0'
 
   s.prefix_header_contents = <<-EOS
     #ifdef __OBJC__
+        #import "SPSwitchBar.h"
+        #import "SPDeviceUtil.h"
         #import "UIResponder+SPCategory.h"
         #import "SPSingle.h"
         #import "Commons.h"
         #import "SPColorUtil.h"
         #import <Masonry/Masonry.h>
         #import "MBProgressHUD.h"
+        #import "SPBaseViewController.h"
     #endif /* __OBJC__*/
   EOS
 

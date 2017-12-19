@@ -1,0 +1,29 @@
+//
+//  SPFavoriteViewController.m
+//  SkyBoxUI
+//
+//  Created by Shao shuqiang on 2017/12/18.
+//
+
+#import "SPFavoriteViewController.h"
+
+@interface SPFavoriteViewController ()
+
+@end
+
+@implementation SPFavoriteViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+}
+
+- (NSString *)titleOfLabelView {
+    return @"FAVIRITE";
+}
+
+- (NSString *)cellIditify {
+    return @"FAVIRITE_VIDEOS_CellID";
+}
+
+@end

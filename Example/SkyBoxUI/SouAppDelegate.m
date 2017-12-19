@@ -8,6 +8,13 @@
 
 #import "SouAppDelegate.h"
 #import <SkyBoxUI/SkyBoxUI.h>
+#import <MMDrawerController/MMDrawerVisualState.h>
+
+@interface SouAppDelegate ()
+
+@property (nonatomic,strong) MMDrawerController * drawerController;
+
+@end
 
 @implementation SouAppDelegate
 
@@ -17,10 +24,24 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
     
-    SPMainTabBarController *mainVC = [[SPMainTabBarController alloc] init];
+//    SPMainTabBarController *mainVC = [[SPMainTabBarController alloc] init];
+    SPMenuViewController *menuVC = [[SPMenuViewController alloc] init];
+    //    SPHomeViewController *homeVC = [[SPHomeViewController alloc] init];
+    SPMainViewController *mainVC = [[SPMainViewController alloc] init];
+    SPNavigationController *naviVC = [[SPNavigationController alloc] initWithRootViewController:mainVC];
     
-    self.window.rootViewController = mainVC;
     
+    self.drawerController = [[MMDrawerController alloc]initWithCenterViewController:naviVC leftDrawerViewController:menuVC];
+    [self.drawerController setShowsShadow:NO];//设置是否有阴影
+    [self.drawerController setShouldStretchDrawer:NO];//设置是否回弹效果
+    [self.drawerController setMaximumLeftDrawerWidth:kScreen_Width];//最大距离
+    [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
+    [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModeAll];
+    [self.drawerController setDrawerVisualStateBlock:^(MMDrawerController *drawerController, MMDrawerSide drawerSide, CGFloat percentVisible) {
+        
+    }];
+    
+    self.window.rootViewController = self.drawerController;
     [self.window makeKeyAndVisible];
     
     return YES;

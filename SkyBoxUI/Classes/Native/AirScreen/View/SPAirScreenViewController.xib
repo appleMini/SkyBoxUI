@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SPAirScreenViewController">
+            <connections>
+                <outlet property="contentView" destination="h9t-3h-fqz" id="vkM-uS-NDo"/>
+                <outlet property="contentViewHeightConstraint" destination="de7-l5-Tah" id="eC1-YN-2gm"/>
+                <outlet property="instruction1Label" destination="oYd-zZ-4Vq" id="36U-c3-OIb"/>
+                <outlet property="instruction2Label" destination="2ua-VJ-Ig5" id="NJO-Xe-1Sj"/>
+                <outlet property="num1View" destination="Dno-Zf-JzI" id="rqz-QF-KC1"/>
+                <outlet property="num2View" destination="meW-Il-A4s" id="9lO-JS-7nK"/>
+                <outlet property="pcImgV" destination="6wb-XR-GTZ" id="nkt-ov-Om8"/>
+                <outlet property="pcImgVTopConstraint" destination="9Wb-0d-X1K" id="9B2-4s-BOr"/>
+                <outlet property="refreshImgv" destination="An1-gz-yvJ" id="9LU-TD-UwT"/>
+                <outlet property="refreshView" destination="An1-gz-yvJ" id="AwM-zg-KRD"/>
+                <outlet property="searchButton" destination="TJZ-Gz-ZOx" id="zZZ-oj-4PU"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h9t-3h-fqz" userLabel="ContentView">
+                    <rect key="frame" x="25" y="272" width="325" height="216"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dno-Zf-JzI" userLabel="View1">
+                            <rect key="frame" x="7.5" y="96" width="28" height="28"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="28" id="6Cu-av-TbK" userLabel="width = 25"/>
+                                <constraint firstAttribute="height" constant="28" id="xTQ-dC-Vmg" userLabel="height = 25"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="meW-Il-A4s">
+                            <rect key="frame" x="7.5" y="134" width="28" height="28"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </view>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="OPEN SKYBOX FOR PC AND ADD VIDEOS TO IT" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2ua-VJ-Ig5">
+                            <rect key="frame" x="45.5" y="140.5" width="272" height="15"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="INSTALL SKYBOX FOR PC FROM SKYBOX.XYZ" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oYd-zZ-4Vq">
+                            <rect key="frame" x="45.5" y="102.5" width="264" height="15"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="An1-gz-yvJ" userLabel="RefreshView">
+                            <rect key="frame" x="32" y="24" width="261" height="54"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="eeN-xZ-ZNT">
+                                    <rect key="frame" x="28.5" y="5" width="44" height="44"/>
+                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="44" id="5OD-Vt-jW3"/>
+                                        <constraint firstAttribute="width" constant="44" id="cAf-wA-9Fd"/>
+                                    </constraints>
+                                </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SEARCHING FOR DEVICE" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1j0-0P-d5I">
+                                    <rect key="frame" x="82.5" y="18.5" width="164" height="17"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="164" id="EG6-wx-GVQ"/>
+                                        <constraint firstAttribute="height" constant="17" id="riO-Eg-Nwc"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstItem="1j0-0P-d5I" firstAttribute="centerY" secondItem="An1-gz-yvJ" secondAttribute="centerY" id="0vu-Vo-RgD"/>
+                                <constraint firstAttribute="width" constant="261" id="6eg-BJ-sJ5"/>
+                                <constraint firstItem="1j0-0P-d5I" firstAttribute="centerX" secondItem="An1-gz-yvJ" secondAttribute="centerX" constant="34" id="DYf-Dt-kr3"/>
+                                <constraint firstItem="1j0-0P-d5I" firstAttribute="leading" secondItem="eeN-xZ-ZNT" secondAttribute="trailing" constant="10" id="VWF-T4-Q1F"/>
+                                <constraint firstAttribute="height" constant="54" id="dBn-KQ-2gO"/>
+                                <constraint firstItem="eeN-xZ-ZNT" firstAttribute="centerY" secondItem="An1-gz-yvJ" secondAttribute="centerY" id="ffE-uU-9ig"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="0.1470601822" blue="0.12790239219999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <constraints>
+                        <constraint firstItem="meW-Il-A4s" firstAttribute="width" secondItem="Dno-Zf-JzI" secondAttribute="width" id="2Nx-u4-qE8"/>
+                        <constraint firstItem="oYd-zZ-4Vq" firstAttribute="leading" secondItem="Dno-Zf-JzI" secondAttribute="trailing" constant="10" id="8zy-6D-kex"/>
+                        <constraint firstItem="2ua-VJ-Ig5" firstAttribute="centerY" secondItem="meW-Il-A4s" secondAttribute="centerY" id="HqS-72-Dhd"/>
+                        <constraint firstItem="An1-gz-yvJ" firstAttribute="centerX" secondItem="h9t-3h-fqz" secondAttribute="centerX" id="bqt-5a-bfT"/>
+                        <constraint firstAttribute="height" constant="260" id="de7-l5-Tah"/>
+                        <constraint firstItem="oYd-zZ-4Vq" firstAttribute="centerY" secondItem="Dno-Zf-JzI" secondAttribute="centerY" id="hm0-IS-nu4"/>
+                        <constraint firstItem="2ua-VJ-Ig5" firstAttribute="leading" secondItem="meW-Il-A4s" secondAttribute="trailing" constant="10" id="j1g-Gp-CWb"/>
+                        <constraint firstItem="meW-Il-A4s" firstAttribute="top" secondItem="Dno-Zf-JzI" secondAttribute="bottom" constant="10" id="jbv-Jc-RQZ"/>
+                        <constraint firstItem="An1-gz-yvJ" firstAttribute="centerY" secondItem="h9t-3h-fqz" secondAttribute="centerY" id="kds-1J-M8f"/>
+                        <constraint firstItem="meW-Il-A4s" firstAttribute="leading" secondItem="Dno-Zf-JzI" secondAttribute="leading" id="nJT-Vs-r8w"/>
+                        <constraint firstItem="Dno-Zf-JzI" firstAttribute="centerY" secondItem="h9t-3h-fqz" secondAttribute="centerY" constant="-20" id="oFi-q2-zdg"/>
+                        <constraint firstItem="oYd-zZ-4Vq" firstAttribute="centerX" secondItem="h9t-3h-fqz" secondAttribute="centerX" constant="15" id="oOG-Tf-2hP"/>
+                        <constraint firstItem="meW-Il-A4s" firstAttribute="height" secondItem="Dno-Zf-JzI" secondAttribute="height" id="v1P-5X-AcE"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TJZ-Gz-ZOx">
+                    <rect key="frame" x="25" y="562" width="325" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="rX4-r9-Zf4"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                    <state key="normal" title="SEARCH DEVICE"/>
+                    <connections>
+                        <action selector="searchClick:" destination="-1" eventType="touchUpInside" id="q1X-ZU-LTN"/>
+                    </connections>
+                </button>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="6wb-XR-GTZ">
+                    <rect key="frame" x="40" y="60" width="295" height="182"/>
+                    <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="182" id="I4o-zX-Y0e"/>
+                    </constraints>
+                </imageView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="6wb-XR-GTZ" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="40" id="5VS-yh-WUq"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="6wb-XR-GTZ" secondAttribute="trailing" constant="40" id="7Pj-bS-GKr"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="h9t-3h-fqz" secondAttribute="trailing" constant="25" id="85p-KV-7iD"/>
+                <constraint firstItem="6wb-XR-GTZ" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="40" id="9Wb-0d-X1K"/>
+                <constraint firstItem="h9t-3h-fqz" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="25" id="Cmt-of-noe"/>
+                <constraint firstItem="TJZ-Gz-ZOx" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="25" id="PbR-2j-gyy"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="TJZ-Gz-ZOx" secondAttribute="trailing" constant="25" id="bCM-hD-CK5"/>
+                <constraint firstItem="TJZ-Gz-ZOx" firstAttribute="top" secondItem="h9t-3h-fqz" secondAttribute="bottom" constant="30" id="h1l-uz-l9p"/>
+                <constraint firstItem="h9t-3h-fqz" firstAttribute="top" secondItem="6wb-XR-GTZ" secondAttribute="bottom" constant="30" id="vcl-by-aLo"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
+            <point key="canvasLocation" x="-14.5" y="-82.5"/>
+        </view>
+    </objects>
+</document>

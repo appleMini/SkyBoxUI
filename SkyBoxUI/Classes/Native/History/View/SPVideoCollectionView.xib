@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="SPVideoCollectionView">
+            <rect key="frame" x="0.0" y="0.0" width="308" height="294"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OHl-tu-Ia4">
+                    <rect key="frame" x="0.0" y="0.0" width="308" height="246"/>
+                    <color key="backgroundColor" red="1" green="0.1470601822" blue="0.12790239219999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Evolution of Verse" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BKk-6Q-k7G">
+                    <rect key="frame" x="0.0" y="251" width="308" height="18"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="18" id="PW9-lZ-dbc"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:02:42" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i1I-hQ-hwT">
+                    <rect key="frame" x="0.0" y="272" width="60" height="17"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="i1I-hQ-hwT" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="1JK-UZ-82l"/>
+                <constraint firstItem="OHl-tu-Ia4" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="BuV-n0-Twv"/>
+                <constraint firstItem="BKk-6Q-k7G" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="OAp-2N-qso"/>
+                <constraint firstItem="i1I-hQ-hwT" firstAttribute="top" secondItem="BKk-6Q-k7G" secondAttribute="bottom" constant="3" id="WHM-st-9s4"/>
+                <constraint firstItem="BKk-6Q-k7G" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Y70-SH-Trb"/>
+                <constraint firstAttribute="trailing" secondItem="OHl-tu-Ia4" secondAttribute="trailing" id="YIE-dd-3nY"/>
+                <constraint firstItem="OHl-tu-Ia4" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="ZjU-FH-ElE"/>
+                <constraint firstAttribute="bottom" secondItem="i1I-hQ-hwT" secondAttribute="bottom" constant="5" id="avk-aD-RFw"/>
+                <constraint firstAttribute="trailing" secondItem="BKk-6Q-k7G" secondAttribute="trailing" id="azI-mQ-y8L"/>
+                <constraint firstItem="BKk-6Q-k7G" firstAttribute="top" secondItem="OHl-tu-Ia4" secondAttribute="bottom" constant="5" id="yy6-sd-67L"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="durationLabel" destination="i1I-hQ-hwT" id="w9b-wo-qy2"/>
+                <outlet property="imgv" destination="OHl-tu-Ia4" id="ftN-Hb-7yZ"/>
+                <outlet property="label" destination="BKk-6Q-k7G" id="1y7-U4-Jvi"/>
+            </connections>
+            <point key="canvasLocation" x="-410" y="-27"/>
+        </view>
+    </objects>
+</document>

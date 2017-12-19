@@ -11,10 +11,13 @@
 #endif
 
 #ifdef __OBJC__
+    #import "SPSwitchBar.h"
+    #import "SPDeviceUtil.h"
     #import "UIResponder+SPCategory.h"
     #import "SPSingle.h"
     #import "Commons.h"
     #import "SPColorUtil.h"
     #import <Masonry/Masonry.h>
     #import "MBProgressHUD.h"
+    #import "SPBaseViewController.h"
 #endif /* __OBJC__*/
