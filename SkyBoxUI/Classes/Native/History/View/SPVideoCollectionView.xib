@@ -29,9 +29,12 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:02:42" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i1I-hQ-hwT">
-                    <rect key="frame" x="0.0" y="272" width="60" height="17"/>
+                    <rect key="frame" x="0.0" y="272" width="308" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="17" id="aGs-fA-8Sr"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                    <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
@@ -47,6 +50,7 @@
                 <constraint firstAttribute="bottom" secondItem="i1I-hQ-hwT" secondAttribute="bottom" constant="5" id="avk-aD-RFw"/>
                 <constraint firstAttribute="trailing" secondItem="BKk-6Q-k7G" secondAttribute="trailing" id="azI-mQ-y8L"/>
                 <constraint firstItem="BKk-6Q-k7G" firstAttribute="top" secondItem="OHl-tu-Ia4" secondAttribute="bottom" constant="5" id="yy6-sd-67L"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="i1I-hQ-hwT" secondAttribute="trailing" id="zWF-PA-hLL"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>

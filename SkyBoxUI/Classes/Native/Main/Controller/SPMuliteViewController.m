@@ -68,8 +68,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    _showType = TableViewType;
     //    _dataArr = [NSMutableArray array];
     //    for (int i=0; i<4; i++) {
     //        SPVideo *video = [[SPVideo alloc] init];
@@ -149,7 +147,7 @@
 - (void)didFinishRequest:(NSArray *)arr {
     _dataArr = [SPVideo mj_objectArrayWithKeyValuesArray:arr];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
         [_scrollView.tg_header endRefreshing];
         switch (_showType) {

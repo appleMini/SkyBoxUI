@@ -14,7 +14,7 @@
 @implementation SPVRViewController
 
 - (instancetype)initWithSomething {
-    self = [self initWithType:VRVideosType displayType:TableViewType];
+    self = [super initWithType:VRVideosType displayType:TableViewType];
     if (self) {
         
     }

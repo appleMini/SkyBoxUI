@@ -9,6 +9,11 @@
 
 @implementation Commons
 
++ (UIImage *)getImageFromResource:(NSString *)name {
+    UIImage *img =  [UIImage imageWithContentsOfFile:[[Commons resourceBundle] pathForResource:name ofType:@"png"]];
+    return img;
+}
+
 + (NSBundle *)resourceBundle {
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     NSURL *bundleURL = [bundle URLForResource:@"SkyBoxUI" withExtension:@"bundle"];

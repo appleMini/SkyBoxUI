@@ -40,6 +40,7 @@ typedef enum : NSUInteger {
 
 @interface Commons : NSObject
 
++ (UIImage *)getImageFromResource:(NSString *)name;
 + (NSBundle *)resourceBundle;
 + (NSString *)durationText:(double)dur;
 @end

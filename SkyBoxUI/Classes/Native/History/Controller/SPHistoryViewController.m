@@ -15,7 +15,7 @@
 @implementation SPHistoryViewController
 
 - (instancetype)initWithSomething {
-    self = [self initWithType:HistoryVideosType displayType:CollectionViewType];
+    self = [super initWithType:HistoryVideosType displayType:CollectionViewType];
     if (self) {
         
     }

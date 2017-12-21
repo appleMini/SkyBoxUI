@@ -9,12 +9,12 @@
 #import "SPBaseViewController.h"
 
 typedef enum : NSUInteger {
-    TableViewType,
+    TableViewType = 0,
     CollectionViewType,
 } DisplayType;
 
 typedef enum : NSUInteger {
-    LocalFilesType,
+    LocalFilesType = 0,
     VRVideosType,
     FavoriteVideosType,
     HistoryVideosType

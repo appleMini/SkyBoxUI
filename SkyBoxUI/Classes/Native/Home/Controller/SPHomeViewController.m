@@ -15,7 +15,7 @@
 @implementation SPHomeViewController
 
 - (instancetype)initWithSomething {
-    self = [self initWithType:LocalFilesType displayType:TableViewType];
+    self = [super initWithType:LocalFilesType displayType:TableViewType];
     if (self) {
         
     }
