@@ -25,11 +25,13 @@
 
 @implementation SPMuliteViewController
 
-- (instancetype)initWithType:(DataSourceType)type
+- (instancetype)initWithType:(DataSourceType)type displayType:(DisplayType)show
 {
     self = [super init];
     if (self) {
         _type = type;
+        _showType = show;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
     }
     return self;
 }
@@ -68,13 +70,13 @@
     [super viewDidLoad];
     
     _showType = TableViewType;
-    _dataArr = [NSMutableArray array];
-    for (int i=0; i<4; i++) {
-        SPVideo *video = [[SPVideo alloc] init];
-        video.title = @"GOOGLE SPOTLIGHT STORY - HELP";
-        video.duration = 343554;
-        [_dataArr addObject:video];
-    }
+    //    _dataArr = [NSMutableArray array];
+    //    for (int i=0; i<4; i++) {
+    //        SPVideo *video = [[SPVideo alloc] init];
+    //        video.title = @"GOOGLE SPOTLIGHT STORY - HELP";
+    //        video.duration = 343554;
+    //        [_dataArr addObject:video];
+    //    }
     
     [self setupScrollView];
 }
@@ -122,7 +124,6 @@
                 break;
         }
         
-        
         [self configRefresh];
     }
     
@@ -145,37 +146,60 @@
     _scrollView.tg_header = [TGRefreshOC  refreshWithTarget:self action:@selector(doRefreshSenior) config:nil];
 }
 
+- (void)didFinishRequest:(NSArray *)arr {
+    _dataArr = [SPVideo mj_objectArrayWithKeyValuesArray:arr];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
+        [_scrollView.tg_header endRefreshing];
+        switch (_showType) {
+            case TableViewType:
+                [((UITableView *)self.scrollView) reloadData];
+                break;
+            case CollectionViewType:
+                [((UICollectionView *)self.scrollView) reloadData];
+                break;
+            default:
+                break;
+        }
+    });
+}
+
+
 - (void)doRefreshSenior {
+    __weak typeof(self) ws = self;
+    self.refreshBlock = ^(NSString *dataStr){
+        NSLog(@"dataStr === %@", dataStr);
+        NSArray *arr = [NSJSONSerialization JSONObjectWithData:[dataStr mj_JSONData] options:NSJSONReadingAllowFragments error:nil];
+        
+        [ws didFinishRequest:arr];
+    };
+    
     switch (_type) {
         case LocalFilesType:
         {
-            
+            [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"GetLocalFiles", @"resultBlock" : self.refreshBlock}];
         }
             break;
         case VRVideosType:
         {
-            
+            [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"GetVRVideos", @"resultBlock" : self.refreshBlock}];
         }
             break;
         case FavoriteVideosType:
         {
-            
+            [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"GetFavouriteVideos", @"resultBlock" : self.refreshBlock}];
         }
             break;
         case HistoryVideosType:
         {
-            
+            [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"GetHistoryVideos", @"resultBlock" : self.refreshBlock}];
         }
             break;
             
         default:
             break;
     }
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
-        [_scrollView.tg_header endRefreshing];
-    });
 }
 
 
@@ -227,3 +251,5 @@
     return 0;
 }
 @end
+
+

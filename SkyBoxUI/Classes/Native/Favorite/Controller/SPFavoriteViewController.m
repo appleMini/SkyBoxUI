@@ -13,6 +13,13 @@
 
 @implementation SPFavoriteViewController
 
+- (instancetype)initWithSomething {
+    self = [self initWithType:FavoriteVideosType displayType:TableViewType];
+    if (self) {
+        
+    }
+    return self;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.

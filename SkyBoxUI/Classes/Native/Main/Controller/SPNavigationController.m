@@ -17,4 +17,12 @@
     return self.topViewController;
 }
 
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return 1 << UIDeviceOrientationPortrait;
+}
+
 @end

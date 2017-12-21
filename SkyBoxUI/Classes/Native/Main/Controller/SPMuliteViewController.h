@@ -20,7 +20,13 @@ typedef enum : NSUInteger {
     HistoryVideosType
 } DataSourceType;
 
+typedef void (^RefreshBlock) (NSString *dataStr);
+
 @interface SPMuliteViewController : SPBaseViewController
 
+@property (nonatomic, copy) RefreshBlock refreshBlock;
+
+- (instancetype)initWithType:(DataSourceType)type displayType:(DisplayType)show;
+- (void)didFinishRequest:(NSArray *)arr;
 - (NSString *)cellIditify;
 @end

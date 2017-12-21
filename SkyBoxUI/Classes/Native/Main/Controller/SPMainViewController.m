@@ -15,7 +15,7 @@
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 
 @interface SPMainViewController ()<UIScrollViewDelegate, SPSwitchBarProtocol, SPMenuJumpProtocol> {
-
+    BOOL _canRefresh;
 }
 @property (nonatomic, weak) UIScrollView *contentView;
 
@@ -25,6 +25,21 @@
 @end
 
 @implementation SPMainViewController
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doRefresh) name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
+    }
+    return self;
+}
+-(void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
+}
+
+- (void)doRefresh {
+    _canRefresh = YES;
+}
 
 - (NSString *)titleOfLabelView {
     return @"MY VIDEOS";
@@ -38,10 +53,10 @@
     menuVC.delegate = self;
     self.menuVC = menuVC;
 
-    SPHistoryViewController *HistoryVC = [[SPHistoryViewController alloc] init];
+    SPHistoryViewController *HistoryVC = [[SPHistoryViewController alloc] initWithSomething];
     self.historyVC = HistoryVC;
     
-    SPHomeViewController *homeVC = [[SPHomeViewController alloc] init];
+    SPHomeViewController *homeVC = [[SPHomeViewController alloc] initWithSomething];
     NSArray <UIViewController *>*childVCs = @[self.menuVC, homeVC, self.historyVC];
     [self setUpWithChildVCs:childVCs];
     
@@ -131,7 +146,7 @@
     // 滑动到对应位置
     [self.contentView setContentOffset:CGPointMake(index * self.contentView.width, 0) animated:YES];
     
-    [vc refresh];
+    _canRefresh ? [vc refresh] : nil;
 }
 
 #pragma -mark UIScrollViewDelegate

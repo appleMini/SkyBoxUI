@@ -25,6 +25,10 @@ invocation.selector = @selector(setContentInsetAdjustmentBehavior:);\
 _Pragma("clang diagnostic pop")\
 } while (0)
 
+
+#define  UITOUNITYNOTIFICATIONNAME  @"AcrossDifferentNativeNotify_UI_UNITY"
+#define  SCANOVERUITOUNITYNOTIFICATIONNAME  @"SCANOVERNativeNotify_UI_UNITY"
+
 @interface SPBaseViewController : UIViewController
 
 @property (nonatomic, strong) UILabel *titleLabel;

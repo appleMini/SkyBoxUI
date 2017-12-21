@@ -13,6 +13,14 @@
 
 @implementation SPNetworkViewController
 
+- (instancetype)initWithSomething {
+    self = [self initWithType:LocalFilesType displayType:TableViewType];
+    if (self) {
+        
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.

@@ -29,6 +29,10 @@
     return self;
 }
 
+- (void)prepareForReuse {
+    [self.videoView prepareForReuse];
+}
+
 - (void)setupViews {
     SPVideoCollectionView *itemView = (SPVideoCollectionView *)[[[UINib nibWithNibName:@"SPVideoCollectionView" bundle:[Commons resourceBundle]] instantiateWithOwner:nil options:nil] firstObject];
     itemView.backgroundColor = [UIColor clearColor];

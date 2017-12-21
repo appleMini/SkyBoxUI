@@ -7,6 +7,7 @@
 
 #import "SPVideoCollectionView.h"
 #import "SPVideo.h"
+#import "UIImage+Radius.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 
 @interface SPVideoCollectionView()
@@ -23,13 +24,24 @@
     
 }
 
+- (void)prepareForReuse {
+    self.durationLabel.text = nil;
+    self.label.text = nil;
+    self.imgv.image = nil;
+}
+
 - (void)setVideo:(SPVideo *)video {
     _video = video;
-    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.imgurl]];
-    self.imgv.layer.cornerRadius = 10;
-    self.imgv.layer.masksToBounds = YES;
+    if (video.thumbnail_uri && ![video.thumbnail_uri hasPrefix:@"file://"]) {
+        video.thumbnail_uri = [NSString stringWithFormat:@"file://%@", video.thumbnail_uri];
+    }
+    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[UIImage imageNamed:@"movie"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        if (image) {
+            self.imgv.image = [image drawRectWithRoundedCorner:10 inRect:self.imgv.bounds];
+        }
+    }];
     
     self.label.text = video.title;
-    self.durationLabel.text = [Commons durationText:video.duration];
+    self.durationLabel.text = [Commons durationText:video.duration.doubleValue];
 }
 @end

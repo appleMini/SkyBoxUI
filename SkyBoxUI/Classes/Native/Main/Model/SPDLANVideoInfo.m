@@ -5,8 +5,8 @@
 //  Created by Shao shuqiang on 2017/12/19.
 //
 
-#import "SPVideoInfo.h"
+#import "SPDLANVideoInfo.h"
 
-@implementation SPVideoInfo
+@implementation SPDLANVideoInfo
 
 @end

@@ -9,4 +9,5 @@
 
 @interface UIImage(Radius)
 
+- (UIImage *)drawRectWithRoundedCorner:(CGFloat)radius inRect:(CGRect)rect;
 @end

@@ -14,6 +14,14 @@
 
 @implementation SPHomeViewController
 
+- (instancetype)initWithSomething {
+    self = [self initWithType:LocalFilesType displayType:TableViewType];
+    if (self) {
+        
+    }
+    return self;
+}
+
 - (NSString *)titleOfLabelView {
     return @"MY VIDEOS";
 }

@@ -14,6 +14,14 @@
 
 @implementation SPHistoryViewController
 
+- (instancetype)initWithSomething {
+    self = [self initWithType:HistoryVideosType displayType:CollectionViewType];
+    if (self) {
+        
+    }
+    return self;
+}
+
 - (NSString *)titleOfLabelView {
     return @"HISTORY";
 }

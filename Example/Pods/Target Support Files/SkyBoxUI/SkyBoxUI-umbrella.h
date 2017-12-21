@@ -43,7 +43,7 @@
 #import "SPMainViewController.h"
 #import "SPMuliteViewController.h"
 #import "SPNavigationController.h"
-#import "SPVideoInfo.h"
+#import "SPDLANVideoInfo.h"
 #import "SPSwitchBar.h"
 #import "SPTabBar.h"
 #import "SPMenuViewController.h"

@@ -47,6 +47,13 @@ SPSingletonM(SPSwitchBar)
     return self;
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    CGFloat y = [SPDeviceUtil isiPhoneX] ? (SCREEN_HEIGHT - 34 - LargeHeight) : (SCREEN_HEIGHT - LargeHeight);
+    self.frame = CGRectMake(0, y, SCREEN_WIDTH, LargeHeight);
+}
+
 - (void)setupViews {
     UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     leftBtn.frame = CGRectMake(0, LargeHeight-BottomSpace-SmallItem, SmallItem, SmallItem);

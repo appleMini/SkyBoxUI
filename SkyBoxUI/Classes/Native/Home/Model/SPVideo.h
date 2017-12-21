@@ -9,8 +9,12 @@
 
 @interface SPVideo : NSObject
 
-@property (nonatomic, copy)    NSString *imgurl;
-@property (nonatomic, copy)    NSString *title;
-@property (nonatomic, assign)  double    duration;
+@property (nonatomic, copy) NSString *path;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *videoWidth;
+@property (nonatomic, copy) NSString *videoHeight;
+@property (nonatomic, copy) NSString *thumbnail_uri;
+@property (nonatomic, copy) NSString *rcg_type;
+@property (nonatomic, copy) NSString *duration;
 
 @end

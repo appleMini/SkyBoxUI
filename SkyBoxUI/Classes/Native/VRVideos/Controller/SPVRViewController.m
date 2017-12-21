@@ -13,6 +13,13 @@
 
 @implementation SPVRViewController
 
+- (instancetype)initWithSomething {
+    self = [self initWithType:VRVideosType displayType:TableViewType];
+    if (self) {
+        
+    }
+    return self;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
 }

@@ -38,10 +38,11 @@
     [self.drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
     [self.drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModeAll];
     [self.drawerController setDrawerVisualStateBlock:^(MMDrawerController *drawerController, MMDrawerSide drawerSide, CGFloat percentVisible) {
-        
+
     }];
     
     self.window.rootViewController = self.drawerController;
+//     self.window.rootViewController = naviVC;
     [self.window makeKeyAndVisible];
     
     return YES;

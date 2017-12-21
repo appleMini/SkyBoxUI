@@ -11,4 +11,6 @@
 @interface SPVideoCollectionView : UIView
 
 @property (nonatomic, strong) SPVideo *video;
+
+- (void)prepareForReuse;
 @end

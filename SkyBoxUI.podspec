@@ -35,7 +35,7 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
   s.source_files = 'SkyBoxUI/Classes/**/**/*.{h,m,mm}'
 
   s.resource_bundles = {
-    'SkyBoxUI' => ['SkyBoxUI/Classes/**/**/*.{storyboard,xib,png}']
+    'SkyBoxUI' => ['SkyBoxUI/Assets/*.png', 'SkyBoxUI/Classes/**/**/*.{storyboard,xib}']
   }
 
 #s.user_target_xcconfig =   {'OTHER_LDFLAGS' => ['-lObjC','-all_load']}

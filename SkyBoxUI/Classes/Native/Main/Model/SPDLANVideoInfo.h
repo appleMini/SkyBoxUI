@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface SPVideoInfo : NSObject
+@interface SPDLANVideoInfo : NSObject
 
 @property (nonatomic, copy) NSString *createTime;
 @property (nonatomic, copy) NSString *duration;
