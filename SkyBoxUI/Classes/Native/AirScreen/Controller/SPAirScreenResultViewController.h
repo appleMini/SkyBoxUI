@@ -1,0 +1,12 @@
+//
+//  SPAirScreenResultViewController.h
+//  SkyBoxUI
+//
+//  Created by Shao shuqiang on 2017/12/21.
+//
+
+#import <SkyBoxUI/SkyBoxUI.h>
+
+@interface SPAirScreenResultViewController : SPMuliteViewController
+
+@end

@@ -23,7 +23,31 @@
     [super awakeFromNib];
     
 }
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        self.userInteractionEnabled = YES;//打开用户交互
+        //初始化一个手势
+        UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapAction:)];
+        //为图片添加手势
+        [self addGestureRecognizer:singleTap];
+    }
+    
+    return self;
+}
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.userInteractionEnabled = YES;//打开用户交互
+        //初始化一个手势
+        UIGestureRecognizer *singleTap = [[UIGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapAction:)];
+        //为图片添加手势
+        [self addGestureRecognizer:singleTap];
+    }
+    return self;
+}
 - (void)prepareForReuse {
     self.durationLabel.text = nil;
     self.label.text = nil;
@@ -45,5 +69,14 @@
     
     self.label.text = video.title;
     self.durationLabel.text = [Commons durationText:video.duration.doubleValue];
+}
+
+- (void)singleTapAction:(UIGestureRecognizer *)recognizer {
+    NSUInteger selectedIndex = -1;
+    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:nativeToUnityType],
+                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+                             };
+    
+    [self bubbleEventWithUserInfo:notify];
 }
 @end

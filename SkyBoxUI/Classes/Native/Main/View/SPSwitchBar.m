@@ -71,6 +71,10 @@ SPSingletonM(SPSwitchBar)
     [centerBtn addTarget:self action:@selector(centerBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:centerBtn];
     centerBtn.clipsToBounds = NO;
+    centerBtn.layer.shadowOpacity = 0.8;
+    centerBtn.layer.shadowColor =  [UIColor blackColor].CGColor;
+    self.centerBtn.layer.shadowRadius = self.centerBtn.frame.size.width / 2;
+    centerBtn.layer.shadowOffset =  CGSizeMake(0, self.centerBtn.frame.size.height / 2);
     _centerBtn = centerBtn;
     
     UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -184,7 +188,10 @@ SPSingletonM(SPSwitchBar)
     cframe.size.height = ch;
     self.centerBtn.frame = cframe;
     self.centerBtn.layer.cornerRadius = cw / 2;
-    self.centerBtn.layer.masksToBounds = YES;
+    self.centerBtn.layer.shadowOpacity = 0.8;
+    self.centerBtn.layer.shadowColor =  [UIColor blackColor].CGColor;
+    self.centerBtn.layer.shadowRadius = self.centerBtn.frame.size.width / 2;
+    self.centerBtn.layer.shadowOffset =  CGSizeMake(0, self.centerBtn.frame.size.height / 2);
 }
 
 - (CGFloat)coordinate:(CGFloat)x baseWidth:(CGFloat)width {

@@ -17,7 +17,8 @@ typedef enum : NSUInteger {
     LocalFilesType = 0,
     VRVideosType,
     FavoriteVideosType,
-    HistoryVideosType
+    HistoryVideosType,
+    AirScreenType
 } DataSourceType;
 
 typedef void (^RefreshBlock) (NSString *dataStr);
