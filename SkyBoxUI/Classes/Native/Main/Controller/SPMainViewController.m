@@ -184,4 +184,35 @@
     }
     
 }
+
+#pragma mark UIResponder bubble
+- (void)bubbleEventWithUserInfo:(NSDictionary *)userInfo {
+    NSInteger respType = (ResponderType)[[userInfo objectForKey:kEventType] unsignedIntegerValue];
+    id target = [userInfo objectForKey:kTopViewController];
+    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+    
+    switch (respType) {
+        case nativeToUnityType:
+        {
+            [MBProgressHUD hideHUDForView:keyWindow animated:YES];
+            if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity: intoVRMode:)]) {
+                [self.jumpDelegate nativeToUnity:target intoVRMode:nil];
+            }
+        }
+            break;
+        case testType:
+        {
+            //            [MBProgressHUD showHUDAddedTo:keyWindow animated:YES];
+            NSString *mName = [userInfo objectForKey:kFunctionName];
+            NSString *param =  [userInfo objectForKey:kParams];
+            if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity: methodName: param:)]) {
+//                [self.jumpDelegate nativeToUnity:target methodName:mName param:param];
+            }
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
 @end

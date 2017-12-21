@@ -7,6 +7,15 @@
 
 #import <SkyBoxUI/SkyBoxUI.h>
 
+@protocol SPMainViewJumpDelegate;
 @interface SPMainViewController : SPBaseViewController
+
+@property (weak, nonatomic) id<SPMainViewJumpDelegate> jumpDelegate;
+@end
+
+@protocol SPMainViewJumpDelegate <NSObject>
+
+@optional
+- (void)nativeToUnity:(id)sender intoVRMode:(id)block;
 
 @end
