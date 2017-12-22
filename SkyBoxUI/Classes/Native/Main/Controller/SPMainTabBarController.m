@@ -129,7 +129,7 @@
     UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
     
     switch (respType) {
-       case nativeToUnityType:
+       case NativeToUnityType:
         {
             [MBProgressHUD hideHUDForView:keyWindow animated:YES];
             if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity:selectedIndex:)]) {
@@ -137,7 +137,7 @@
             }
         }
             break;
-       case testType:
+       case TestType:
         {
 //            [MBProgressHUD showHUDAddedTo:keyWindow animated:YES];
             NSString *mName = [userInfo objectForKey:kFunctionName];

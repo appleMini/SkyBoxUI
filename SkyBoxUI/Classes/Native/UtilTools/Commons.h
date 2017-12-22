@@ -34,8 +34,9 @@
 #define kParams                 @"kParamsNotification"
 
 typedef enum : NSUInteger {
-    nativeToUnityType = 1,
-    testType = 2,
+    NativeToUnityType = 1,
+    AirScreenMiddleVCType,
+    TestType,
 } ResponderType;
 
 @interface Commons : NSObject

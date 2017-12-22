@@ -283,6 +283,12 @@ static NSString *cellID = @"AIRSCREEN_CELLID";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"didSelectRowAtIndexPath");
+    NSUInteger selectedIndex = -1;
+    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenMiddleVCType],
+                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+                             };
+    
+    [tableView bubbleEventWithUserInfo:notify];
 }
 @end
 

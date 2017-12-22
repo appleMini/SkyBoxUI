@@ -264,7 +264,7 @@ SPSingletonM(SPSwitchBar)
 #pragma -mark VRButton
 - (void)vrBtnClick:(UIButton *)sender {
     NSUInteger selectedIndex = -1;
-    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:nativeToUnityType],
+    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:NativeToUnityType],
                              kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
                              };
     

@@ -35,7 +35,7 @@
 
 - (void)click:(UIButton *)sender {
     NSUInteger selectedIndex = self.tabBarController.selectedIndex;
-    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:nativeToUnityType],
+    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:NativeToUnityType],
                              kTopViewController: self,
                              kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
                                  };

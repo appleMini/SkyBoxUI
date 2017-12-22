@@ -12,6 +12,7 @@
 #import "SPHomeViewController.h"
 #import "SPHistoryViewController.h"
 #import "SPMuliteViewController.h"
+#import "SPAirScreenResultViewController.h"
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 
 @interface SPMainViewController ()<UIScrollViewDelegate, SPSwitchBarProtocol, SPMenuJumpProtocol> {
@@ -149,6 +150,19 @@
     _canRefresh ? [vc refresh] : nil;
 }
 
+- (void)changeMiddleContentView:(SPBaseViewController *)vc {
+    
+    NSArray <UIViewController *>*childVCs = @[self.menuVC, vc, self.historyVC];
+    [self setUpWithChildVCs:childVCs];
+    
+    [self showChildVCViewAtIndex:1];
+    [SPSwitchBar shareSPSwitchBar].selectIndex = 1;
+}
+
+- (void)jumpToAirScreenResultVC:(NSString *)params {
+    SPAirScreenResultViewController *airscreen = [[SPAirScreenResultViewController alloc] init];
+    [self changeMiddleContentView:airscreen];
+}
 #pragma -mark UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat moveDistance = fabs(scrollView.frame.size.width - scrollView.contentOffset.x);
@@ -175,12 +189,7 @@
         }
         
         SPBaseViewController *vc = [[cls alloc] initWithSomething];
-        
-        NSArray <UIViewController *>*childVCs = @[self.menuVC, vc, self.historyVC];
-        [self setUpWithChildVCs:childVCs];
-        
-        [self showChildVCViewAtIndex:1];
-        [SPSwitchBar shareSPSwitchBar].selectIndex = 1;
+        [self changeMiddleContentView:vc];
     }
     
 }
@@ -192,7 +201,7 @@
     UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
     
     switch (respType) {
-        case nativeToUnityType:
+        case NativeToUnityType:
         {
             [MBProgressHUD hideHUDForView:keyWindow animated:YES];
             if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity: intoVRMode:)]) {
@@ -200,7 +209,12 @@
             }
         }
             break;
-        case testType:
+        case AirScreenMiddleVCType:
+        {
+            [self jumpToAirScreenResultVC:nil];
+        }
+            break;
+        case TestType:
         {
             //            [MBProgressHUD showHUDAddedTo:keyWindow animated:YES];
             NSString *mName = [userInfo objectForKey:kFunctionName];
