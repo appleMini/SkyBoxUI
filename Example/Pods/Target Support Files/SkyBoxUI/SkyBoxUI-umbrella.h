@@ -13,6 +13,7 @@
 #import "DismissAnimationController.h"
 #import "PresentAnimationController.h"
 #import "SPAirScreenHelpViewController.h"
+#import "SPAirScreenResultViewController.h"
 #import "SPAirScreenViewController.h"
 #import "SPPluginBridge.h"
 #import "UIImage+Radius.h"
