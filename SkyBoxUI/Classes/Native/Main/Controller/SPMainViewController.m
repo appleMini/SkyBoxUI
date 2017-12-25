@@ -138,6 +138,13 @@
         return;
     }
     
+    SPBaseViewController *middleVC = self.childViewControllers[1];
+    if (index != 1) {
+        [middleVC showOrHiddenTopView:NO];
+    }else {
+        [middleVC showOrHiddenTopView:YES];
+    }
+    
     SPBaseViewController *vc = self.childViewControllers[index];
     self.navigationItem.leftBarButtonItems = [vc leftNaviItem];
     self.navigationItem.rightBarButtonItems = [vc rightNaviItem];

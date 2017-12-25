@@ -44,6 +44,7 @@ typedef void (^RefreshBlock) (NSString *dataStr);
 - (void)setupNaviView;
 - (void)refresh;
 - (void)releaseAction;
+- (void)showOrHiddenTopView:(BOOL)show;
 @end
 
 @interface SPCmdEvent : NSObject

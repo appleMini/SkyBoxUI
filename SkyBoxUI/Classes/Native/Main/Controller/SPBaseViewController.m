@@ -117,6 +117,7 @@
 - (void)releaseAction {
     
 }
+- (void)showOrHiddenTopView:(BOOL)show {}
 @end
 
 @implementation SPCmdEvent

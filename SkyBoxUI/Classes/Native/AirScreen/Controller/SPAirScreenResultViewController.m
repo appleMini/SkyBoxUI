@@ -31,6 +31,11 @@
     // Do any additional setup after loading the view.
     
     [self topViewAddToKeyWindow];
+    self.topView.hidden = NO;
+}
+
+- (void)showOrHiddenTopView:(BOOL)show {
+    self.topView.hidden = !show;
 }
 
 - (void)dealloc {
