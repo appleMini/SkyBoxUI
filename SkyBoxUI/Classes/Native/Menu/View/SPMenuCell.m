@@ -46,8 +46,10 @@
     self.iconV = iconV;
     
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    
     label.textAlignment = NSTextAlignmentLeft;
-    label.font = [UIFont boldSystemFontOfSize:18];
+    label.font = [UIFont fontWithName:@"calibriz" size:18];
+//    label.font = [UIFont boldSystemFontOfSize:18];
     label.textColor = [UIColor whiteColor];
     [self.contentView addSubview:label];
     [label mas_makeConstraints:^(MASConstraintMaker *make) {

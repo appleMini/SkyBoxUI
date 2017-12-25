@@ -13,6 +13,7 @@
 #import "SPHistoryViewController.h"
 #import "SPMuliteViewController.h"
 #import "SPAirScreenResultViewController.h"
+#import "SPAirScreenViewController.h"
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
 
 @interface SPMainViewController ()<UIScrollViewDelegate, SPSwitchBarProtocol, SPMenuJumpProtocol> {
@@ -53,7 +54,7 @@
     SPMenuViewController *menuVC = [[SPMenuViewController alloc] init];
     menuVC.delegate = self;
     self.menuVC = menuVC;
-
+    
     SPHistoryViewController *HistoryVC = [[SPHistoryViewController alloc] initWithSomething];
     self.historyVC = HistoryVC;
     
@@ -90,7 +91,7 @@
     CGRect contentFrame = CGRectMake(0, top, self.view.width, self.view.height - top);
     self.contentView.frame = contentFrame;
     self.contentView.contentSize = CGSizeMake(self.childViewControllers.count * self.view.width, 0);
-
+    
     for (int i=0; i<self.childViewControllers.count; i++) {
         UIViewController *vc = self.childViewControllers[i];
         vc.view.frame = CGRectMake(i * self.contentView.width, 0, self.contentView.width, self.contentView.height);
@@ -115,8 +116,9 @@
 }
 
 - (void)setUpWithChildVCs: (NSArray <UIViewController *>*)childVCs {
-   if (self.childViewControllers.count == 3) {
-        UIViewController *vc = self.childViewControllers[1];
+    if (self.childViewControllers.count == 3) {
+        SPBaseViewController *vc = self.childViewControllers[1];
+        [vc releaseAction];
         [vc.view removeFromSuperview];
     }
     [self.childViewControllers makeObjectsPerformSelector:@selector(removeFromParentViewController)];
@@ -159,8 +161,8 @@
     [SPSwitchBar shareSPSwitchBar].selectIndex = 1;
 }
 
-- (void)jumpToAirScreenResultVC:(NSString *)params {
-    SPAirScreenResultViewController *airscreen = [[SPAirScreenResultViewController alloc] init];
+- (void)jumpToAirScreenResultVC:(NSArray *)videos {
+    SPAirScreenResultViewController *airscreen = [[SPAirScreenResultViewController alloc] initWithDataSource:videos type:AirScreenType displayType:CollectionViewType];
     [self changeMiddleContentView:airscreen];
 }
 #pragma -mark UIScrollViewDelegate
@@ -209,9 +211,16 @@
             }
         }
             break;
+        case AirScreenResultMiddleVCType:
+        {
+            NSArray *videos = [userInfo objectForKey:kParams];
+            [self jumpToAirScreenResultVC:videos];
+        }
+            break;
         case AirScreenMiddleVCType:
         {
-            [self jumpToAirScreenResultVC:nil];
+            SPBaseViewController *vc = [[SPAirScreenViewController alloc] initWithSomething];
+            [self changeMiddleContentView:vc];
         }
             break;
         case TestType:
@@ -220,7 +229,7 @@
             NSString *mName = [userInfo objectForKey:kFunctionName];
             NSString *param =  [userInfo objectForKey:kParams];
             if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity: methodName: param:)]) {
-//                [self.jumpDelegate nativeToUnity:target methodName:mName param:param];
+                //                [self.jumpDelegate nativeToUnity:target methodName:mName param:param];
             }
         }
             break;

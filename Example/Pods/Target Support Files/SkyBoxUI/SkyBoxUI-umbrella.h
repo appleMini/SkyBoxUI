@@ -34,6 +34,7 @@
 #import "SPHistoryViewController.h"
 #import "SPVideoCollectionCell.h"
 #import "SPVideoCollectionView.h"
+#import "SPHomeHelpViewController.h"
 #import "SPHomeViewController.h"
 #import "SPVideo.h"
 #import "SPVideoCell.h"
@@ -61,6 +62,8 @@
 #import "SPColorUtil.h"
 #import "SPDeviceUtil.h"
 #import "SPSingle.h"
+#import "JRTTFTool.h"
+#import "NSString+JRTTF.h"
 #import "SPVRViewController.h"
 #import "SkyBoxUI.h"
 

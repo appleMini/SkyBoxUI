@@ -16,6 +16,7 @@
     #import "UIResponder+SPCategory.h"
     #import "SPSingle.h"
     #import "Commons.h"
+    #import "JRTTFTool.h"
     #import "SPColorUtil.h"
     #import <Masonry/Masonry.h>
     #import "MBProgressHUD.h"

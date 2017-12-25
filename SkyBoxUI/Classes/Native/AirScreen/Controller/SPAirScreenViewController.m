@@ -8,6 +8,7 @@
 #import "SPAirScreenViewController.h"
 #import "SPAirScreenHelpViewController.h"
 #import "ServiceCall.h"
+#import "SPVideo.h"
 
 typedef enum : NSUInteger {
     StartupStatus,
@@ -16,8 +17,11 @@ typedef enum : NSUInteger {
 } AirScreenStatus;
 
 @interface SPAirScreenViewController () <UITableViewDelegate, UITableViewDataSource> {
-    NSArray *_dataArr;
+    NSArray<SPAirscreen *> *_dataArr;
+    BOOL _socketOpened;
 }
+
+@property (nonatomic, strong) NSArray<SPAirscreen *> *dataArr;
 @property (nonatomic, assign) AirScreenStatus status;
 @property (nonatomic, strong) UIBarButtonItem *helpItem;
 
@@ -38,6 +42,8 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UILabel *devicesLabel;
 @property (nonatomic, strong) UIView *topView;
+@property (nonatomic, strong) CADisplayLink *displink;
+@property (nonatomic, strong) NSTimer *sendTimer;
 
 @end
 
@@ -48,8 +54,48 @@ typedef enum : NSUInteger {
     if (self) {
         self.status = StartupStatus;
         [self.searchButton setTitle:@"SEARCH DEVICE" forState:UIControlStateNormal];
+        CADisplayLink *displink = [CADisplayLink displayLinkWithTarget:self selector:@selector(tickSocketIO_MainThread)];
+        [displink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+        self.displink = displink;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveMessage:) name:UNITYTOUINOTIFICATIONNAME object:nil];
     }
     return self;
+}
+
+- (void)receiveMessage:(NSNotification *)notify {
+    NSDictionary *dict = [notify userInfo];
+    
+    if ([dict[@"method"] isEqualToString:@"showResult"]) {
+        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+        [MBProgressHUD hideHUDForView:keyWindow animated:YES];
+        
+        NSString *jsonStr = dict[@"mediaListResult"];
+        SPMediaListResult *listResult = [[SPMediaListResult alloc] mj_setKeyValues:jsonStr];
+        
+        NSMutableArray *mediaListResult = [[NSMutableArray alloc] initWithCapacity:listResult.list.count];
+        for (NSDictionary *info in listResult.list) {
+            SPCmdMediaInfo *media = [[SPCmdMediaInfo alloc] mj_setKeyValues:info];
+            SPVideo *video = [[SPVideo alloc] init];
+            video.path = media.url;
+            video.title = media.name;
+            video.videoWidth = [NSString stringWithFormat:@"%d", media.width];
+            video.videoHeight = [NSString stringWithFormat:@"%d", media.height];
+            video.thumbnail_uri = media.thumbnail;
+            video.duration = [NSString stringWithFormat:@"%f", media.duration];
+            [mediaListResult addObject:video];
+        }
+        
+        [self closeAirscreen];
+        
+        NSUInteger selectedIndex = -1;
+        NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenResultMiddleVCType],
+                                 kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+                                 kParams : mediaListResult
+                                 };
+        
+        [self.view bubbleEventWithUserInfo:notify];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -135,6 +181,86 @@ typedef enum : NSUInteger {
     }
 }
 
+- (void)tickSocketIO_MainThread {
+    if (_socketOpened) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"TickSocketIO"}];
+    }
+}
+
+- (void)stopSearch {
+    if (_socketOpened) {
+        [self.sendTimer invalidate];
+    }
+}
+- (void)closeAirscreen {
+    _socketOpened = NO;
+    [self.sendTimer invalidate];
+    
+    if (_socketOpened) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"DestroySKYBOX"}];
+    }
+}
+
+- (void)releaseAction {
+    [self closeAirscreen];
+    
+    [self.displink invalidate];
+    self.displink = nil;
+    
+    [self.sendTimer invalidate];
+    self.sendTimer = nil;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UNITYTOUINOTIFICATIONNAME object:nil];
+    NSLog(@"airscreen 销毁。。。。。。。");
+}
+- (void)startupAirscreen {
+    if (!_socketOpened) {
+        _socketOpened = YES;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"StartSKYBOX"}];
+    }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.sendTimer fire];
+    });
+}
+
+- (NSTimer *)sendTimer {
+    if (!_sendTimer) {
+        if (@available(iOS 10.0, *)) {
+            _sendTimer = [NSTimer timerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+                if (_socketOpened) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"UdpSendTo"}];
+                }
+            }];
+        } else {
+            // Fallback on earlier versions
+            _sendTimer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(sendUdpPackage) userInfo:nil repeats:YES];
+        }
+        
+        [[NSRunLoop currentRunLoop] addTimer:_sendTimer forMode:NSRunLoopCommonModes];
+    }
+    
+    return _sendTimer;
+}
+
+- (void)sendUdpPackage {
+    if (_socketOpened) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"UdpSendTo"}];
+    }
+}
+
+- (void)connectServer:(SPAirscreen *)airscreen {
+    if (_socketOpened) {
+        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+        [MBProgressHUD showHUDAddedTo:keyWindow animated:YES];
+        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"WebSocketConnect", @"airscreen" : airscreen}];
+    }
+    
+}
+
 - (IBAction)searchClick:(id)sender {
     if (_status == StartupStatus) {
         [self.searchButton setTitle:@"CANCEL" forState:UIControlStateNormal];
@@ -147,22 +273,24 @@ typedef enum : NSUInteger {
         {
             _status = SearchStatus;
             
-            [ServiceCall callGetActionParams:nil requestUrl:@"http://192.168.7.241:8080/REST/json" resultctxCall:^(NSDictionary *result) {
-                
-            } errorCall:nil];
+            [self startupAirscreen];
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                _dataArr = @[@"AndyAW", @"GQ", @"DESTOP", @"ABCD", @"scaasda", @"fdgdfdfd", @"vdddgd", @"dvdfddfg"];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if (_status == StartupStatus) {
+                    return;
+                }
                 
+                [self stopSearch];
                 _status = ResultStatus;
-                [self updateViewConstraints];
-                [self.tableView reloadData];
+                [self showResultView];
             });
         }
             break;
         case SearchStatus:
         {
             _status = StartupStatus;
+            
+            [self stopSearch];
         }
             break;
         case ResultStatus:
@@ -175,6 +303,25 @@ typedef enum : NSUInteger {
     }
     
     [self updateViewConstraints];
+}
+
+- (void)showResultView {
+    __weak typeof(self) ws = self;
+    self.refreshBlock = ^(NSString *dataStr){
+        NSLog(@"showResultView  === %@", dataStr);
+        if (!ws) {
+            return ;
+        }
+        
+        __strong typeof(ws) strongfy = ws;
+        strongfy.dataArr = [SPAirscreen mj_objectArrayWithKeyValuesArray:dataStr];
+        strongfy.devicesLabel.text = [NSString stringWithFormat:@"%lu DEVICES FOUND", (unsigned long)[strongfy.dataArr count]];
+        
+        [strongfy updateViewConstraints];
+        [strongfy.tableView reloadData];
+    };
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"GetDevices", @"resultBlock" : self.refreshBlock}];
 }
 
 - (UITableView *)tableView {
@@ -272,7 +419,7 @@ static NSString *cellID = @"AIRSCREEN_CELLID";
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.textLabel.text = _dataArr[indexPath.row];
+    cell.textLabel.text = [_dataArr[indexPath.row] computerName];
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
     return cell;
 }
@@ -282,15 +429,13 @@ static NSString *cellID = @"AIRSCREEN_CELLID";
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"didSelectRowAtIndexPath");
-    NSUInteger selectedIndex = -1;
-    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenMiddleVCType],
-                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
-                             };
+    SPAirscreen *air = _dataArr[indexPath.row];
+    if (!air) {
+        return;
+    }
     
-    [tableView bubbleEventWithUserInfo:notify];
+    [self connectServer:air];
 }
 @end
-
 
 

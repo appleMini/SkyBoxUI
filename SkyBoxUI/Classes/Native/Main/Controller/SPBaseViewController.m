@@ -97,7 +97,7 @@
     self.titleLabel = label;
     self.navigationItem.titleView = label;
 }
-    
+
 - (NSString *)titleOfLabelView {
     return nil;
 }
@@ -114,4 +114,40 @@
 - (void)refresh {
     
 }
+- (void)releaseAction {
+    
+}
 @end
+
+@implementation SPCmdEvent
+
+- (instancetype)initWithEventName:(NSString *)name callBack:(void *)call {
+    self = [super init];
+    if (self) {
+        self.method = name;
+        self.callBack = call;
+    }
+    
+    return self;
+}
+@end
+@implementation SPAirscreen
+@end
+@implementation SPCmdBase
+@end
+@implementation SPCmdAddDevice
+@end
+@implementation SPCmdAddDeviceResult
+@end
+@implementation SPMediaListResult
+@end
+@implementation SPSubtitleInfo
+@end
+@implementation SPCmdMediaInfo
+
++ (NSString *)mj_replacedKeyFromPropertyName121:(NSString *)propertyName {
+    if ([propertyName isEqualToString:@"mid"]) return @"id";
+    return [propertyName mj_underlineFromCamel];
+}
+@end
+

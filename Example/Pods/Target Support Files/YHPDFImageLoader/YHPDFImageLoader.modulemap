@@ -1,0 +1,6 @@
+framework module YHPDFImageLoader {
+  umbrella header "YHPDFImageLoader-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -36,6 +36,14 @@
     return self;
 }
 
+- (instancetype)initWithDataSource:(NSArray *)data type:(DataSourceType)type displayType:(DisplayType)show {
+    self = [self initWithType:type displayType:show];
+    if (self) {
+        _dataArr = [data copy];
+    }
+    return self;
+}
+
 - (NSString *)cellIditify {
     return @"kCellID";
 }
@@ -68,13 +76,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //    _dataArr = [NSMutableArray array];
-    //    for (int i=0; i<4; i++) {
-    //        SPVideo *video = [[SPVideo alloc] init];
-    //        video.title = @"GOOGLE SPOTLIGHT STORY - HELP";
-    //        video.duration = 343554;
-    //        [_dataArr addObject:video];
-    //    }
     
     [self setupScrollView];
 }
@@ -194,7 +195,24 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"GetHistoryVideos", @"resultBlock" : self.refreshBlock}];
         }
             break;
-            
+        case AirScreenType:
+        {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
+                [_scrollView.tg_header endRefreshing];
+                switch (_showType) {
+                    case TableViewType:
+                        [((UITableView *)self.scrollView) reloadData];
+                        break;
+                    case CollectionViewType:
+                        [((UICollectionView *)self.scrollView) reloadData];
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+            break;
         default:
             break;
     }

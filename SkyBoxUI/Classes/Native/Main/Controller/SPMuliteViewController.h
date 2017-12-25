@@ -27,6 +27,7 @@ typedef void (^RefreshBlock) (NSString *dataStr);
 
 @property (nonatomic, copy) RefreshBlock refreshBlock;
 
+- (instancetype)initWithDataSource:(NSArray *)data type:(DataSourceType)type displayType:(DisplayType)show;
 - (instancetype)initWithType:(DataSourceType)type displayType:(DisplayType)show;
 - (void)didFinishRequest:(NSArray *)arr;
 - (NSString *)cellIditify;

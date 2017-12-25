@@ -36,12 +36,15 @@
 typedef enum : NSUInteger {
     NativeToUnityType = 1,
     AirScreenMiddleVCType,
+    AirScreenResultMiddleVCType,
+    HomeHelpMiddleVCType,
     TestType,
 } ResponderType;
 
 @interface Commons : NSObject
 
 + (UIImage *)getImageFromResource:(NSString *)name;
++ (UIImage *)getPdfImageFromResource:(NSString *)name;
 + (NSBundle *)resourceBundle;
 + (NSString *)durationText:(double)dur;
 @end

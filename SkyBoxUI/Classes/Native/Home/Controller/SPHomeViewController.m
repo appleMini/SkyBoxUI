@@ -54,17 +54,23 @@
 }
 
 - (void)addClick:(UIButton *)item {
-    [ServiceCall callGetActionParams:nil requestUrl:@"http://192.168.7.241:8080/REST/json" resultctxCall:^(NSDictionary *result) {
-        NSLog(@"%@", result);
-        NSUInteger selectedIndex = self.tabBarController.selectedIndex;
-        NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:TestType],
-                                 kTopViewController: self,
-                                 kFunctionName: @"__iosNativeLoadNetworkVideoInfoByUnity",
-                                 kParams:result.mj_JSONString
-                                };
-                                               
-                                               [item bubbleEventWithUserInfo:notify];
-                                               
-                                               } errorCall:nil];
+//    [ServiceCall callGetActionParams:nil requestUrl:@"http://192.168.7.241:8080/REST/json" resultctxCall:^(NSDictionary *result) {
+//        NSLog(@"%@", result);
+//        NSUInteger selectedIndex = self.tabBarController.selectedIndex;
+//        NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:TestType],
+//                                 kTopViewController: self,
+//                                 kFunctionName: @"__iosNativeLoadNetworkVideoInfoByUnity",
+//                                 kParams:result.mj_JSONString
+//                                };
+//
+//                                               [item bubbleEventWithUserInfo:notify];
+//
+//                                               } errorCall:nil];
+    NSUInteger selectedIndex = -1;
+    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:HomeHelpMiddleVCType],
+                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+                             };
+    
+    [self.view bubbleEventWithUserInfo:notify];
 }
 @end

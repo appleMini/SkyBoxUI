@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SPHomeHelpViewController">
+            <connections>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Lud-ak-aOv">
+                    <rect key="frame" x="50" y="163.5" width="275" height="100"/>
+                    <color key="backgroundColor" red="1" green="0.1470601822" blue="0.12790239219999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="100" id="S9G-2w-ceh"/>
+                    </constraints>
+                </imageView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qyT-Rh-rNO">
+                    <rect key="frame" x="55" y="383.5" width="265" height="60"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lok-td-d3Y">
+                            <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="T52-yV-QGz"/>
+                                <constraint firstAttribute="width" constant="30" id="uJB-mg-b6R"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Open iTunes and select your iPhone." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YTf-Zb-n6S">
+                            <rect key="frame" x="40" y="0.0" width="220" height="30"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="IIi-ji-f3K"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="0.1470601822" blue="0.12790239219999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <constraints>
+                        <constraint firstItem="YTf-Zb-n6S" firstAttribute="leading" secondItem="lok-td-d3Y" secondAttribute="trailing" constant="10" id="1yV-qn-UkW"/>
+                        <constraint firstItem="lok-td-d3Y" firstAttribute="leading" secondItem="qyT-Rh-rNO" secondAttribute="leading" id="2TP-bs-amE"/>
+                        <constraint firstAttribute="height" constant="60" id="9Vd-aO-FUK"/>
+                        <constraint firstItem="lok-td-d3Y" firstAttribute="top" secondItem="qyT-Rh-rNO" secondAttribute="top" id="VBj-mq-oxf"/>
+                        <constraint firstItem="YTf-Zb-n6S" firstAttribute="top" secondItem="lok-td-d3Y" secondAttribute="top" id="ZYi-Ss-Fjj"/>
+                        <constraint firstAttribute="trailing" secondItem="YTf-Zb-n6S" secondAttribute="trailing" constant="5" id="hGl-Px-wfU"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JlT-br-7As">
+                    <rect key="frame" x="55" y="313.5" width="265" height="60"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vNW-Ar-dDt">
+                            <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="30" id="rTF-u5-Y3X"/>
+                                <constraint firstAttribute="height" constant="30" id="xwG-Az-vVV"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connect your iPhone to your computer using the USB cable." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dfJ-Wz-uTw">
+                            <rect key="frame" x="40" y="0.0" width="220" height="30"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="asu-O7-2Zn"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="dfJ-Wz-uTw" secondAttribute="trailing" constant="5" id="4Ug-Dz-Ip8"/>
+                        <constraint firstAttribute="height" constant="60" id="KPZ-vn-TTH"/>
+                        <constraint firstItem="vNW-Ar-dDt" firstAttribute="leading" secondItem="JlT-br-7As" secondAttribute="leading" id="YfJ-co-DoU"/>
+                        <constraint firstItem="vNW-Ar-dDt" firstAttribute="top" secondItem="JlT-br-7As" secondAttribute="top" id="b2g-Hg-RZs"/>
+                        <constraint firstItem="dfJ-Wz-uTw" firstAttribute="leading" secondItem="vNW-Ar-dDt" secondAttribute="trailing" constant="10" id="hpg-0V-1m3"/>
+                        <constraint firstItem="dfJ-Wz-uTw" firstAttribute="top" secondItem="vNW-Ar-dDt" secondAttribute="top" id="k3V-29-hdR"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="qyT-Rh-rNO" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="7I4-Ey-v21"/>
+                <constraint firstItem="JlT-br-7As" firstAttribute="top" secondItem="Lud-ak-aOv" secondAttribute="bottom" constant="50" id="CEP-lM-Zf2"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="JlT-br-7As" secondAttribute="trailing" constant="55" id="M8Y-PC-Pdp"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="Lud-ak-aOv" secondAttribute="trailing" constant="50" id="Sgf-U1-E9p"/>
+                <constraint firstItem="Lud-ak-aOv" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" constant="-120" id="Tp2-bv-I2V"/>
+                <constraint firstItem="Lud-ak-aOv" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="50" id="TwA-Lz-utx"/>
+                <constraint firstItem="Lud-ak-aOv" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="UR7-Ca-ZNB"/>
+                <constraint firstItem="qyT-Rh-rNO" firstAttribute="top" secondItem="JlT-br-7As" secondAttribute="bottom" constant="10" id="amY-Pp-TwS"/>
+                <constraint firstItem="JlT-br-7As" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="dZQ-x0-6lh"/>
+                <constraint firstItem="JlT-br-7As" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="55" id="ePW-h9-ylC"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="qyT-Rh-rNO" secondAttribute="trailing" constant="55" id="khG-x3-9xJ"/>
+                <constraint firstItem="qyT-Rh-rNO" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="55" id="n9W-O7-MsP"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
+            <point key="canvasLocation" x="-18.5" y="-57.5"/>
+        </view>
+    </objects>
+</document>

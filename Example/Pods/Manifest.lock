@@ -41,7 +41,7 @@ PODS:
   - SDWebImage (4.2.2):
     - SDWebImage/Core (= 4.2.2)
   - SDWebImage/Core (4.2.2)
-  - SkyBoxUI (0.3.5):
+  - SkyBoxUI (0.3.6):
     - AFNetworking (~> 3.1.0)
     - FMDB (~> 2.7.2)
     - Masonry (~> 1.1.0)
@@ -49,6 +49,8 @@ PODS:
     - MJExtension (~> 3.0.13)
     - MMDrawerController (~> 0.6.0)
     - SDWebImage (~> 4.2.2)
+    - YHPDFImageLoader (~> 1.0.0)
+  - YHPDFImageLoader (1.0.0)
 
 DEPENDENCIES:
   - FBSnapshotTestCase
@@ -69,7 +71,8 @@ SPEC CHECKSUMS:
   MJExtension: 5932755f451458eefa24239358817f8d291240c7
   MMDrawerController: e3a54a5570388463ad3b36975251575b50c4e1a0
   SDWebImage: 89a9d32cd520bbb46eb14e541d5109b3564af198
-  SkyBoxUI: 3f666525c9633a7d5b1eecd9eefb945cab302e6d
+  SkyBoxUI: 003fdd1d938c35a67874909a7d1a433a47cdb955
+  YHPDFImageLoader: cd9628397fff7fd72368cd26dbc5290f05311276
 
 PODFILE CHECKSUM: efad3a1ad9b63b28fe07419dc4ac3e21ec8e7b5d
 
