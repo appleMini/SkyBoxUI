@@ -19,5 +19,5 @@
 @protocol SPMenuJumpProtocol <NSObject>
 
 @required
-- (void)MenuViewController:(UIViewController *)menu jumpViewController:(NSString *)ctrS;
+- (void)MenuViewController:(UIViewController *)menu jumpViewController:(NSString *)ctrS menuIndex:(NSInteger)index;
 @end

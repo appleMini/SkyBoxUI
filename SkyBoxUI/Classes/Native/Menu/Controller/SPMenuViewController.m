@@ -87,8 +87,8 @@ static NSString *cellID = @"MenuCell";
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(MenuViewController: jumpViewController:)]) {
-        [self.delegate MenuViewController:self jumpViewController:_dataArr[indexPath.row][@"VC"]];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(MenuViewController: jumpViewController:menuIndex:)]) {
+        [self.delegate MenuViewController:self jumpViewController:_dataArr[indexPath.row][@"VC"] menuIndex:indexPath.row];
     }
 }
 

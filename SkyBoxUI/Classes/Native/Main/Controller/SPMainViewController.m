@@ -18,6 +18,7 @@
 
 @interface SPMainViewController ()<UIScrollViewDelegate, SPSwitchBarProtocol, SPMenuJumpProtocol> {
     BOOL _canRefresh;
+    NSInteger _selectMenuIndex;
 }
 @property (nonatomic, weak) UIScrollView *contentView;
 
@@ -31,6 +32,7 @@
 {
     self = [super init];
     if (self) {
+        _selectMenuIndex = -1;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doRefresh) name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
     }
     return self;
@@ -144,7 +146,7 @@
     }else {
         [middleVC showOrHiddenTopView:YES];
     }
-    
+
     SPBaseViewController *vc = self.childViewControllers[index];
     self.navigationItem.leftBarButtonItems = [vc leftNaviItem];
     self.navigationItem.rightBarButtonItems = [vc rightNaviItem];
@@ -190,7 +192,13 @@
 }
 
 #pragma -mark SPMenuJumpProtocol
-- (void)MenuViewController:(UIViewController *)menu jumpViewController:(NSString *)ctrS {
+- (void)MenuViewController:(UIViewController *)menu jumpViewController:(NSString *)ctrS menuIndex:(NSInteger)index{
+    if (_selectMenuIndex == index) {
+        [self showChildVCViewAtIndex:1];
+        return;
+    }
+    
+    _selectMenuIndex = index;
     if (ctrS) {
         Class cls =  NSClassFromString(ctrS);
         if (!cls) {
@@ -246,3 +254,4 @@
     }
 }
 @end
+
