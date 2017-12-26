@@ -6,8 +6,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SPMuliteViewController.h"
+#import "SPBaseViewController.h"
 
-@interface SPNetworkViewController : SPMuliteViewController
+@interface SPNetworkViewController : SPBaseViewController
 
+- (instancetype)initWithDataSource:(NSArray *)data  displayType:(DisplayType)show;
 @end

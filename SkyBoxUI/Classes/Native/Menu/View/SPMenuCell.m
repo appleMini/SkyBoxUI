@@ -40,7 +40,7 @@
     [iconV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(30);
         make.height.mas_equalTo(20);
-        make.leading.mas_equalTo(40);
+        make.leading.mas_equalTo(60);
         make.centerY.mas_equalTo(0);
     }];
     self.iconV = iconV;
@@ -61,12 +61,13 @@
     self.label = label;
     
     UIImageView *accessV = [[UIImageView alloc] initWithFrame:CGRectZero];
+    accessV.image = [Commons getPdfImageFromResource:@"Channels_item_arrow"];
     [self.contentView addSubview:accessV];
     [accessV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(20);
         make.height.mas_equalTo(20);
         make.centerY.mas_equalTo(0);
-        make.trailing.mas_equalTo(-20);
+        make.trailing.mas_equalTo(-60);
     }];
     self.accessV = accessV;
 }
@@ -84,7 +85,7 @@
 
 - (void)setIconName:(NSString *)iconName {
     _iconName = iconName;
-    self.iconV.image = [UIImage imageNamed:iconName];
+    self.iconV.image = [Commons getPdfImageFromResource:iconName];
 }
 
 - (void)setItemName:(NSString *)itemName {

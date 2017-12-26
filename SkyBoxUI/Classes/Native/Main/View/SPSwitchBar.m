@@ -65,6 +65,7 @@ SPSingletonM(SPSwitchBar)
     _leftBtn = leftBtn;
     
     UIButton *centerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [centerBtn setImage:[Commons getPdfImageFromResource:@"Home_tabbar_button_VR"] forState:UIControlStateNormal];
     centerBtn.frame = CGRectMake(-100, LargeHeight-BottomSpace-CSamllItem, CSamllItem, CSamllItem);
     centerBtn.backgroundColor = [UIColor yellowColor];
     centerBtn.layer.cornerRadius = CSamllItem / 2;

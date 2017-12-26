@@ -1,6 +1,6 @@
 {
   "name": "SkyBoxUI",
-  "version": "0.3.6",
+  "version": "0.3.9",
   "summary": "SkyBoxUI UI 插件",
   "description": "SkyBoxUI 使用cocoapods 管理的 UI插件",
   "homepage": "https://github.com/appleMini/SkyBoxUI",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/appleMini/SkyBoxUI.git",
-    "tag": "0.3.6"
+    "tag": "0.3.9"
   },
   "platforms": {
     "ios": "9.0"

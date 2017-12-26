@@ -40,6 +40,7 @@
 #import "SPVideoCell.h"
 #import "SPVideoView.h"
 #import "SPNetworkViewController.h"
+#import "SPHeaderView.h"
 #import "SPBaseViewController.h"
 #import "SPMainTabBarController.h"
 #import "SPMainViewController.h"

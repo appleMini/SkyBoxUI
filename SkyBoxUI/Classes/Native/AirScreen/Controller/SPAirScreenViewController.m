@@ -116,6 +116,8 @@ typedef enum : NSUInteger {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.pcImgV.image = [Commons getPdfImageFromResource:@"Channels_icon_airscreen"];
 }
 
 - (NSString *)titleOfLabelView {

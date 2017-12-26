@@ -30,6 +30,11 @@ _Pragma("clang diagnostic pop")\
 #define  UNITYTOUINOTIFICATIONNAME  @"AcrossDifferentNativeNotify_UNITY_UI"
 #define  SCANOVERUITOUNITYNOTIFICATIONNAME  @"SCANOVERNativeNotify_UI_UNITY"
 
+typedef enum : NSUInteger {
+    TableViewType,
+    CollectionViewType,
+} DisplayType;
+
 typedef void (^RefreshBlock) (NSString *dataStr);
 
 @interface SPBaseViewController : UIViewController

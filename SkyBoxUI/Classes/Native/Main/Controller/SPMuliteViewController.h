@@ -7,12 +7,6 @@
 
 #import <UIKit/UIKit.h>
 #import "SPBaseViewController.h"
-
-typedef enum : NSUInteger {
-    TableViewType = 0,
-    CollectionViewType,
-} DisplayType;
-
 typedef enum : NSUInteger {
     LocalFilesType = 0,
     VRVideosType,
@@ -21,11 +15,7 @@ typedef enum : NSUInteger {
     AirScreenType
 } DataSourceType;
 
-typedef void (^RefreshBlock) (NSString *dataStr);
-
 @interface SPMuliteViewController : SPBaseViewController
-
-@property (nonatomic, copy) RefreshBlock refreshBlock;
 
 - (instancetype)initWithDataSource:(NSArray *)data type:(DataSourceType)type displayType:(DisplayType)show;
 - (instancetype)initWithType:(DataSourceType)type displayType:(DisplayType)show;

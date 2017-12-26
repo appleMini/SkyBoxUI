@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="SPHeaderView">
+            <rect key="frame" x="0.0" y="0.0" width="715" height="41"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jQ5-Ix-lT4" userLabel="HomeBtn">
+                    <rect key="frame" x="0.0" y="0.0" width="50" height="41"/>
+                    <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="50" id="Hle-gc-n1A"/>
+                    </constraints>
+                    <state key="normal" title="Home"/>
+                    <connections>
+                        <action selector="homeAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="dyi-9E-maG"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ul3-Ir-TJs" userLabel="RefreshBtn">
+                    <rect key="frame" x="675" y="0.0" width="40" height="41"/>
+                    <color key="backgroundColor" red="1" green="0.1470601822" blue="0.12790239219999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="40" id="HCa-mI-w0L"/>
+                    </constraints>
+                    <state key="normal" title="Refresh"/>
+                    <connections>
+                        <action selector="refreshAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="dRJ-Hb-X9s"/>
+                    </connections>
+                </button>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aGI-ZV-2PO">
+                    <rect key="frame" x="50" y="0.0" width="625" height="41"/>
+                    <color key="backgroundColor" red="1" green="0.33616793279817125" blue="0.9877222129299108" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="Ul3-Ir-TJs" secondAttribute="bottom" id="4GV-Rw-WdF"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="aGI-ZV-2PO" secondAttribute="bottom" id="4Ga-CP-Idl"/>
+                <constraint firstItem="jQ5-Ix-lT4" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="6Li-zM-77k"/>
+                <constraint firstItem="Ul3-Ir-TJs" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="7ZN-8i-Pog"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="jQ5-Ix-lT4" secondAttribute="bottom" id="UfA-89-NeT"/>
+                <constraint firstItem="Ul3-Ir-TJs" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="XdB-Vx-oVT"/>
+                <constraint firstItem="Ul3-Ir-TJs" firstAttribute="leading" secondItem="aGI-ZV-2PO" secondAttribute="trailing" id="ZF3-yV-mK1"/>
+                <constraint firstItem="aGI-ZV-2PO" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="dDw-xu-JVr"/>
+                <constraint firstItem="jQ5-Ix-lT4" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="dFz-yy-Ay7"/>
+                <constraint firstItem="aGI-ZV-2PO" firstAttribute="leading" secondItem="jQ5-Ix-lT4" secondAttribute="trailing" id="ile-dp-2Gk"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="contentView" destination="aGI-ZV-2PO" id="afA-u4-B0W"/>
+            </connections>
+            <point key="canvasLocation" x="-823.5" y="-259.5"/>
+        </view>
+    </objects>
+</document>

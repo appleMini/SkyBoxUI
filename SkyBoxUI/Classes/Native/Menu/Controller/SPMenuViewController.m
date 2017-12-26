@@ -29,9 +29,12 @@ static NSString *cellID = @"MenuCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    _dataArr = @[@{@"iconName":@"" , @"item": @"LOCAL FILES", @"VC" : @"SPHomeViewController"}, @{@"iconName":@"" , @"item": @"VR VIDEOS", @"VC" : @"SPVRViewController"},
-                 @{@"iconName":@"" , @"item": @"LOCAL NETWORK", @"VC" : @"SPNetworkViewController"}, @{@"iconName":@"" , @"item": @"AIRSCREEN", @"VC" : @"SPAirScreenViewController"},
-                 @{@"iconName":@"" , @"item": @"ONLINE STREAM", @"VC" : @"SPOnlineViewController"}, @{@"iconName":@"" , @"item": @"FAVORITE", @"VC" : @"SPFavoriteViewController"}];
+    _dataArr = @[@{@"iconName":@"Channels_icon_allfiles" , @"item": @"LOCAL FILES", @"VC" :             @"SPHomeViewController"},
+                 @{@"iconName":@"Channels_icon_VRvideos" , @"item": @"VR VIDEOS", @"VC" : @"SPVRViewController"},
+                 @{@"iconName":@"Channels_icon_network" , @"item": @"LOCAL NETWORK", @"VC" : @"SPNetworkViewController"},
+                 @{@"iconName":@"Channels_icon_airscreen" , @"item": @"AIRSCREEN", @"VC" : @"SPAirScreenViewController"},
+                 @{@"iconName":@"Channels_icon_online" , @"item": @"ONLINE STREAM", @"VC" : @"SPOnlineViewController"},
+                 @{@"iconName":@"Channels_icon_favorites" , @"item": @"FAVORITE", @"VC" : @"SPFavoriteViewController"}];
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         adjustsScrollViewInsets(_tableView);
