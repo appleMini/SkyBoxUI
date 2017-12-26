@@ -66,6 +66,10 @@ static SPDLANManager *_manager = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"UpdateDLNA"}];
 }
 
+- (void)browseDLNAFolder:(SPCmdAddDevice *)device {
+    [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"BrowseDLNAFolder", @"device" : device}];
+}
+
 void AddDLNADeviceCallback(const char *UUID, int UUIDLength, const char *DeviceTitle, int DeviceTitleLength,
                            const char *iconURL, int iconURLLength) {
     NSString *uuid = [NSString stringWithUTF8String:UUID];
@@ -90,3 +94,4 @@ void BrowseDLNAFolderCallback(const char *BrowseFolderXML, int xmlLength, const 
     NSLog(@"BrowseDLNAFolderCallback BrowseFolderXML === %@  UUIDStr == %@", [NSString stringWithUTF8String:BrowseFolderXML] ,[NSString stringWithUTF8String:UUIDStr]);
 }
 @end
+

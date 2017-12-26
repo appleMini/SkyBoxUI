@@ -13,6 +13,7 @@
 
 + (instancetype)shareDLANManager;
 
+- (void)browseDLNAFolder:(SPCmdAddDevice *)device;
 - (void)releaseAction;
 @end
 
@@ -21,3 +22,4 @@
 @optional
 - (void)addDlanDevice:(SPCmdAddDevice *)device;
 @end
+

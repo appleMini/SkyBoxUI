@@ -32,7 +32,7 @@ SPSingletonM(SPSwitchBar)
     CGFloat y = [SPDeviceUtil isiPhoneX] ? (SCREEN_HEIGHT - 34 - LargeHeight) : (SCREEN_HEIGHT - LargeHeight);
     self = [self initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, LargeHeight)];
     if (self) {
-        self.backgroundColor = [UIColor greenColor];
+        self.backgroundColor = [UIColor clearColor];
     }
     return self;
 }

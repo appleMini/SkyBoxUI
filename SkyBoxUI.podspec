@@ -57,6 +57,7 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
   s.dependency 'FMDB', '~> 2.7.2'
   s.dependency 'MMDrawerController', '~> 0.6.0'
   s.dependency 'YHPDFImageLoader', '~> 1.0.0'
+  s.dependency 'GDataXMLNode2', '~> 2.0.1'
 
   s.prefix_header_contents = <<-EOS
     #ifdef __OBJC__

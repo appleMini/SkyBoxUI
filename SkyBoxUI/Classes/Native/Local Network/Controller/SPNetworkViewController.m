@@ -279,9 +279,14 @@
 //设置每个item垂直间距
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 0;
+    return 10;
 }
 
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    SPCmdAddDevice *device = _dataArr[indexPath.row];
+    
+    [_dlanManager browseDLNAFolder:device];
+}
 #pragma -mark SPDLANManagerDelegate
 - (void)addDlanDevice:(SPCmdAddDevice *)device {
     if (_dataArr) {
@@ -296,3 +301,4 @@
     }
 }
 @end
+
