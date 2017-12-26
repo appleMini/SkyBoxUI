@@ -1,6 +1,6 @@
 {
   "name": "SkyBoxUI",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "summary": "SkyBoxUI UI 插件",
   "description": "SkyBoxUI 使用cocoapods 管理的 UI插件",
   "homepage": "https://github.com/appleMini/SkyBoxUI",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/appleMini/SkyBoxUI.git",
-    "tag": "0.3.14"
+    "tag": "0.3.15"
   },
   "platforms": {
     "ios": "9.0"
@@ -62,6 +62,9 @@
     ],
     "YHPDFImageLoader": [
       "~> 1.0.0"
+    ],
+    "KissXML": [
+      "~> 5.2.0"
     ]
   },
   "prefix_header_contents": "#ifdef __OBJC__\n    #import \"SPSwitchBar.h\"\n    #import \"SPDeviceUtil.h\"\n    #import \"UIResponder+SPCategory.h\"\n    #import \"SPSingle.h\"\n    #import \"Commons.h\"\n    #import \"JRTTFTool.h\"\n    #import \"SPColorUtil.h\"\n    #import <Masonry/Masonry.h>\n    #import \"MBProgressHUD.h\"\n    #import \"SPBaseViewController.h\"\n    #import \"ServiceCall.h\"\n    #import <MJExtension/MJExtension.h>\n#endif /* __OBJC__*/"
