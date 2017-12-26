@@ -6,6 +6,7 @@
 //
 
 #import "SPDLANManager.h"
+#import <GDataXMLNode2/GDataXMLNode.h>
 
 @interface SPDLANManager()
 @property (nonatomic, strong) CADisplayLink *displink;
@@ -91,7 +92,35 @@ void RemoveDLNADeviceCallback(const char *UUID, int UUIDLength) {
 }
 
 void BrowseDLNAFolderCallback(const char *BrowseFolderXML, int xmlLength, const char *UUIDStr, int UUIDLength, const char *ObjIDStr, int ObjIDLength) {
-    NSLog(@"BrowseDLNAFolderCallback BrowseFolderXML === %@  UUIDStr == %@", [NSString stringWithUTF8String:BrowseFolderXML] ,[NSString stringWithUTF8String:UUIDStr]);
+    if (xmlLength <= 0) {
+        return;
+    }
+    
+    SPCmdAddDevice *device = [[SPCmdAddDevice alloc] init];
+    device.ObjIDStr = [NSString stringWithUTF8String:ObjIDStr];
+    device.deviceId = [NSString stringWithUTF8String:UUIDStr];
+    
+    NSString *xmlstr = [NSString stringWithUTF8String:BrowseFolderXML];
+    GDataXMLDocument *xmlDoc = [[GDataXMLDocument alloc] initWithXMLString:xmlstr options:0 error:nil];
+    GDataXMLElement *xmlEle = [xmlDoc rootElement];
+    
+    NSArray *array = [xmlEle children];
+    NSLog(@"count : %lu", (unsigned long)[array count]);
+    
+    for (int i = 0; i < [array count]; i++) {
+        GDataXMLElement *ele = [array objectAtIndex:i];
+        
+        NSLog(@"GDataXMLElement  name == %@", [ele name]);
+        //        // 根据标签名判断
+        //        if ([[ele name] isEqualToString:@"name"]) {
+        //            // 读标签里面的属性
+        //            NSLog(@"name --> %@", [[ele attributeForName:@"value"] stringValue]);
+        //        } else {
+        //            // 直接读标签间的String
+        //            NSLog(@"age --> %@", [ele stringValue]);
+        //        }
+        
+    }
 }
 @end
 
