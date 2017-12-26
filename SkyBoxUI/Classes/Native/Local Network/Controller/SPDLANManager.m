@@ -6,9 +6,9 @@
 //
 
 #import "SPDLANManager.h"
-#import <GDataXMLNode2/GDataXMLNode.h>
 
-@interface SPDLANManager()
+
+@interface SPDLANManager() <NSXMLParserDelegate>
 @property (nonatomic, strong) CADisplayLink *displink;
 
 @end
@@ -101,26 +101,37 @@ void BrowseDLNAFolderCallback(const char *BrowseFolderXML, int xmlLength, const 
     device.deviceId = [NSString stringWithUTF8String:UUIDStr];
     
     NSString *xmlstr = [NSString stringWithUTF8String:BrowseFolderXML];
-    GDataXMLDocument *xmlDoc = [[GDataXMLDocument alloc] initWithXMLString:xmlstr options:0 error:nil];
-    GDataXMLElement *xmlEle = [xmlDoc rootElement];
+    NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithData:[xmlstr dataUsingEncoding:NSUTF8StringEncoding]];
+    xmlParser.delegate = [SPDLANManager shareDLANManager];
+//    GDataXMLDocument *xmlDoc = [[GDataXMLDocument alloc] initWithXMLString:xmlstr options:0 error:nil];
+//    GDataXMLElement *xmlEle = [xmlDoc rootElement];
+//    
+//    NSArray *array = [xmlEle children];
+//    NSLog(@"count : %lu", (unsigned long)[array count]);
+//    
+//    for (int i = 0; i < [array count]; i++) {
+//        GDataXMLElement *ele = [array objectAtIndex:i];
+//        
+//        NSLog(@"GDataXMLElement  name == %@", [ele name]);
+//        //        // 根据标签名判断
+//        //        if ([[ele name] isEqualToString:@"name"]) {
+//        //            // 读标签里面的属性
+//        //            NSLog(@"name --> %@", [[ele attributeForName:@"value"] stringValue]);
+//        //        } else {
+//        //            // 直接读标签间的String
+//        //            NSLog(@"age --> %@", [ele stringValue]);
+//        //        }
+//        
+//    }
+}
+
+#pragma -mark NSXMLParserDelegate
+- (void)parserDidStartDocument:(NSXMLParser *)parser {
     
-    NSArray *array = [xmlEle children];
-    NSLog(@"count : %lu", (unsigned long)[array count]);
+}
+
+- (void)parserDidEndDocument:(NSXMLParser *)parser {
     
-    for (int i = 0; i < [array count]; i++) {
-        GDataXMLElement *ele = [array objectAtIndex:i];
-        
-        NSLog(@"GDataXMLElement  name == %@", [ele name]);
-        //        // 根据标签名判断
-        //        if ([[ele name] isEqualToString:@"name"]) {
-        //            // 读标签里面的属性
-        //            NSLog(@"name --> %@", [[ele attributeForName:@"value"] stringValue]);
-        //        } else {
-        //            // 直接读标签间的String
-        //            NSLog(@"age --> %@", [ele stringValue]);
-        //        }
-        
-    }
 }
 @end
 

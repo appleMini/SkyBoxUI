@@ -38,7 +38,7 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
     'SkyBoxUI' => ['SkyBoxUI/Assets/*.{png,pdf}', 'SkyBoxUI/Assets/**/*.ttf', 'SkyBoxUI/Classes/**/**/*.{storyboard,xib}']
   }
 
-#s.user_target_xcconfig =   {'OTHER_LDFLAGS' => ['-lObjC','-all_load']}
+#s.user_target_xcconfig =   {'OTHER_LDFLAGS' => ['-lObjC','-all_load'], 'HEADER_SEARCH_PATHS' => ['${PODS_ROOT}/Headers/Private', '${PODS_ROOT}/Headers/Public']}
 #s.resource_bundles = {
 #'SkyBoxUI' => ['SkyBoxUI/Assets/*.png']
 #'SkyBoxUI' => ['SkyBoxUI/Classes/**/*.xib']
@@ -49,6 +49,8 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
 # s.libraries = "iconv", "xml2"
   s.libraries = "sqlite3.0", "xml2"
 
+  s.xcconfig = { 'HEADER_SEARCH_PATHS' => '/usr/include/libxml2' }
+
   s.dependency 'AFNetworking', '~> 3.1.0'
   s.dependency 'MJExtension', '~> 3.0.13'
   s.dependency 'SDWebImage', '~> 4.2.2'
@@ -57,7 +59,6 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
   s.dependency 'FMDB', '~> 2.7.2'
   s.dependency 'MMDrawerController', '~> 0.6.0'
   s.dependency 'YHPDFImageLoader', '~> 1.0.0'
-  s.dependency 'GDataXMLNode2', '~> 2.0.1'
 
   s.prefix_header_contents = <<-EOS
     #ifdef __OBJC__
