@@ -22,6 +22,7 @@ typedef enum : NSUInteger {
 }
 
 @property (nonatomic, strong) NSArray<SPAirscreen *> *dataArr;
+@property (nonatomic, strong) SPAirscreen *   airscreen;
 @property (nonatomic, assign) AirScreenStatus status;
 @property (nonatomic, strong) UIBarButtonItem *helpItem;
 
@@ -71,6 +72,10 @@ typedef enum : NSUInteger {
         [MBProgressHUD hideHUDForView:keyWindow animated:YES];
         
         NSString *jsonStr = dict[@"mediaListResult"];
+        if (!jsonStr) {
+            return;
+        }
+        
         SPMediaListResult *listResult = [[SPMediaListResult alloc] mj_setKeyValues:jsonStr];
         
         NSMutableArray *mediaListResult = [[NSMutableArray alloc] initWithCapacity:listResult.list.count];
@@ -91,7 +96,7 @@ typedef enum : NSUInteger {
         NSUInteger selectedIndex = -1;
         NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenResultMiddleVCType],
                                  kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
-                                 kParams : mediaListResult
+                                 kParams : @{@"dataSorece": mediaListResult, @"airscreen" :_airscreen}
                                  };
         
         [self.view bubbleEventWithUserInfo:notify];
@@ -434,6 +439,7 @@ static NSString *cellID = @"AIRSCREEN_CELLID";
         return;
     }
     
+    _airscreen = air;
     [self connectServer:air];
 }
 @end

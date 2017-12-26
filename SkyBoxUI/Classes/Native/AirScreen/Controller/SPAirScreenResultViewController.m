@@ -34,6 +34,12 @@
     self.topView.hidden = NO;
 }
 
+- (void)setAirscreen:(SPAirscreen *)airscreen {
+    _airscreen = airscreen;
+    self.topView.hidden = NO;
+    [self.serverBtn setTitle:[_airscreen computerName] forState:UIControlStateNormal];
+}
+
 - (void)showOrHiddenTopView:(BOOL)show {
     self.topView.hidden = !show;
 }
@@ -141,3 +147,4 @@
     [self.topView updateConstraints];
 }
 @end
+

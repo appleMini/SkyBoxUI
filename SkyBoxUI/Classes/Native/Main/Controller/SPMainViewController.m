@@ -146,7 +146,7 @@
     }else {
         [middleVC showOrHiddenTopView:YES];
     }
-
+    
     SPBaseViewController *vc = self.childViewControllers[index];
     self.navigationItem.leftBarButtonItems = [vc leftNaviItem];
     self.navigationItem.rightBarButtonItems = [vc rightNaviItem];
@@ -170,9 +170,12 @@
     [SPSwitchBar shareSPSwitchBar].selectIndex = 1;
 }
 
-- (void)jumpToAirScreenResultVC:(NSArray *)videos {
-    SPAirScreenResultViewController *airscreen = [[SPAirScreenResultViewController alloc] initWithDataSource:videos type:AirScreenType displayType:CollectionViewType];
-    [self changeMiddleContentView:airscreen];
+- (void)jumpToAirScreenResultVC:(NSDictionary *)dict {
+    NSArray *videos = dict[@"dataSorece"];
+    SPAirscreen *airscreen = dict[@"airscreen"];
+    SPAirScreenResultViewController *airscreenResult = [[SPAirScreenResultViewController alloc] initWithDataSource:videos type:AirScreenType displayType:CollectionViewType];
+    airscreenResult.airscreen = airscreen;
+    [self changeMiddleContentView:airscreenResult];
 }
 #pragma -mark UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -228,8 +231,8 @@
             break;
         case AirScreenResultMiddleVCType:
         {
-            NSArray *videos = [userInfo objectForKey:kParams];
-            [self jumpToAirScreenResultVC:videos];
+            NSDictionary *dict = [userInfo objectForKey:kParams];
+            [self jumpToAirScreenResultVC:dict];
         }
             break;
         case AirScreenMiddleVCType:
