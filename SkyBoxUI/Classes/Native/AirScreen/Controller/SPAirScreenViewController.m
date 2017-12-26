@@ -200,10 +200,10 @@ typedef enum : NSUInteger {
     }
 }
 - (void)closeAirscreen {
-    _socketOpened = NO;
     [self.sendTimer invalidate];
     
     if (_socketOpened) {
+        _socketOpened = NO;
         [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"DestroySKYBOX"}];
     }
 }

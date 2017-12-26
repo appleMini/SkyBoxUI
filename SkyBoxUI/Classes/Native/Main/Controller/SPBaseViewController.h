@@ -89,6 +89,7 @@ typedef enum : NSUInteger
 @property (nonatomic, copy) NSString *deviceId;
 @property (nonatomic, copy) NSString *deviceName;
 @property (nonatomic, copy) NSString *deviceType;
+@property (nonatomic, copy) NSString *iconURL;
 @property (nonatomic, assign) BOOL   showLoginCode;
 @end
 

@@ -8,12 +8,11 @@
 #import "SPNetworkViewController.h"
 #import "SPHeaderView.h"
 #import "SPVideo.h"
-#import "SPVideoCell.h"
+#import "SPDLANView.h"
 #import "TGRefresh.h"
-#import "SPVideoCollectionCell.h"
-#import "SPVideoCollectionView.h"
+#import "SPDLANManager.h"
 
-@interface SPNetworkViewController ()<UITableViewDelegate, UITableViewDataSource,UICollectionViewDelegate, UICollectionViewDataSource> {
+@interface SPNetworkViewController ()<UITableViewDelegate, UITableViewDataSource,UICollectionViewDelegate, UICollectionViewDataSource, SPDLANManagerDelegate> {
     NSMutableArray *_dataArr;
 }
 
@@ -23,16 +22,26 @@
 @property (nonatomic, copy) NSString *cellIditify;
 @property (nonatomic, strong) UIBarButtonItem *menuItem;
 
+@property (nonatomic, strong) SPDLANManager *dlanManager;
 @end
 
 @implementation SPNetworkViewController
+
+- (instancetype)initWithSomething {
+    self = [self initWithDisplayType:CollectionViewType];
+    if (self) {
+    }
+    return self;
+}
 
 - (instancetype)initWithDisplayType:(DisplayType)show
 {
     self = [super init];
     if (self) {
         _showType = show;
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
+        _dlanManager = [SPDLANManager shareDLANManager];
+        _dlanManager.delegate = self;
+        _dataArr = [NSMutableArray array];
     }
     return self;
 }
@@ -43,6 +52,12 @@
         _dataArr = [data copy];
     }
     return self;
+}
+
+- (void)dealloc {
+    [_dlanManager releaseAction];
+    _dlanManager = nil;
+    NSLog(@"NetworkViewController  释放.....");
 }
 
 - (NSString *)titleOfLabelView {
@@ -139,7 +154,7 @@
                 ((UITableView *)_scrollView).delegate = self;
                 ((UITableView *)_scrollView).dataSource = self;
                 ((UITableView *)_scrollView).separatorStyle = UITableViewCellSeparatorStyleNone;
-                [((UITableView *)_scrollView) registerClass:[SPVideoCell class] forCellReuseIdentifier:[self cellIditify]];
+                [((UITableView *)_scrollView) registerClass:[SPDLANCell class] forCellReuseIdentifier:[self cellIditify]];
             }
                 break;
             case CollectionViewType:
@@ -148,7 +163,7 @@
                 [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
                 layout.itemSize = CGSizeMake((self.view.frame.size.width-20)/2, 180);
                 _scrollView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
-                [(UICollectionView *)_scrollView registerClass:[SPVideoCollectionCell class] forCellWithReuseIdentifier:[self cellIditify]];
+                [(UICollectionView *)_scrollView registerClass:[SPDLANCollectionCell class] forCellWithReuseIdentifier:[self cellIditify]];
                 ((UICollectionView *)_scrollView).backgroundColor = [UIColor clearColor];
                 adjustsScrollViewInsets(_scrollView);
                 ((UICollectionView *)_scrollView).delegate = self;
@@ -159,7 +174,7 @@
                 break;
         }
         
-//        [self configRefresh];
+        //        [self configRefresh];
     }
     
     return _scrollView;
@@ -181,22 +196,26 @@
     _scrollView.tg_header = [TGRefreshOC  refreshWithTarget:self action:@selector(doRefreshSenior) config:nil];
 }
 
+- (void)reload {
+    switch (_showType) {
+        case TableViewType:
+            [((UITableView *)self.scrollView) reloadData];
+            break;
+        case CollectionViewType:
+            [((UICollectionView *)self.scrollView) reloadData];
+            break;
+        default:
+            break;
+    }
+}
+
 - (void)didFinishRequest:(NSArray *)arr {
     _dataArr = [SPVideo mj_objectArrayWithKeyValuesArray:arr];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
         [_scrollView.tg_header endRefreshing];
-        switch (_showType) {
-            case TableViewType:
-                [((UITableView *)self.scrollView) reloadData];
-                break;
-            case CollectionViewType:
-                [((UICollectionView *)self.scrollView) reloadData];
-                break;
-            default:
-                break;
-        }
+        [self reload];
     });
 }
 
@@ -210,7 +229,7 @@
         [ws didFinishRequest:arr];
     };
     
-//     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"GetLocalFiles", @"resultBlock" : self.refreshBlock}];
+    //     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"GetLocalFiles", @"resultBlock" : self.refreshBlock}];
     
 }
 
@@ -221,13 +240,13 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    SPVideoCell *cell = [tableView dequeueReusableCellWithIdentifier:[self cellIditify]];
+    SPDLANCell *cell = [tableView dequeueReusableCellWithIdentifier:[self cellIditify]];
     
     if (!cell) {
-        cell = [[SPVideoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[self cellIditify]];
+        cell = [[SPDLANCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[self cellIditify]];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.videoView.video = _dataArr[indexPath.row];
+    cell.dlanView.device = _dataArr[indexPath.row];
     return cell;
 }
 
@@ -241,8 +260,8 @@
 }
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    SPVideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[self cellIditify] forIndexPath:indexPath];
-    cell.videoView.video = _dataArr[indexPath.row];
+    SPDLANCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[self cellIditify] forIndexPath:indexPath];
+    cell.dlanView.device = _dataArr[indexPath.row];
     return cell;
 }
 
@@ -261,5 +280,19 @@
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
     return 0;
+}
+
+#pragma -mark SPDLANManagerDelegate
+- (void)addDlanDevice:(SPCmdAddDevice *)device {
+    if (_dataArr) {
+        for (SPCmdAddDevice *addDevice in _dataArr) {
+            if ([addDevice.deviceId isEqualToString:[device deviceId]]) {
+                return;
+            }
+        }
+        
+        [_dataArr addObject:device];
+        [self reload];
+    }
 }
 @end
