@@ -56,6 +56,10 @@ static SPDLANManager *_manager = nil;
     self.status = ShutdownStatus;
 }
 
+- (void)refreshAction:(SPCmdAddDevice *)device {
+    [self browseDLNAFolder:device];
+}
+
 - (void)releaseAction {
     [self closeDLAN];
     [self.displink invalidate];

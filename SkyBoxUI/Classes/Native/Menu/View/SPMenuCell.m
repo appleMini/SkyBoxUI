@@ -38,8 +38,8 @@
     UIImageView *iconV = [[UIImageView alloc] initWithFrame:CGRectZero];
     [self.contentView addSubview:iconV];
     [iconV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(30);
-        make.height.mas_equalTo(20);
+        make.width.mas_equalTo(22);
+        make.height.mas_equalTo(22);
         make.leading.mas_equalTo(60);
         make.centerY.mas_equalTo(0);
     }];
@@ -48,8 +48,8 @@
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
     
     label.textAlignment = NSTextAlignmentLeft;
-    label.font = [UIFont fontWithName:@"calibriz" size:18];
-//    label.font = [UIFont boldSystemFontOfSize:18];
+//    label.font = [UIFont fontWithName:@"calibriz" size:18];
+    label.font = [UIFont boldSystemFontOfSize:18];
     label.textColor = [UIColor whiteColor];
     [self.contentView addSubview:label];
     [label mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -64,8 +64,8 @@
     accessV.image = [Commons getPdfImageFromResource:@"Channels_item_arrow"];
     [self.contentView addSubview:accessV];
     [accessV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(20);
-        make.height.mas_equalTo(20);
+        make.width.mas_equalTo(7);
+        make.height.mas_equalTo(11);
         make.centerY.mas_equalTo(0);
         make.trailing.mas_equalTo(-60);
     }];
@@ -81,6 +81,15 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
+    if (selected) {
+        self.label.textColor = [SPColorUtil getHexColor:@"#ffd570"];
+        self.iconV.image = [Commons getPdfImageFromResource:self.highlightIconName];
+        self.accessV.image = [Commons getPdfImageFromResource:@"Channels_item_arrow_active"];
+    }else {
+        self.label.textColor = [SPColorUtil getHexColor:@"#bcbcbd"];
+        self.iconV.image = [Commons getPdfImageFromResource:self.iconName];
+        self.accessV.image = [Commons getPdfImageFromResource:@"Channels_item_arrow"];
+    }
 }
 
 - (void)setIconName:(NSString *)iconName {

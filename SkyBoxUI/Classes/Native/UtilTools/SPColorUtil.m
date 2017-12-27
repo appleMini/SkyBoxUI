@@ -9,6 +9,10 @@
 
 @implementation SPColorUtil
 
++ (UIColor *)getHexColor:(NSString *)hexColor {
+    return [self getColor:hexColor alpha:1.0];
+}
+
 + (UIColor *)getColor:(NSString *)hexColor alpha:(CGFloat)alpha {
         //这里是alpha传1，在colorWithHextColorString alpha 里面做了alpha修改
         return [self colorWithHextColorString:hexColor alpha:alpha];
@@ -22,6 +26,11 @@
     //排除掉 @\"
     if ([hexColorString hasPrefix:@"@\""]) {
         hexColorString = [hexColorString substringWithRange:NSMakeRange(2, hexColorString.length-3)];
+    }
+    
+    // 如果是0x开头的，那么截取字符串，字符串从索引为2的位置开始，一直到末尾
+    if ([hexColorString hasPrefix:@"0x"] || [hexColorString hasPrefix:@"0X"]) {
+        hexColorString = [hexColorString substringFromIndex:2];
     }
     
     //排除掉 #

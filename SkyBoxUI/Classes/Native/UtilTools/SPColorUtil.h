@@ -9,6 +9,7 @@
 
 @interface SPColorUtil : NSObject
 
++ (UIColor *)getHexColor:(NSString *)hexColor;
 + (UIColor *)getColor:(NSString *)hexColor alpha:(CGFloat)alpha;
     
 @end

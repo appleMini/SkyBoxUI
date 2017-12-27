@@ -29,12 +29,12 @@ static NSString *cellID = @"MenuCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    _dataArr = @[@{@"iconName":@"Channels_icon_allfiles" , @"item": @"LOCAL FILES", @"VC" :             @"SPHomeViewController"},
-                 @{@"iconName":@"Channels_icon_VRvideos" , @"item": @"VR VIDEOS", @"VC" : @"SPVRViewController"},
-                 @{@"iconName":@"Channels_icon_network" , @"item": @"LOCAL NETWORK", @"VC" : @"SPNetworkViewController"},
-                 @{@"iconName":@"Channels_icon_airscreen" , @"item": @"AIRSCREEN", @"VC" : @"SPAirScreenViewController"},
-                 @{@"iconName":@"Channels_icon_online" , @"item": @"ONLINE STREAM", @"VC" : @"SPOnlineViewController"},
-                 @{@"iconName":@"Channels_icon_favorites" , @"item": @"FAVORITE", @"VC" : @"SPFavoriteViewController"}];
+    _dataArr = @[@{@"iconName":@"Channels_icon_allfiles" , @"highlightIconName":@"Channels_icon_allfiles_active", @"item": @"LOCAL FILES", @"VC" :             @"SPHomeViewController"},
+                 @{@"iconName":@"Channels_icon_VRvideos" ,@"highlightIconName":@"Channels_icon_VRvideos_active", @"item": @"VR VIDEOS", @"VC" : @"SPVRViewController"},
+                 @{@"iconName":@"Channels_icon_network" ,@"highlightIconName":@"Channels_icon_network_active", @"item": @"LOCAL NETWORK", @"VC" : @"SPNetworkViewController"},
+                 @{@"iconName":@"Channels_icon_airscreen" ,@"highlightIconName":@"Channels_icon_airscreen_active", @"item": @"AIRSCREEN", @"VC" : @"SPAirScreenViewController"},
+                 @{@"iconName":@"Channels_icon_online" ,@"highlightIconName":@"Channels_icon_online_active", @"item": @"ONLINE STREAM", @"VC" : @"SPOnlineViewController"},
+                 @{@"iconName":@"Channels_icon_favorites" ,@"highlightIconName":@"Channels_icon_favorites_active", @"item": @"FAVORITE", @"VC" : @"SPFavoriteViewController"}];
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         adjustsScrollViewInsets(_tableView);
@@ -81,6 +81,7 @@ static NSString *cellID = @"MenuCell";
     
     cell.iconName = _dataArr[indexPath.row][@"iconName"];
     cell.itemName = _dataArr[indexPath.row][@"item"];
+    cell.highlightIconName = _dataArr[indexPath.row][@"highlightIconName"];
     return  cell;
 }
 

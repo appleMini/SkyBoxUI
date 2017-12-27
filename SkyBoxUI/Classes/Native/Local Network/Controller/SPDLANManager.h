@@ -20,6 +20,7 @@ typedef enum : NSUInteger {
 + (instancetype)shareDLANManager;
 
 - (void)startupDLAN;
+- (void)refreshAction:(SPCmdAddDevice *)device;
 - (void)browseDLNAFolder:(SPCmdAddDevice *)device;
 - (void)releaseAction;
 @end

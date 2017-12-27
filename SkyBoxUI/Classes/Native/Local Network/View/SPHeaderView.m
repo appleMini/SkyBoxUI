@@ -6,6 +6,7 @@
 //
 
 #import "SPHeaderView.h"
+#import "SPDLANManager.h"
 
 @interface SPHeaderView()
 
@@ -26,9 +27,11 @@
 
 - (IBAction)homeAction:(id)sender {
     NSLog(@"go home...");
+    [[SPDLANManager shareDLANManager] startupDLAN];
 }
 - (IBAction)refreshAction:(id)sender {
     NSLog(@"refresh...");
+    [[SPDLANManager shareDLANManager] refreshAction:nil];
 }
 
 @end
