@@ -6,6 +6,7 @@
 //
 
 #import "SPDLANManager.h"
+#import <KissXML/KissXML.h>
 
 
 @interface SPDLANManager() <NSXMLParserDelegate>
@@ -39,15 +40,20 @@ static SPDLANManager *_manager = nil;
 }
 
 - (void)startupDLAN {
+    [self closeDLAN];
+    
     SPCmdEvent *addDLNADeviceCallback = [[SPCmdEvent alloc] initWithEventName:@"AddDLNADeviceCallback" callBack:(void *)AddDLNADeviceCallback];
     SPCmdEvent *removeDLNADeviceCallback = [[SPCmdEvent alloc] initWithEventName:@"RemoveDLNADeviceCallback" callBack:(void *)RemoveDLNADeviceCallback];
     SPCmdEvent *browseDLNAFolderCallback = [[SPCmdEvent alloc] initWithEventName:@"BrowseDLNAFolderCallback" callBack:(void *)BrowseDLNAFolderCallback];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"StartDLAN", @"AddDLNADeviceCallback" : addDLNADeviceCallback, @"RemoveDLNADeviceCallback" : removeDLNADeviceCallback, @"BrowseDLNAFolderCallback" : browseDLNAFolderCallback}];
+    
+    self.status = AddDeviceStatus;
 }
 - (void)closeDLAN {
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"DestroyDLAN"}];
     
+    self.status = ShutdownStatus;
 }
 
 - (void)releaseAction {
@@ -69,21 +75,22 @@ static SPDLANManager *_manager = nil;
 
 - (void)browseDLNAFolder:(SPCmdAddDevice *)device {
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"BrowseDLNAFolder", @"device" : device}];
+    self.status = BrowseFolderStatus;
 }
 
 void AddDLNADeviceCallback(const char *UUID, int UUIDLength, const char *DeviceTitle, int DeviceTitleLength,
                            const char *iconURL, int iconURLLength) {
-    NSString *uuid = [NSString stringWithUTF8String:UUID];
-    NSString *deviceTitle = [NSString stringWithUTF8String:DeviceTitle];
-    NSString *iconUrl = [NSString stringWithUTF8String:iconURL];
+    NSString *uuid = [[NSString alloc] initWithData:[NSData dataWithBytes:UUID length:UUIDLength] encoding:NSUTF8StringEncoding];
+    NSString *deviceTitle = [[NSString alloc] initWithData:[NSData dataWithBytes:DeviceTitle length:DeviceTitleLength] encoding:NSUTF8StringEncoding];
+    NSString *iconUrl = [[NSString alloc] initWithData:[NSData dataWithBytes:iconURL length:iconURLLength] encoding:NSUTF8StringEncoding];
     
     SPCmdAddDevice *device = [[SPCmdAddDevice alloc] init];
     device.deviceId = uuid;
     device.deviceName = deviceTitle;
     device.iconURL = iconUrl;
     SPDLANManager *dlan = [SPDLANManager shareDLANManager];
-    if (dlan.delegate && [dlan.delegate respondsToSelector:@selector(addDlanDevice:)]) {
-        [dlan.delegate addDlanDevice:device];
+    if (dlan.delegate && [dlan.delegate respondsToSelector:@selector(addDlanDevice: parentID:)]) {
+        [dlan.delegate addDlanDevice:device parentID:@"-1"];
     }
 }
 
@@ -97,32 +104,106 @@ void BrowseDLNAFolderCallback(const char *BrowseFolderXML, int xmlLength, const 
     }
     
     SPCmdAddDevice *device = [[SPCmdAddDevice alloc] init];
-    device.ObjIDStr = [NSString stringWithUTF8String:ObjIDStr];
-    device.deviceId = [NSString stringWithUTF8String:UUIDStr];
+    device.ObjIDStr = [[NSString alloc] initWithData:[NSData dataWithBytes:ObjIDStr length:ObjIDLength] encoding:NSUTF8StringEncoding];
+    device.deviceId = [[NSString alloc] initWithData:[NSData dataWithBytes:UUIDStr length:UUIDLength] encoding:NSUTF8StringEncoding];
     
-    NSString *xmlstr = [NSString stringWithUTF8String:BrowseFolderXML];
-    NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithData:[xmlstr dataUsingEncoding:NSUTF8StringEncoding]];
-    xmlParser.delegate = [SPDLANManager shareDLANManager];
-//    GDataXMLDocument *xmlDoc = [[GDataXMLDocument alloc] initWithXMLString:xmlstr options:0 error:nil];
-//    GDataXMLElement *xmlEle = [xmlDoc rootElement];
-//    
-//    NSArray *array = [xmlEle children];
-//    NSLog(@"count : %lu", (unsigned long)[array count]);
-//    
-//    for (int i = 0; i < [array count]; i++) {
-//        GDataXMLElement *ele = [array objectAtIndex:i];
-//        
-//        NSLog(@"GDataXMLElement  name == %@", [ele name]);
-//        //        // 根据标签名判断
-//        //        if ([[ele name] isEqualToString:@"name"]) {
-//        //            // 读标签里面的属性
-//        //            NSLog(@"name --> %@", [[ele attributeForName:@"value"] stringValue]);
-//        //        } else {
-//        //            // 直接读标签间的String
-//        //            NSLog(@"age --> %@", [ele stringValue]);
-//        //        }
-//        
-//    }
+    NSData *data = [NSData dataWithBytes:BrowseFolderXML length:xmlLength];
+    
+    NSLog(@"BrowseFolderXML == \n%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    DDXMLDocument  *doc = [[DDXMLDocument alloc] initWithData:data options:0 error:nil];
+    //开始解析
+    NSArray *results = [doc nodesForXPath:@"//Result" error:nil];
+    
+    NSMutableArray *arr = [NSMutableArray array];
+    //遍历每个元素
+    for (DDXMLElement *obj in results) {
+        NSArray *Lites = [obj elementsForName:@"DIDL-Lite"];
+        for (DDXMLElement *didl in Lites) {
+            NSArray *containerNodeList = [didl elementsForName:@"container"];
+            for (DDXMLElement *container in containerNodeList) {
+                SPCmdFolderDevice *folderDevice = [[SPCmdFolderDevice alloc] init];
+                folderDevice.deviceId = device.deviceId;
+                
+                NSString *parentId =[[container attributeForName:@"parentID"] stringValue];
+                NSString *cid =[[container attributeForName:@"id"] stringValue];
+                
+                folderDevice.parentID = parentId;
+                folderDevice.ObjIDStr = cid;
+                
+                DDXMLElement *titleElement = [container elementForName:@"dc:title"];
+                folderDevice.deviceName = [titleElement stringValue];
+                
+                DDXMLElement *typeElement = [container elementForName:@"upnp:class"];
+                folderDevice.deviceType = [typeElement stringValue];
+                
+                DDXMLElement *storageUsedElement = [container elementForName:@"upnp:storageUsed"];
+                folderDevice.storageUsed = [storageUsedElement stringValue];
+                
+                [arr addObject:folderDevice];
+            }
+            
+            //items
+            NSArray *itemNodeList = [didl elementsForName:@"item"];
+            for (DDXMLElement *item in itemNodeList) {
+                NSString *parentId =[[item attributeForName:@"parentID"] stringValue];
+                NSString *cid =[[item attributeForName:@"id"] stringValue];
+                DDXMLElement *titleElement = [item elementForName:@"dc:title"];
+                DDXMLElement *resElement = [item elementForName:@"res"];
+                
+                DDXMLElement *typeElement = [item elementForName:@"upnp:class"];
+                device.deviceType = [typeElement stringValue];
+                if (device.deviceType && [device.deviceType isEqualToString:@"object.item.imageItem.photo"]) {
+                    SPCmdAlbumDevice *albumDevice = [[SPCmdAlbumDevice alloc] init];
+                    albumDevice.deviceId = device.deviceId;
+                    
+                    albumDevice.parentID = parentId;
+                    albumDevice.ObjIDStr = cid;
+                    
+                    DDXMLElement *albumElement = [item elementForName:@"upnp:album"];
+                    albumDevice.album = [albumElement stringValue];
+                    
+                    
+                    albumDevice.deviceName = [titleElement stringValue];
+                    
+                    albumDevice.deviceType = device.deviceType;
+                    
+                    
+                    albumDevice.protocolInfo = [[resElement attributeForName:@"protocolInfo"] stringValue];
+                    albumDevice.resolution = [[resElement attributeForName:@"resolution"] stringValue];
+                    albumDevice.iconURL = [resElement stringValue];
+                    
+                    [arr addObject:albumDevice];
+                }else if(device.deviceType && [device.deviceType isEqualToString:@"object.item.videoItem"]) {
+                    SPCmdVideoDevice *videoDevice = [[SPCmdVideoDevice alloc] init];
+                    videoDevice.deviceId = device.deviceId;
+                    videoDevice.parentID = parentId;
+                    videoDevice.ObjIDStr = cid;
+                    videoDevice.deviceName = [titleElement stringValue];
+                    videoDevice.deviceType = device.deviceType;
+                    videoDevice.protocolInfo = [[resElement attributeForName:@"protocolInfo"] stringValue];
+                    videoDevice.resolution = [[resElement attributeForName:@"resolution"] stringValue];
+                    videoDevice.size = [[resElement attributeForName:@"size"] stringValue];
+                    videoDevice.bitrate = [[resElement attributeForName:@"bitrate"] stringValue];
+                    videoDevice.duration = [[resElement attributeForName:@"duration"] stringValue];
+                    videoDevice.nrAudioChannels = [[resElement attributeForName:@"nrAudioChannels"] stringValue];
+                    videoDevice.sampleFrequency = [[resElement attributeForName:@"sampleFrequency"] stringValue];
+                    videoDevice.videoUrl = [resElement stringValue];
+                    
+                    [arr addObject:videoDevice];
+                }
+                
+                
+            }
+        }
+    }
+    
+    SPDLANManager *dlan = [SPDLANManager shareDLANManager];
+    if (dlan.delegate && [dlan.delegate respondsToSelector:@selector(browseDLNAFolder:parentID:)]) {
+        [dlan.delegate browseDLNAFolder:arr parentID:device.ObjIDStr];
+    }
+    
+    //    NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithData:[xmlstr dataUsingEncoding:NSUTF8StringEncoding]];
+    //    xmlParser.delegate = [SPDLANManager shareDLANManager];
 }
 
 #pragma -mark NSXMLParserDelegate

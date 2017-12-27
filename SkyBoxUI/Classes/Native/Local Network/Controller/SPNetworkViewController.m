@@ -14,6 +14,7 @@
 
 @interface SPNetworkViewController ()<UITableViewDelegate, UITableViewDataSource,UICollectionViewDelegate, UICollectionViewDataSource, SPDLANManagerDelegate> {
     NSMutableArray *_dataArr;
+    NSInteger _level;
 }
 
 @property (nonatomic, assign) DisplayType showType;
@@ -38,6 +39,7 @@
 {
     self = [super init];
     if (self) {
+        _level = -1;
         _showType = show;
         _dlanManager = [SPDLANManager shareDLANManager];
         _dlanManager.delegate = self;
@@ -285,10 +287,22 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     SPCmdAddDevice *device = _dataArr[indexPath.row];
     
+    if (device.deviceType && ![device.deviceType containsString:@"storageFolder"]) {
+        
+        return ;
+    }
+    
     [_dlanManager browseDLNAFolder:device];
 }
 #pragma -mark SPDLANManagerDelegate
-- (void)addDlanDevice:(SPCmdAddDevice *)device {
+- (void)addDlanDevice:(SPCmdAddDevice *)device parentID:(NSString *)pid {
+    if ([[SPDLANManager shareDLANManager] status] != AddDeviceStatus) {
+        return;
+    }
+    if (_level != [pid integerValue]) {
+        _dataArr = [NSMutableArray array];
+        _level = [pid integerValue];
+    }
     if (_dataArr) {
         for (SPCmdAddDevice *addDevice in _dataArr) {
             if ([addDevice.deviceId isEqualToString:[device deviceId]]) {
@@ -299,6 +313,18 @@
         [_dataArr addObject:device];
         [self reload];
     }
+}
+
+- (void)browseDLNAFolder:(NSArray<SPCmdAddDevice *> *)folders parentID:(NSString *)pid {
+    if ([[SPDLANManager shareDLANManager] status] != BrowseFolderStatus) {
+        return;
+    }
+    
+    _level = [pid integerValue];
+    _dataArr = [NSMutableArray array];
+    
+    _dataArr = [folders copy];
+    [self reload];
 }
 @end
 

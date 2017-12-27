@@ -138,6 +138,14 @@
 @end
 @implementation SPCmdAddDevice
 @end
+@implementation SPCmdFolderDevice
+@end
+@implementation SPCmdAlbumDevice
+@end
+@implementation SPCmdVideoDevice
+@end
+@implementation SPCmdMusicDevice
+@end
 @implementation SPCmdAddDeviceResult
 @end
 @implementation SPMediaListResult

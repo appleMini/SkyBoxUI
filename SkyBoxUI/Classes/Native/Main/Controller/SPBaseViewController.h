@@ -91,7 +91,37 @@ typedef enum : NSUInteger
 @property (nonatomic, copy) NSString *deviceType;
 @property (nonatomic, copy) NSString *iconURL;
 @property (nonatomic, copy) NSString *ObjIDStr;
+@property (nonatomic, copy) NSString *parentID;
 @property (nonatomic, assign) BOOL   showLoginCode;
+@end
+
+@interface SPCmdFolderDevice : SPCmdAddDevice
+@property (nonatomic, copy) NSString    *restricted;
+@property (nonatomic, copy) NSString    *storageUsed;
+@end
+
+@interface SPCmdAlbumDevice : SPCmdAddDevice
+@property (nonatomic, copy) NSString    *album;
+@property (nonatomic, copy) NSString    *protocolInfo;
+@property (nonatomic, copy) NSString    *resolution;
+@end
+
+@interface SPCmdVideoDevice : SPCmdAddDevice
+@property (nonatomic, copy) NSString    *date;
+@property (nonatomic, copy) NSString    *protocolInfo;
+@property (nonatomic, copy) NSString    *resolution;
+@property (nonatomic, copy) NSString    *size;
+@property (nonatomic, copy) NSString    *bitrate;
+@property (nonatomic, copy) NSString    *duration;
+@property (nonatomic, copy) NSString    *nrAudioChannels;
+@property (nonatomic, copy) NSString    *sampleFrequency;
+@property (nonatomic, copy) NSString    *videoUrl;
+@end
+
+@interface SPCmdMusicDevice : SPCmdAddDevice
+@property (nonatomic, copy) NSString    *album;
+@property (nonatomic, copy) NSString    *protocolInfo;
+@property (nonatomic, copy) NSString    *resolution;
 @end
 
 @interface SPCmdAddDeviceResult : SPCmdBase
