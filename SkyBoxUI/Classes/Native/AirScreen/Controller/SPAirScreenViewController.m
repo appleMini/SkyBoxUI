@@ -116,7 +116,6 @@ typedef enum : NSUInteger {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.pcImgV.image = [Commons getPdfImageFromResource:@"Channels_icon_airscreen"];
 }
 
@@ -133,7 +132,7 @@ typedef enum : NSUInteger {
         UIButton *helpBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [helpBtn setImage:nil forState:UIControlStateNormal];
         helpBtn.backgroundColor = [UIColor blueColor];
-        helpBtn.frame = CGRectMake(0, 0, 40, 40);
+        helpBtn.frame = CGRectMake(0, 0, 20, 20);
         [helpBtn addTarget:self action:@selector(helpItemClick:) forControlEvents:UIControlEventTouchUpInside];
         _helpItem = [[UIBarButtonItem alloc] initWithCustomView:helpBtn];
     }

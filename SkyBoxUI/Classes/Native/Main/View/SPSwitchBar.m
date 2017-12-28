@@ -6,14 +6,12 @@
 //
 
 #import "SPSwitchBar.h"
-#define LargeHeight      kWSCALE*49*1.5
-#define SmallItem        kWSCALE*35
-#define LargeItem        kWSCALE*35*1.5
-#define CSamllItem       kWSCALE*49
-#define CLargeItem       kWSCALE*49*1.5
+#define LargeHeight      kWSCALE*80
+#define SmallItem        kWSCALE*60
+#define CSamllItem       kWSCALE*60
 #define WSpace           kWSCALE*80
 #define BottomSpace      kWSCALE*20
-#define UpperSpace       kWSCALE*10
+#define UpperSpace       kWSCALE*16
 
 @interface SPSwitchBar()
 
@@ -57,33 +55,38 @@ SPSingletonM(SPSwitchBar)
 - (void)setupViews {
     UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [leftBtn setImage:[Commons getPdfImageFromResource:@"Home_tabbar_button_channels"] forState:UIControlStateNormal];
+    [leftBtn setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_channels_shadow"] forState:UIControlStateNormal];
+    leftBtn.imageView.contentMode = UIViewContentModeScaleAspectFill;
     leftBtn.frame = CGRectMake(0, LargeHeight-BottomSpace-SmallItem, SmallItem, SmallItem);
     leftBtn.backgroundColor = [UIColor clearColor];
-    leftBtn.layer.cornerRadius = SmallItem / 2;
-    leftBtn.layer.masksToBounds = YES;
+//    leftBtn.layer.cornerRadius = SmallItem / 2;
+//    leftBtn.layer.masksToBounds = YES;
     [leftBtn addTarget:self action:@selector(leftBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:leftBtn];
     _leftBtn = leftBtn;
     
     UIButton *centerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [centerBtn setImage:[Commons getPdfImageFromResource:@"Home_tabbar_button_VR"] forState:UIControlStateNormal];
+    centerBtn.imageView.contentMode = UIViewContentModeScaleAspectFill;
+    [centerBtn setImage:[Commons getImageFromResource:@"Home_tabbar_button_VR"] forState:UIControlStateNormal];
     centerBtn.frame = CGRectMake(-100, LargeHeight-BottomSpace-CSamllItem, CSamllItem, CSamllItem);
-    centerBtn.backgroundColor = [UIColor whiteColor];
-    centerBtn.layer.cornerRadius = CSamllItem / 2;
+//    [centerBtn setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_bg"] forState:UIControlStateNormal];
+    centerBtn.backgroundColor = [UIColor greenColor];
+//    centerBtn.layer.cornerRadius = CSamllItem / 2;
     [centerBtn addTarget:self action:@selector(centerBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:centerBtn];
     centerBtn.clipsToBounds = NO;
-    centerBtn.layer.shadowOpacity = 0.8;
-    centerBtn.layer.shadowColor =  [UIColor blackColor].CGColor;
-    self.centerBtn.layer.shadowRadius = self.centerBtn.frame.size.width / 2;
-    centerBtn.layer.shadowOffset =  CGSizeMake(0, self.centerBtn.frame.size.height / 2);
+//    centerBtn.layer.shadowOpacity = 0.8;
+//    centerBtn.layer.shadowColor =  [UIColor blackColor].CGColor;
+//    self.centerBtn.layer.shadowRadius = self.centerBtn.frame.size.width / 2;
+//    centerBtn.layer.shadowOffset =  CGSizeMake(0, self.centerBtn.frame.size.height / 2);
     _centerBtn = centerBtn;
     
     UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    rightBtn.imageView.contentMode = UIViewContentModeScaleToFill;
     [rightBtn setImage:[Commons getPdfImageFromResource:@"Home_tabbar_button_history"] forState:UIControlStateNormal];
     rightBtn.frame = CGRectMake(-100, LargeHeight-BottomSpace-SmallItem, SmallItem, SmallItem);
     rightBtn.backgroundColor = [UIColor clearColor];
-    rightBtn.layer.cornerRadius = SmallItem / 2;
+//    rightBtn.layer.cornerRadius = SmallItem / 2;
     [rightBtn addTarget:self action:@selector(rightBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:rightBtn];
     _rightBtn = rightBtn;
@@ -148,8 +151,9 @@ SPSingletonM(SPSwitchBar)
     _selectIndex = selectIndex;
 
     [_leftBtn setImage:[Commons getPdfImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_channels%@", _selectIndex == 0 ? @"_active" : @""]] forState:UIControlStateNormal];
-    [_centerBtn setImage:[Commons getPdfImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_VR%@", _selectIndex == 1 ? @"_active" : @""]] forState:UIControlStateNormal];
+    [_centerBtn setImage:(_selectIndex == 1 ? [Commons getImageFromResource:@"Home_tabbar_button_VR"] : [Commons getImageFromResource:@"Home_tabbar_button_videos"]) forState:UIControlStateNormal];
     [_rightBtn setImage:[Commons getPdfImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_history%@", _selectIndex == 2 ? @"_active" : @""]] forState:UIControlStateNormal];
+    _rightBtn.imageView.contentMode = UIViewContentModeScaleToFill;
 }
 
 - (void)fixPosition:(CGFloat)dx baseWidth:(CGFloat)width {
@@ -166,8 +170,8 @@ SPSingletonM(SPSwitchBar)
     lframe.size.width = lwidth;
     lframe.size.height = lheight;
     self.leftBtn.frame = lframe;
-    self.leftBtn.layer.cornerRadius = lwidth / 2;
-    self.leftBtn.layer.masksToBounds = YES;
+//    self.leftBtn.layer.cornerRadius = lwidth / 2;
+//    self.leftBtn.layer.masksToBounds = YES;
     
     //right
     CGFloat rwidth = SmallItem * scale;
@@ -180,8 +184,8 @@ SPSingletonM(SPSwitchBar)
     rframe.size.width = rwidth;
     rframe.size.height = rheight;
     self.rightBtn.frame = rframe;
-    self.rightBtn.layer.cornerRadius = rwidth / 2;
-    self.rightBtn.layer.masksToBounds = YES;
+//    self.rightBtn.layer.cornerRadius = rwidth / 2;
+//    self.rightBtn.layer.masksToBounds = YES;
     
     //center
     CGFloat cw = CSamllItem * scale;
@@ -199,6 +203,9 @@ SPSingletonM(SPSwitchBar)
     self.centerBtn.layer.shadowColor =  [UIColor blackColor].CGColor;
     self.centerBtn.layer.shadowRadius = self.centerBtn.frame.size.width / 2;
     self.centerBtn.layer.shadowOffset =  CGSizeMake(0, self.centerBtn.frame.size.height / 2);
+    self.centerBtn.clipsToBounds = NO;
+    self.centerBtn.layer.masksToBounds = NO;
+
 }
 
 - (CGFloat)coordinate:(CGFloat)x baseWidth:(CGFloat)width {
@@ -207,7 +214,8 @@ SPSingletonM(SPSwitchBar)
     return 1.0 * (dx / width) * x;
 }
 - (CGFloat)fixScale:(CGFloat)x baseWidth:(CGFloat)width {
-    return 1.5 - 1.0 * (0.5 / width) * x;
+//    return 1.5 - 1.0 * (0.5 / width) * x;
+    return 1.0;
 }
 
 - (CGFloat)fixY:(CGFloat)x baseWidth:(CGFloat)width {

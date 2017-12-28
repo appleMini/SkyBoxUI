@@ -42,9 +42,9 @@
 - (UIBarButtonItem *)deleteItem {
     if (!_deleteItem) {
         UIButton *deleteItem = [UIButton buttonWithType:UIButtonTypeCustom];
-        [deleteItem setImage:nil forState:UIControlStateNormal];
-        deleteItem.backgroundColor = [UIColor blueColor];
-        deleteItem.frame = CGRectMake(0, 0, 40, 40);
+        [deleteItem setImage:[Commons getPdfImageFromResource:@"History_titlebar_button_delete"] forState:UIControlStateNormal];
+        deleteItem.backgroundColor = [UIColor clearColor];
+        deleteItem.frame = CGRectMake(0, 0, 20, 20);
         [deleteItem addTarget:self action:@selector(deleteItem:) forControlEvents:UIControlEventTouchUpInside];
         
         _deleteItem = [[UIBarButtonItem alloc] initWithCustomView:deleteItem];

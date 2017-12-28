@@ -39,7 +39,7 @@
     [self.contentView addSubview:itemView];
     self.contentView.backgroundColor = [UIColor clearColor];
     [itemView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(UIEdgeInsetsMake(5, 10, 5, 10));
+        make.edges.mas_equalTo(UIEdgeInsetsMake(0, 0, 0, 0));
     }];
     
     self.videoView = itemView;

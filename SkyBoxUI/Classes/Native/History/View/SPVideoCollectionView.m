@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *imgv;
 @property (weak, nonatomic) IBOutlet UILabel *label;
 @property (weak, nonatomic) IBOutlet UILabel *durationLabel;
+@property (weak, nonatomic) IBOutlet UIButton *favBtn;
 
 @end
 
@@ -59,7 +60,7 @@
     if (video.thumbnail_uri && ![video.thumbnail_uri hasPrefix:@"file://"] && ![video.thumbnail_uri hasPrefix:@"http://"] && ![video.thumbnail_uri hasPrefix:@"https://"]) {
         video.thumbnail_uri = [NSString stringWithFormat:@"file://%@", video.thumbnail_uri];
     }
-    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[Commons getImageFromResource:@"movie@2x"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[Commons getPdfImageFromResource:@"movie@2x"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         if (image) {
             self.imgv.image = [image drawRectWithRoundedCorner:10 inRect:self.imgv.bounds];
         }else{
@@ -67,8 +68,21 @@
         }
     }];
     
+    self.label.font = [UIFont fontWithName:@"Calibri-Bold" size:15];
+    self.label.textColor = [SPColorUtil getHexColor:@"#ffffff"];
     self.label.text = video.title;
+    
+    self.durationLabel.font = [UIFont fontWithName:@"Calibri-light" size:12];
+    self.durationLabel.textColor = [SPColorUtil getHexColor:@"#b0b1b3"];
     self.durationLabel.text = [Commons durationText:video.duration.doubleValue];
+    
+    if (video.isFavourite) {
+        self.favBtn.selected = YES;
+        [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
+    }else{
+        self.favBtn.selected = NO;
+        [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+    }
 }
 
 - (void)singleTapAction:(UIGestureRecognizer *)recognizer {
@@ -79,4 +93,14 @@
     
     [self bubbleEventWithUserInfo:notify];
 }
+
+- (IBAction)favAction:(UIButton *)sender {
+    sender.selected = !sender.isSelected;
+    if (sender.isSelected) {
+        [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
+    }else{
+        [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+    }
+}
+
 @end

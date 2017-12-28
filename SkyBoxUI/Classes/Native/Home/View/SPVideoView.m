@@ -26,14 +26,26 @@
     if (video.thumbnail_uri && ![video.thumbnail_uri hasPrefix:@"file://"] && ![video.thumbnail_uri hasPrefix:@"http://"] && ![video.thumbnail_uri hasPrefix:@"https://"]) {
         video.thumbnail_uri = [NSString stringWithFormat:@"file://%@", video.thumbnail_uri];
     }
-    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[Commons getImageFromResource:@"movie@2x"] options:SDWebImageRetryFailed];
+    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[Commons getPdfImageFromResource:@"movie@2x"] options:SDWebImageRetryFailed];
     
     self.imgv.userInteractionEnabled = YES;
     //为图片添加手势
     [self.imgv addGestureRecognizer:self.singleTap];
     
+    self.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15];
+    self.titleLabel.textColor = [SPColorUtil getHexColor:@"#262629"];
     self.titleLabel.text = video.title;
+    self.durationLabel.font = [UIFont fontWithName:@"Calibri" size:12];
+    self.durationLabel.textColor = [SPColorUtil getHexColor:@"#a4a4a4"];
     self.durationLabel.text = [Commons durationText:video.duration.doubleValue];
+    
+    if (video.isFavourite) {
+        self.favButton.selected = YES;
+        [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
+    }else{
+        self.favButton.selected = NO;
+        [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+    }
 }
 
 -(UIGestureRecognizer *)singleTap {
@@ -42,6 +54,14 @@
     }
     
     return _singleTap;
+}
+- (IBAction)favAction:(UIButton *)sender {
+    sender.selected = !sender.isSelected;
+    if (sender.isSelected) {
+        [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
+    }else{
+        [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+    }
 }
 
 - (void)singleTapAction:(UIGestureRecognizer *)recognizer {

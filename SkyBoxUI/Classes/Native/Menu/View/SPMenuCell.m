@@ -33,8 +33,23 @@
     return self;
 }
 
-- (void)setupView {
+- (void)getFontNames
+{
+    NSArray *familyNames = [UIFont familyNames];
     
+    for (NSString *familyName in familyNames) {
+        printf("familyNames = %s\n",[familyName UTF8String]);
+        
+        NSArray *fontNames = [UIFont fontNamesForFamilyName:familyName];
+        
+        for (NSString *fontName in fontNames) {
+            printf("\tfontName = %s\n",[fontName UTF8String]);
+        }
+    }
+}
+
+- (void)setupView {
+//    [self getFontNames];
     UIImageView *iconV = [[UIImageView alloc] initWithFrame:CGRectZero];
     [self.contentView addSubview:iconV];
     [iconV mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -48,8 +63,8 @@
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
     
     label.textAlignment = NSTextAlignmentLeft;
-//    label.font = [UIFont fontWithName:@"calibriz" size:18];
-    label.font = [UIFont boldSystemFontOfSize:18];
+    label.font = [UIFont fontWithName:@"Calibri-Bold" size:18];
+//    label.font = [UIFont boldSystemFontOfSize:30];
     label.textColor = [UIColor whiteColor];
     [self.contentView addSubview:label];
     [label mas_makeConstraints:^(MASConstraintMaker *make) {

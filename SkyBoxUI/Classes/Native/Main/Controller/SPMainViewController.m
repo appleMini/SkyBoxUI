@@ -10,6 +10,7 @@
 #import "UIView+SPSwitchBar.h"
 #import "SPMenuViewController.h"
 #import "SPHomeViewController.h"
+#import "SPHomeHelpViewController.h"
 #import "SPHistoryViewController.h"
 #import "SPMuliteViewController.h"
 #import "SPAirScreenResultViewController.h"
@@ -238,6 +239,12 @@
         case AirScreenMiddleVCType:
         {
             SPBaseViewController *vc = [[SPAirScreenViewController alloc] initWithSomething];
+            [self changeMiddleContentView:vc];
+        }
+            break;
+        case HomeHelpMiddleVCType:
+        {
+            SPBaseViewController *vc = [[SPHomeHelpViewController alloc] initWithSomething];
             [self changeMiddleContentView:vc];
         }
             break;

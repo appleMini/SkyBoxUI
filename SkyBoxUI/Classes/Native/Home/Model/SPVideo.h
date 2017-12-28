@@ -16,5 +16,6 @@
 @property (nonatomic, copy) NSString *thumbnail_uri;
 @property (nonatomic, copy) NSString *rcg_type;
 @property (nonatomic, copy) NSString *duration;
+@property (nonatomic, assign) BOOL   isFavourite;
 
 @end

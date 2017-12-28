@@ -20,7 +20,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Lud-ak-aOv">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="movie.png" translatesAutoresizingMaskIntoConstraints="NO" id="Lud-ak-aOv">
                     <rect key="frame" x="50" y="163.5" width="275" height="100"/>
                     <color key="backgroundColor" red="1" green="0.1470601822" blue="0.12790239219999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     <constraints>
@@ -104,7 +104,10 @@
                 <constraint firstItem="qyT-Rh-rNO" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="55" id="n9W-O7-MsP"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
-            <point key="canvasLocation" x="-18.5" y="-57.5"/>
+            <point key="canvasLocation" x="-398" y="-70"/>
         </view>
     </objects>
+    <resources>
+        <image name="movie.png" width="300" height="169"/>
+    </resources>
 </document>

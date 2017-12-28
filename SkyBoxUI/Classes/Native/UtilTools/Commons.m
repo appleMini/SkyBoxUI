@@ -11,7 +11,8 @@
 @implementation Commons
 
 + (UIImage *)getImageFromResource:(NSString *)name {
-    UIImage *img =  [UIImage imageWithContentsOfFile:[[Commons resourceBundle] pathForResource:name ofType:@"png"]];
+    NSString *ext = [SPDeviceUtil isiPhoneX] ? @"@3x" : @"@2x";
+    UIImage *img =  [UIImage imageWithContentsOfFile:[[Commons resourceBundle] pathForResource:[NSString stringWithFormat:@"%@%@",name, ext] ofType:@"png"]];
     return img;
 }
 + (UIImage *)getPdfImageFromResource:(NSString *)name {

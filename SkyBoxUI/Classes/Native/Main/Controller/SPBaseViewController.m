@@ -90,9 +90,11 @@
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
     label.text = til;
     label.textAlignment = NSTextAlignmentCenter;
-    label.font = [UIFont systemFontOfSize:17.0];
-    label.textColor = [UIColor whiteColor];
+    label.font = [UIFont fontWithName:@"Calibri-Bold" size:19];
+    label.textColor = [SPColorUtil getHexColor:@"#ffffff"];
     label.frame = CGRectMake(0, 0, 200, 44);
+//    label.layer.shadowOffset = CGSizeMake(1, 1);
+//    label.layer.shadowColor = [UIColor blackColor].CGColor;
     
     self.titleLabel = label;
     self.navigationItem.titleView = label;

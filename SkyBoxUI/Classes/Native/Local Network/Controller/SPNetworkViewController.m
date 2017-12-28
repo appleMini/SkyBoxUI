@@ -11,8 +11,9 @@
 #import "SPDLANView.h"
 #import "TGRefresh.h"
 #import "SPDLANManager.h"
+#import "SPWaterFallLayout.h"
 
-@interface SPNetworkViewController ()<UITableViewDelegate, UITableViewDataSource,UICollectionViewDelegate, UICollectionViewDataSource, SPDLANManagerDelegate> {
+@interface SPNetworkViewController ()<UITableViewDelegate, UITableViewDataSource,UICollectionViewDelegate, UICollectionViewDataSource, SPDLANManagerDelegate, SPWaterFallLayoutDelegate> {
     NSMutableArray *_dataArr;
     NSInteger _level;
 }
@@ -22,6 +23,7 @@
 @property (nonatomic, strong) SPHeaderView *headerView;
 @property (nonatomic, copy) NSString *cellIditify;
 @property (nonatomic, strong) UIBarButtonItem *menuItem;
+@property (nonatomic, strong) UIButton *menuBtn;
 
 @property (nonatomic, strong) SPDLANManager *dlanManager;
 @end
@@ -70,14 +72,31 @@
     return @"Local_Network_CellID";
 }
 
+- (void)setupMenuImage {
+    switch (_showType) {
+        case TableViewType:
+        {
+            [self.menuBtn setImage:[Commons getPdfImageFromResource:@"Home_titlebar_button_grid"] forState:UIControlStateNormal];
+        }
+            break;
+        case CollectionViewType:
+        {
+            [self.menuBtn setImage:[Commons getPdfImageFromResource:@"Home_titlebar_button_list"] forState:UIControlStateNormal];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
 - (UIBarButtonItem *)menuItem {
     if (!_menuItem) {
         UIButton *menuItem = [UIButton buttonWithType:UIButtonTypeCustom];
         [menuItem setImage:nil forState:UIControlStateNormal];
-        menuItem.backgroundColor = [UIColor redColor];
-        menuItem.frame = CGRectMake(0, 0, 40, 40);
+        menuItem.backgroundColor = [UIColor clearColor];
         [menuItem addTarget:self action:@selector(menuClick:) forControlEvents:UIControlEventTouchUpInside];
-        
+        _menuBtn = menuItem;
+        [self setupMenuImage];
         _menuItem = [[UIBarButtonItem alloc] initWithCustomView:menuItem];
     }
     
@@ -161,9 +180,10 @@
                 break;
             case CollectionViewType:
             {
-                UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-                [layout setScrollDirection:UICollectionViewScrollDirectionVertical];
-                layout.itemSize = CGSizeMake((self.view.frame.size.width-20)/2, 180);
+                // 创建瀑布流layout
+                SPWaterFallLayout *layout = [[SPWaterFallLayout alloc] init];
+                // 设置代理
+                layout.delegate = self;
                 _scrollView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
                 [(UICollectionView *)_scrollView registerClass:[SPDLANCollectionCell class] forCellWithReuseIdentifier:[self cellIditify]];
                 ((UICollectionView *)_scrollView).backgroundColor = [UIColor clearColor];
@@ -184,6 +204,7 @@
 
 - (void)setShowType:(DisplayType)showType {
     _showType = showType;
+    [self setupMenuImage];
     [_scrollView removeFromSuperview];
     _scrollView = nil;
     [self setupScrollView];
@@ -267,21 +288,33 @@
     return cell;
 }
 
-//设置每个item的UIEdgeInsets
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+#pragma mark - <SPWaterFallLayoutDelegate>
+/**
+ *  返回每个item的高度
+ */
+- (CGFloat)waterFallLayout:(SPWaterFallLayout *)waterFallLayout heightForItemAtIndex:(NSInteger)index width:(CGFloat)width
 {
-    return UIEdgeInsetsMake(0, 0, 0, 0);
-}
-//设置每个item水平间距
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
-{
-    return 0;
+    return 180 * kWSCALE;
 }
 
-//设置每个item垂直间距
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
+- (CGFloat)columnMarginOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
 {
-    return 10;
+    return 17;
+}
+
+- (NSUInteger)columnCountOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
+{
+    return 2;
+}
+
+- (CGFloat)rowMarginOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
+{
+    return 17;
+}
+
+- (UIEdgeInsets)edgeInsetsOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
+{
+    return UIEdgeInsetsMake(0, 17, 0, 17);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
