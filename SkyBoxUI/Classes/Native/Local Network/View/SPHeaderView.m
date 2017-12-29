@@ -34,7 +34,9 @@
 }
 - (IBAction)refreshAction:(id)sender {
     NSLog(@"refresh...");
-    [[SPDLANManager shareDLANManager] refreshAction:nil];
+    if (_device) {
+        [[SPDLANManager shareDLANManager] refreshAction:_device];
+    }
 }
 
 - (void)setupContentViews {
