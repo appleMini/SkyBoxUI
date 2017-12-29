@@ -160,6 +160,7 @@
     [self.contentView setContentOffset:CGPointMake(index * self.contentView.width, 0) animated:YES];
     
     _canRefresh ? [vc refresh] : nil;
+    [SPSwitchBar shareSPSwitchBar].selectIndex = index;
 }
 
 - (void)changeMiddleContentView:(SPBaseViewController *)vc {
