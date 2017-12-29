@@ -325,6 +325,7 @@
         return ;
     }
     
+    self.headerView.device = device;
     [_dlanManager browseDLNAFolder:device];
 }
 #pragma -mark SPDLANManagerDelegate

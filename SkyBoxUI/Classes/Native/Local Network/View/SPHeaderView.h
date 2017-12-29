@@ -8,5 +8,6 @@
 #import <UIKit/UIKit.h>
 
 @interface SPHeaderView : UIView
+@property (nonatomic, strong) SPCmdAddDevice *device;
 
 @end
