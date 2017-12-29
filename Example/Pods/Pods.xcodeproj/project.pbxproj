@@ -530,7 +530,6 @@
 		D7A7370FF7FB2195B85A113689D2DD6F /* UIResponder+SPCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A0207E0A6E9848A0EC6095063AD2211 /* UIResponder+SPCategory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D7B3AEE6204645A834A2D8241E6D2052 /* KWGenericMatchingAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F4E94EF5853537C78F5B5A8729E93A /* KWGenericMatchingAdditions.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
 		D7D872ECFC24CB035851F74A874520F8 /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D31A6D41F4D89B6C15988B0FEA49AD0 /* DDXMLElement.m */; };
-		D7E64A36F22F219C9ACE3FFF6B750153 /* movie@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 929DC646704E2BF1A157770CDFE70208 /* movie@2x.png */; };
 		D7E807543B3BB75DAB3B09AEA63B893B /* SDWebImageCoderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E006C586604AAF9205FD755A23461BC /* SDWebImageCoderHelper.m */; };
 		D80BF9905294B020B93FEE11A3DE5453 /* SDWebImagePrefetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D16D3476AD56E6ED580E2796B37591B /* SDWebImagePrefetcher.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D81C5D9255A4E2CCDFF1DDD90802BDD2 /* SPAirScreenResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185E21D7314178547EEA69CF0ACDF60A /* SPAirScreenResultViewController.m */; };
@@ -1176,7 +1175,6 @@
 		91243AD2568F9E6389198335A03F12BA /* MJExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MJExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		92423D0049D60A6819557673D3291472 /* UIView+WebCache.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIView+WebCache.m"; path = "SDWebImage/UIView+WebCache.m"; sourceTree = "<group>"; };
 		929097DACEE3783D99311326A2AC75BE /* Home_tabbar_button_history_active.pdf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.pdf; path = Home_tabbar_button_history_active.pdf; sourceTree = "<group>"; };
-		929DC646704E2BF1A157770CDFE70208 /* movie@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = "movie@2x.png"; sourceTree = "<group>"; };
 		92A31865FAB5876832EC5B7EADCA12B4 /* SPDLANManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SPDLANManager.h; sourceTree = "<group>"; };
 		934922F50ABB1186379041874A870912 /* FBSnapshotTestController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FBSnapshotTestController.h; path = FBSnapshotTestCase/FBSnapshotTestController.h; sourceTree = "<group>"; };
 		934A6E16A530DDA63A38CB01D87904EC /* MJExtension-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MJExtension-dummy.m"; sourceTree = "<group>"; };
@@ -1887,7 +1885,6 @@
 				1FD0A298572F2FD7654E69F82D5A3E14 /* Home_videos_button_fav_small.pdf */,
 				9B8BB6C6532D3DDDE6A0B649C889B76A /* Home_videos_button_unfav.pdf */,
 				DF730F42004056AC1FFA3E58802CBA05 /* Home_videos_button_unfav_small.pdf */,
-				929DC646704E2BF1A157770CDFE70208 /* movie@2x.png */,
 				27D2E1ADDB80981CB094D61D58234B6C /* Calibri_font */,
 			);
 			name = Assets;
@@ -3865,7 +3862,6 @@
 				155FCDF189FC80B2E534E6C310091B8C /* Home_videos_button_unfav.pdf in Resources */,
 				60667F461FF4AFDC00FD4695 /* Channels_icon_favorites_active@3x.png in Resources */,
 				04C9E82003046AF0C3C1432179730254 /* Home_videos_button_unfav_small.pdf in Resources */,
-				D7E64A36F22F219C9ACE3FFF6B750153 /* movie@2x.png in Resources */,
 				000331F8DFBA06C643429B97652EFF31 /* SPAirScreenHelpViewController.xib in Resources */,
 				60667F611FF4CAA100FD4695 /* Home_tabbar_button_bg@3x.png in Resources */,
 				CF978C1079991F22B0BEC01323E05563 /* SPAirScreenViewController.xib in Resources */,
