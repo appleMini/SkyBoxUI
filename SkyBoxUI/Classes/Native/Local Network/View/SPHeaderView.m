@@ -28,6 +28,8 @@
 
 - (IBAction)homeAction:(id)sender {
     NSLog(@"go home...");
+    [self.devices removeAllObjects];
+    [self setupContentViews];
     [[SPDLANManager shareDLANManager] startupDLAN];
 }
 - (IBAction)refreshAction:(id)sender {
@@ -54,8 +56,8 @@
 }
 
 - (void)addDeviceLabelBtn:(SPCmdAddDevice *)device index:(NSInteger)index tag:(NSInteger)tag userInteractionEnabled:(BOOL)userInteractionEnabled {
-    CGFloat x = 60 * index;
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(x, 0, 60, 40)];
+    CGFloat x = 5 + 55 * index;
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(x, 0, 50, 40)];
     button.backgroundColor = randomColor;
     button.userInteractionEnabled = userInteractionEnabled;
     [button setTitle:(userInteractionEnabled ? device.deviceName : @"...") forState:UIControlStateNormal];
@@ -69,6 +71,10 @@
         return;
     }
     
+    NSRange range = NSMakeRange(btn.tag + 1, self.devices.count - btn.tag - 1);
+    [self.devices removeObjectsInRange:range];
+    [self setupContentViews];
+    
     SPCmdAddDevice *device = self.devices[btn.tag];
     [[SPDLANManager shareDLANManager] browseDLNAFolder:device];
 }
@@ -77,7 +83,7 @@
     _device = device;
     int level = -1;
     for (int i=0; i<self.devices.count; i++) {
-        if (device.deviceId && [device.deviceId isEqualToString:self.devices[i].deviceId]) {
+        if (device.deviceName && [device.deviceName isEqualToString:self.devices[i].deviceName]) {
             level = i;
             break;
         }
@@ -88,6 +94,9 @@
         [self.devices removeObjectsInRange:range];
     }
     
+    [self.devices addObject:device];
     [self setupContentViews];
 }
+
 @end
+
