@@ -9,4 +9,5 @@
 
 @interface SPHomeHelpViewController : SPBaseViewController
 
+@property (nonatomic, assign) NSInteger currentPage;
 @end

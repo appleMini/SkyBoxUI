@@ -40,7 +40,7 @@
 - (void)setupViews {
     SPVideoView *videoView = (SPVideoView *)[[[UINib nibWithNibName:@"SPVideoView" bundle:[Commons resourceBundle]] instantiateWithOwner:nil options:nil] firstObject];
     
-    videoView.backgroundColor = [UIColor clearColor];
+    videoView.backgroundColor = [SPColorUtil getHexColor:@"#585E69"];
     [self.contentView addSubview:videoView];
     self.contentView.backgroundColor = [UIColor clearColor];
     

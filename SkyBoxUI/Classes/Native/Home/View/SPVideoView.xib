@@ -18,7 +18,6 @@
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wu8-dG-Pt8">
                     <rect key="frame" x="0.0" y="0.0" width="571" height="304"/>
-                    <color key="backgroundColor" red="1" green="0.33616793280000001" blue="0.98772221289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6SO-N4-FKT" userLabel="bottomView">
                     <rect key="frame" x="0.0" y="304" width="571" height="60"/>

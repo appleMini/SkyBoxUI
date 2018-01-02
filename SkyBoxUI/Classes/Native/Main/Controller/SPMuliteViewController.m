@@ -271,7 +271,7 @@
  */
 - (CGFloat)waterFallLayout:(SPWaterFallLayout *)waterFallLayout heightForItemAtIndex:(NSInteger)index width:(CGFloat)width
 {
-    return 180 * kWSCALE;
+    return 180 * kHSCALE;
 }
 
 - (CGFloat)columnMarginOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout

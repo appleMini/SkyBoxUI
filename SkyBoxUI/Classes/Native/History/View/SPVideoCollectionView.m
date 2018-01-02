@@ -60,11 +60,11 @@
     if (video.thumbnail_uri && ![video.thumbnail_uri hasPrefix:@"file://"] && ![video.thumbnail_uri hasPrefix:@"http://"] && ![video.thumbnail_uri hasPrefix:@"https://"]) {
         video.thumbnail_uri = [NSString stringWithFormat:@"file://%@", video.thumbnail_uri];
     }
-    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[Commons getPdfImageFromResource:@"Home_videos_album_none"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[Commons getPdfImageFromResource:@"Home_videos_album_none_small"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         if (image) {
             self.imgv.image = [image drawRectWithRoundedCorner:10 inRect:self.imgv.bounds];
         }else{
-            self.imgv.image = [[Commons getPdfImageFromResource:@"Home_videos_album_none"] drawRectWithRoundedCorner:10 inRect:self.imgv.bounds];
+            self.imgv.image = [[Commons getPdfImageFromResource:@"Home_videos_album_none_small"] drawRectWithRoundedCorner:10 inRect:self.imgv.bounds];
         }
     }];
     

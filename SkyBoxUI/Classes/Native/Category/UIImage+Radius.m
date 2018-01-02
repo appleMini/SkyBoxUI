@@ -49,11 +49,21 @@
     CGContextAddPath(ctx, path.CGPath);
     CGContextClip(ctx);
     
+    UIColor *bgColor = [SPColorUtil getHexColor:@"#585E69"];
+    CGContextSetFillColorWithColor(ctx, bgColor.CGColor);
+//    CGContextSetLineWidth(ctx, 3.0);//线的宽度
+//    CGContextSetStrokeColorWithColor(ctx, bgColor.CGColor);
+    CGContextFillRect(ctx, rect);//绘制
+    
     CGRect scaleRect = CGRectMake(thumbnailPoint.x, thumbnailPoint.y, scaledWidth, scaledHeight);
     [self drawInRect:scaleRect];
     CGContextDrawPath(ctx, kCGPathFillStroke);
+    
     UIImage *output = UIGraphicsGetImageFromCurrentImageContext();
+    
     UIGraphicsEndImageContext();
+    
+    
     return output;
 }
 @end

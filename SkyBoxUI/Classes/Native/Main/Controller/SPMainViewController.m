@@ -10,7 +10,7 @@
 #import "UIView+SPSwitchBar.h"
 #import "SPMenuViewController.h"
 #import "SPHomeViewController.h"
-#import "SPHomeHelpViewController.h"
+#import "SPHelpRootViewController.h"
 #import "SPHistoryViewController.h"
 #import "SPMuliteViewController.h"
 #import "SPAirScreenResultViewController.h"
@@ -136,7 +136,19 @@
     }
 }
 
-- (void)showChildVCViewAtIndex:(NSInteger)index{
+- (SPBaseViewController *)setupNaviItem:(NSInteger)index {
+    if (self.childViewControllers.count == 0 || index < 0 || index > self.childViewControllers.count - 1) {
+        return nil;
+    }
+    SPBaseViewController *vc = self.childViewControllers[index];
+    
+    self.navigationItem.leftBarButtonItems = [vc leftNaviItem];
+    self.navigationItem.rightBarButtonItems = [vc rightNaviItem];
+    self.titleLabel.text = [vc titleOfLabelView];
+    return vc;
+}
+
+- (void)showChildVCViewAtIndex:(NSInteger)index {
     if (self.childViewControllers.count == 0 || index < 0 || index > self.childViewControllers.count - 1) {
         return;
     }
@@ -148,11 +160,7 @@
         [middleVC showOrHiddenTopView:YES];
     }
     
-    SPBaseViewController *vc = self.childViewControllers[index];
-    self.navigationItem.leftBarButtonItems = [vc leftNaviItem];
-    self.navigationItem.rightBarButtonItems = [vc rightNaviItem];
-    
-    self.titleLabel.text = [vc titleOfLabelView];
+    SPBaseViewController *vc = [self setupNaviItem:index];
     
     vc.view.frame = CGRectMake(index * self.contentView.width, 0, self.contentView.width, self.contentView.height);
     
@@ -180,11 +188,44 @@
     [self changeMiddleContentView:airscreenResult];
 }
 #pragma -mark UIScrollViewDelegate
+- (CGFloat)fixAlpha:(CGFloat)x baseWidth:(CGFloat)width {
+    CGFloat alpha = 1.0 -  1.0 * (x * 2 / width);
+    return alpha;
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    CGFloat moveDistance = fabs(scrollView.frame.size.width - scrollView.contentOffset.x);
+    CGFloat moveDistance = scrollView.frame.size.width - scrollView.contentOffset.x;
     //moving
     [[SPSwitchBar shareSPSwitchBar] fixPosition:moveDistance baseWidth:scrollView.frame.size.width];
+    CGFloat alpha = [self fixAlpha:fabs(moveDistance) baseWidth:scrollView.frame.size.width];
+
+    NSInteger index = scrollView.contentOffset.x/scrollView.width;
+
+    if (index == 0) {
+        if(alpha >= 0) {
+            [self setupNaviItem:1];
+        }else{
+            [self setupNaviItem:0];
+        }
+    }else if(index == 1) {
+        if(alpha <= 0 && moveDistance >= 0) {
+            [self setupNaviItem:0];
+        }else if(alpha <= 0 && moveDistance <= 0){
+            [self setupNaviItem:2];
+        }else{
+            [self setupNaviItem:1];
+        }
+    }else if(index == 2){
+        if(alpha >= 0) {
+            [self setupNaviItem:1];
+        }else{
+            [self setupNaviItem:2];
+        }
+    }
+    
+    self.navigationController.navigationBar.alpha = fabs(alpha);
 }
+
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     NSInteger index = scrollView.contentOffset.x/scrollView.width;
     [SPSwitchBar shareSPSwitchBar].selectIndex = index;
@@ -245,7 +286,7 @@
             break;
         case HomeHelpMiddleVCType:
         {
-            SPBaseViewController *vc = [[SPHomeHelpViewController alloc] initWithSomething];
+            SPBaseViewController *vc = [[SPHelpRootViewController alloc] initWithSomething];
             [self changeMiddleContentView:vc];
         }
             break;

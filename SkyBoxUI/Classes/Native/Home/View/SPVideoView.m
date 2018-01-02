@@ -32,6 +32,7 @@
     //为图片添加手势
     [self.imgv addGestureRecognizer:self.singleTap];
     
+    
     self.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15];
     self.titleLabel.textColor = [SPColorUtil getHexColor:@"#262629"];
     self.titleLabel.text = video.title;

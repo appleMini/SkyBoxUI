@@ -18,7 +18,11 @@
 @interface SPSwitchBar()
 
 @property (nonatomic, strong) UIButton *leftBtn;
+@property (nonatomic, strong) UIButton *leftBtn_active;
+
 @property (nonatomic, strong) UIButton *rightBtn;
+@property (nonatomic, strong) UIButton *rightBtn_active;
+
 @property (nonatomic, strong) UIButton *centerBtn;
 @property (nonatomic, strong) UIButton   *centerVR;
 @property (nonatomic, strong) UIImageView   *centerBg;
@@ -70,6 +74,20 @@ SPSingletonM(SPSwitchBar)
     [self addSubview:leftBtn];
     _leftBtn = leftBtn;
     
+    UIButton *leftBtn_active = [UIButton buttonWithType:UIButtonTypeCustom];
+    [leftBtn_active setImage:[Commons getImageFromResource:@"Home_tabbar_button_channels_active"] forState:UIControlStateNormal];
+    [leftBtn_active setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_channels_shadow"] forState:UIControlStateNormal];
+    leftBtn_active.imageView.contentMode = UIViewContentModeScaleAspectFill;
+    //    leftBtn.frame = CGRectMake(0, LargeHeight-BottomSpace-SmallItem, SmallItem, SmallItem);
+    leftBtn_active.frame = CGRectMake(0, 0, SmallItem, SmallItem);
+    //    leftBtn.backgroundColor = [UIColor yellowColor];
+    //    leftBtn.layer.cornerRadius = SmallItem / 2;
+    //    leftBtn.layer.masksToBounds = YES;
+    [leftBtn_active addTarget:self action:@selector(leftBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:leftBtn_active];
+    _leftBtn_active = leftBtn_active;
+    
+    
     UIImageView *centerBg = [[UIImageView alloc] initWithFrame:CGRectZero];
     centerBg.frame = CGRectMake(-100, 0, CBGItem, CBGItem);
     //    centerBg.backgroundColor = [UIColor blueColor];
@@ -104,7 +122,6 @@ SPSingletonM(SPSwitchBar)
     
     _centerVR = centerVR;
     
-    
     UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     rightBtn.imageView.contentMode = UIViewContentModeScaleToFill;
     [rightBtn setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_history_shadow"] forState:UIControlStateNormal];
@@ -117,6 +134,19 @@ SPSingletonM(SPSwitchBar)
     [self addSubview:rightBtn];
     _rightBtn = rightBtn;
     
+    
+    UIButton *rightBtn_active = [UIButton buttonWithType:UIButtonTypeCustom];
+    [rightBtn_active setImage:[Commons getImageFromResource:@"Home_tabbar_button_history_active"] forState:UIControlStateNormal];
+    [rightBtn_active setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_history_shadow"] forState:UIControlStateNormal];
+    rightBtn_active.imageView.contentMode = UIViewContentModeScaleAspectFill;
+    //    leftBtn.frame = CGRectMake(0, LargeHeight-BottomSpace-SmallItem, SmallItem, SmallItem);
+    rightBtn_active.frame = CGRectMake(0, 0, SmallItem, SmallItem);
+    //    leftBtn.backgroundColor = [UIColor yellowColor];
+    //    leftBtn.layer.cornerRadius = SmallItem / 2;
+    //    leftBtn.layer.masksToBounds = YES;
+    [rightBtn_active addTarget:self action:@selector(rightBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:rightBtn_active];
+    _rightBtn_active = rightBtn_active;
     //    [self addSubview:self.underLine];
 }
 
@@ -175,27 +205,31 @@ SPSingletonM(SPSwitchBar)
         return;
     }
     _selectIndex = selectIndex;
-    [_leftBtn setImage:[Commons getImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_channels%@", _selectIndex == 0 ? @"_active" : @""]] forState:UIControlStateNormal];
-    [_rightBtn setImage:[Commons getImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_history%@", _selectIndex == 2 ? @"_active" : @""]] forState:UIControlStateNormal];
-    _rightBtn.imageView.contentMode = UIViewContentModeScaleToFill;
+//    [_leftBtn setImage:[Commons getImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_channels%@", _selectIndex == 0 ? @"_active" : @""]] forState:UIControlStateNormal];
+//    [_rightBtn setImage:[Commons getImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_history%@", _selectIndex == 2 ? @"_active" : @""]] forState:UIControlStateNormal];
+//    _rightBtn.imageView.contentMode = UIViewContentModeScaleToFill;
     //    [_centerBtn setImage:[Commons getPdfImageFromResource:(_selectIndex == 1 ? @"Home_tabbar_button_VR" : @"Home_tabbar_button_videos")] forState:UIControlStateNormal];
 }
 
 - (void)fixPosition:(CGFloat)dx baseWidth:(CGFloat)width {
-    CGFloat scale = [self fixScale:dx baseWidth:width];
-    
+    CGFloat fdx = fabs(dx);
+    CGFloat scale = [self fixScale:fdx baseWidth:width];
+    CGFloat alpha =  [self fixAlpha:fdx baseWidth:width];
     //left
-    CGFloat lx = leadingSpace + [self coordinate:dx baseWidth:width];
+    CGFloat lx = leadingSpace + [self coordinate:fdx baseWidth:width];
     CGFloat lwidth = SmallItem * scale;
     CGFloat lheight = SmallItem * scale;
     //    CGFloat ly = LargeHeight - BottomSpace - lheight;
-    CGFloat ly = 0 + [self fixY:dx baseWidth:width];
+    CGFloat ly = 0 + [self fixY:fdx baseWidth:width];
     CGRect lframe = self.leftBtn.frame;
     lframe.origin.x = lx;
     lframe.origin.y = ly;
     lframe.size.width = lwidth;
     lframe.size.height = lheight;
     self.leftBtn.frame = lframe;
+    
+    self.leftBtn_active.frame = lframe;
+    
     //    self.leftBtn.backgroundColor = [UIColor yellowColor];
     //    self.leftBtn.layer.cornerRadius = lwidth / 2;
     //    self.leftBtn.layer.masksToBounds = YES;
@@ -203,21 +237,35 @@ SPSingletonM(SPSwitchBar)
     //right
     CGFloat rwidth = SmallItem * scale;
     CGFloat rheight = SmallItem * scale;
-    CGFloat rx = self.frame.size.width - rwidth - leadingSpace - [self coordinate:dx baseWidth:width];
+    CGFloat rx = self.frame.size.width - rwidth - leadingSpace - [self coordinate:fdx baseWidth:width];
     //    CGFloat ry = LargeHeight - BottomSpace - rheight;
-    CGFloat ry = 0 + [self fixY:dx baseWidth:width];
+    CGFloat ry = 0 + [self fixY:fdx baseWidth:width];
     CGRect rframe = self.rightBtn.frame;
     rframe.origin.x = rx;
     rframe.origin.y = ry;
     rframe.size.width = rwidth;
     rframe.size.height = rheight;
     self.rightBtn.frame = rframe;
+    
+    self.rightBtn_active.frame = rframe;
+    
+    if (dx < 0) {
+        self.rightBtn.alpha = 1.0 - alpha;
+        self.rightBtn_active.alpha = alpha;
+        self.leftBtn_active.alpha = 0.0;
+        self.leftBtn.alpha = 1.0;
+    }else if(dx > 0) {
+        self.leftBtn.alpha = 1.0 - alpha;
+        self.leftBtn_active.alpha = alpha;
+        self.rightBtn_active.alpha = 0.0;
+        self.rightBtn.alpha = 1.0;
+    }
     //    self.rightBtn.backgroundColor = [UIColor blueColor];
     //    self.rightBtn.layer.cornerRadius = rwidth / 2;
     //    self.rightBtn.layer.masksToBounds = YES;
     
     //center
-    CGFloat cscale = [self fixCenterBtnScale:dx baseWidth:width];
+    CGFloat cscale = [self fixCenterBtnScale:fdx baseWidth:width];
     CGFloat cw = CSamllItem * cscale;
     CGFloat ch = CSamllItem * cscale;
     
@@ -231,7 +279,7 @@ SPSingletonM(SPSwitchBar)
     cframe.size.width = cw;
     cframe.size.height = ch;
     self.centerBtn.frame = cframe;
-    self.centerBtn.alpha = [self fixAlpha:dx baseWidth:width];
+    self.centerBtn.alpha = [self fixAlpha:fdx baseWidth:width];
     //    NSLog(@"centerBtn.cnetr ========== == %f   CGFloat cw ==  %f   cx ====== %f", self.centerBtn.center.x, cw, cx);
     //    self.centerBtn.layer.cornerRadius = cw / 2;
     //    self.centerBtn.layer.shadowOpacity = 0.8;
@@ -250,7 +298,7 @@ SPSingletonM(SPSwitchBar)
     cvframe.size.width = cw;
     cvframe.size.height = ch;
     self.centerVR.frame = cvframe;
-    self.centerVR.alpha = 1.0 - [self fixAlpha:dx baseWidth:width];
+    self.centerVR.alpha = 1.0 - [self fixAlpha:fdx baseWidth:width];
     
     
     CGFloat cbw = CBGItem * cscale;

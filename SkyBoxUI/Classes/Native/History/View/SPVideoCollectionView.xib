@@ -17,28 +17,22 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OHl-tu-Ia4">
-                    <rect key="frame" x="0.0" y="0.0" width="308" height="241"/>
+                    <rect key="frame" x="0.0" y="0.0" width="308" height="244"/>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Evolution of Verse" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BKk-6Q-k7G">
-                    <rect key="frame" x="8" y="246" width="300" height="18"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="18" id="PW9-lZ-dbc"/>
-                    </constraints>
+                    <rect key="frame" x="8" y="249" width="300" height="18"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:02:42" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i1I-hQ-hwT">
                     <rect key="frame" x="8" y="272" width="300" height="17"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="17" id="aGs-fA-8Sr"/>
-                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mkc-iH-hfP" userLabel="favBtn">
-                    <rect key="frame" x="268" y="211" width="18" height="18"/>
+                    <rect key="frame" x="268" y="214" width="18" height="18"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="18" id="9Dc-kf-rtU"/>
                         <constraint firstAttribute="height" constant="18" id="Ytl-Bd-CLK"/>
@@ -55,7 +49,7 @@
                 <constraint firstItem="OHl-tu-Ia4" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="BuV-n0-Twv"/>
                 <constraint firstItem="BKk-6Q-k7G" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="OAp-2N-qso"/>
                 <constraint firstItem="BKk-6Q-k7G" firstAttribute="top" secondItem="Mkc-iH-hfP" secondAttribute="bottom" constant="17" id="Ofd-ah-gnS"/>
-                <constraint firstItem="i1I-hQ-hwT" firstAttribute="top" secondItem="BKk-6Q-k7G" secondAttribute="bottom" constant="8" id="WHM-st-9s4"/>
+                <constraint firstItem="i1I-hQ-hwT" firstAttribute="top" secondItem="BKk-6Q-k7G" secondAttribute="bottom" constant="5" id="WHM-st-9s4"/>
                 <constraint firstAttribute="trailing" secondItem="OHl-tu-Ia4" secondAttribute="trailing" id="YIE-dd-3nY"/>
                 <constraint firstItem="OHl-tu-Ia4" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="ZjU-FH-ElE"/>
                 <constraint firstAttribute="bottom" secondItem="i1I-hQ-hwT" secondAttribute="bottom" constant="5" id="avk-aD-RFw"/>
