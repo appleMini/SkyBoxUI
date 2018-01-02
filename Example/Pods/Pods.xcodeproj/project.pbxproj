@@ -256,6 +256,11 @@
 		5F9129A5F7637CCE52E74F7BD23D23B7 /* Home_help_number_4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CAB8694BD39763A540BDF78695A2FB3A /* Home_help_number_4@2x.png */; };
 		602D19521FF647C6003B9FCF /* UIPageControl+Space.h in Headers */ = {isa = PBXBuildFile; fileRef = 602D19501FF647C6003B9FCF /* UIPageControl+Space.h */; };
 		602D19531FF647C6003B9FCF /* UIPageControl+Space.m in Sources */ = {isa = PBXBuildFile; fileRef = 602D19511FF647C6003B9FCF /* UIPageControl+Space.m */; };
+		609B89E81FFB6DDB0042E982 /* AirScreen_titlebar_button_help.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 609B89E51FFB6DDA0042E982 /* AirScreen_titlebar_button_help.pdf */; };
+		609B89E91FFB6DDB0042E982 /* AirScreen_PC@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 609B89E61FFB6DDA0042E982 /* AirScreen_PC@3x.png */; };
+		609B89EA1FFB6DDB0042E982 /* AirScreen_PC@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 609B89E71FFB6DDA0042E982 /* AirScreen_PC@2x.png */; };
+		60E71AB51FFB848900FE44DD /* UILabel+SPAttri.h in Headers */ = {isa = PBXBuildFile; fileRef = 60E71AB31FFB848900FE44DD /* UILabel+SPAttri.h */; };
+		60E71AB61FFB848900FE44DD /* UILabel+SPAttri.m in Sources */ = {isa = PBXBuildFile; fileRef = 60E71AB41FFB848900FE44DD /* UILabel+SPAttri.m */; };
 		611EDC72DCA1AF86FCF0CD2C1CA57B19 /* NSImage+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 21BE94DA03A11A6C28924E8F08D60043 /* NSImage+WebCache.m */; };
 		61B064007518DA644B8BC68475F85A75 /* Home_help_number_3@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 189E2DCBAA8B3234477A7B16B01C6958 /* Home_help_number_3@3x.png */; };
 		622E7C43938EDE3623EBE7F8E83F634A /* SDWebImageFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = A6D407B364BCE8466329190EB9F3FC9C /* SDWebImageFrame.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1075,6 +1080,11 @@
 		602D19511FF647C6003B9FCF /* UIPageControl+Space.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIPageControl+Space.m"; sourceTree = "<group>"; };
 		60304D8F8B6D1BB915EC088DC133A23D /* MASViewAttribute.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MASViewAttribute.m; path = Masonry/MASViewAttribute.m; sourceTree = "<group>"; };
 		6067C9C88CF30BEDA9F7FBDA82A69A94 /* KWRegisterMatchersNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = KWRegisterMatchersNode.m; path = Classes/Nodes/KWRegisterMatchersNode.m; sourceTree = "<group>"; };
+		609B89E51FFB6DDA0042E982 /* AirScreen_titlebar_button_help.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = AirScreen_titlebar_button_help.pdf; sourceTree = "<group>"; };
+		609B89E61FFB6DDA0042E982 /* AirScreen_PC@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AirScreen_PC@3x.png"; sourceTree = "<group>"; };
+		609B89E71FFB6DDA0042E982 /* AirScreen_PC@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AirScreen_PC@2x.png"; sourceTree = "<group>"; };
+		60E71AB31FFB848900FE44DD /* UILabel+SPAttri.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UILabel+SPAttri.h"; sourceTree = "<group>"; };
+		60E71AB41FFB848900FE44DD /* UILabel+SPAttri.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UILabel+SPAttri.m"; sourceTree = "<group>"; };
 		612713AC6F2203D9FD46B6EB1E4CE777 /* SkyBoxUI.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = SkyBoxUI.modulemap; sourceTree = "<group>"; };
 		613AE063C3A90AD29B6396F8BF416E36 /* KWMessageTracker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = KWMessageTracker.h; path = Classes/Core/KWMessageTracker.h; sourceTree = "<group>"; };
 		61752FF63C44D0511FD20D5346EF1980 /* SPAirScreenHelpViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SPAirScreenHelpViewController.m; sourceTree = "<group>"; };
@@ -1689,6 +1699,8 @@
 				3C153AEF43E3ADC30700ADF6846AB8B5 /* UIView+SPSwitchBar.m */,
 				602D19501FF647C6003B9FCF /* UIPageControl+Space.h */,
 				602D19511FF647C6003B9FCF /* UIPageControl+Space.m */,
+				60E71AB31FFB848900FE44DD /* UILabel+SPAttri.h */,
+				60E71AB41FFB848900FE44DD /* UILabel+SPAttri.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -1736,6 +1748,9 @@
 		034B01ECCD678AD0F411A1C36135B214 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				609B89E71FFB6DDA0042E982 /* AirScreen_PC@2x.png */,
+				609B89E61FFB6DDA0042E982 /* AirScreen_PC@3x.png */,
+				609B89E51FFB6DDA0042E982 /* AirScreen_titlebar_button_help.pdf */,
 				A0BB0C8D1389AD2FB52C6FAAF71E4737 /* Channels_icon_airscreen.pdf */,
 				A888803C4D874A34CA408C36672E2B0B /* Channels_icon_airscreen_active.pdf */,
 				6BCF99E10F200BB917F6C1ECED1C174B /* Channels_icon_allfiles.pdf */,
@@ -3250,6 +3265,7 @@
 				D27DF3B980AF16DAB067D2E377AABC19 /* SPWaterFallLayout.h in Headers */,
 				9F27B0891EBA1282569B48A3376EAAB9 /* TGRefresh.h in Headers */,
 				A8BF93E12984BEE527E45EADB81EA357 /* TGRefreshOC.h in Headers */,
+				60E71AB51FFB848900FE44DD /* UILabel+SPAttri.h in Headers */,
 				602D19521FF647C6003B9FCF /* UIPageControl+Space.h in Headers */,
 				CE0C5B8C463C20E61EEAB961860C50EF /* UIImage+Radius.h in Headers */,
 				75B7B54EA7ABFB7D796EA3B8EF709594 /* UIResponder+SPCategory.h in Headers */,
@@ -3901,6 +3917,7 @@
 				0226E92D4BC8A6D755F546809FF82F67 /* Channels_icon_online.pdf in Resources */,
 				E5B2AF42F17D76235089D94FF079AC84 /* Channels_icon_online_active.pdf in Resources */,
 				7FE29A7B9904733BD4BBE882F9DD6ED1 /* Channels_icon_VRvideos.pdf in Resources */,
+				609B89EA1FFB6DDB0042E982 /* AirScreen_PC@2x.png in Resources */,
 				7915D4CD271DEDABC26BE3AAB7D9B996 /* Channels_icon_VRvideos_active.pdf in Resources */,
 				343D854FDDF1B45EFB3E390F929F2226 /* Channels_item_arrow.pdf in Resources */,
 				C9C5BC352E446C681F63482C340C29B0 /* Channels_item_arrow_active.pdf in Resources */,
@@ -3914,6 +3931,7 @@
 				BB84E8C217F2CC1D3DAFB11913E137E4 /* Home_help_number_1@3x.png in Resources */,
 				222A7E92F8826F051576E9EF27CE7C4A /* Home_help_number_2.pdf in Resources */,
 				F8F1D3E3B6AA14499E1F3713E63E8AF2 /* Home_help_number_2@2x.png in Resources */,
+				609B89E91FFB6DDB0042E982 /* AirScreen_PC@3x.png in Resources */,
 				DC71B6C0FE37FCC2BAF472E505336F1F /* Home_help_number_2@3x.png in Resources */,
 				5F122B9895623218BA9A3AD720E324BC /* Home_help_number_3.pdf in Resources */,
 				310446CCB7383594C2227CC4312D2CDC /* Home_help_number_3@2x.png in Resources */,
@@ -3932,6 +3950,7 @@
 				7FA16A9AB13160D2FA50D84BAB128709 /* Home_tabbar_button_channels_shadow@3x.png in Resources */,
 				31AFE12882E328162E13C2DD35400710 /* Home_tabbar_button_history.pdf in Resources */,
 				F6AD0B86B7E1F0DE5917C42F1E15C3F3 /* Home_tabbar_button_history@2x.png in Resources */,
+				609B89E81FFB6DDB0042E982 /* AirScreen_titlebar_button_help.pdf in Resources */,
 				E432C174A2D729355E72FAF6053FB4F1 /* Home_tabbar_button_history_active.pdf in Resources */,
 				D2A075DA4E3F367E47F433EC3267D41E /* Home_tabbar_button_history_active@2x.png in Resources */,
 				C5E8C33F128E7FF82065A46425D0C4E7 /* Home_tabbar_button_history_shadow@2x.png in Resources */,
@@ -4214,6 +4233,7 @@
 				B3E909E347CCBBDA935B0AA85F6292AD /* SPGameViewController.m in Sources */,
 				FD6799244A5FAF97361012BBD6DF1971 /* SPHeaderView.m in Sources */,
 				8F32B40317CEF1752A365187CBD49B9F /* SPHelpRootViewController.m in Sources */,
+				60E71AB61FFB848900FE44DD /* UILabel+SPAttri.m in Sources */,
 				E4D29EA495BEC9F87B9E90C8857FCD94 /* SPHistoryViewController.m in Sources */,
 				3C1B685BB603A40F3F7ED2BB9FC129C8 /* SPHomeHelpViewController.m in Sources */,
 				94E7DD69AF19029B473613335B0E9047 /* SPHomeViewController.m in Sources */,

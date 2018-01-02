@@ -9,6 +9,7 @@
 #import "SPAirScreenHelpViewController.h"
 #import "ServiceCall.h"
 #import "SPVideo.h"
+#import "UILabel+SPAttri.h"
 
 typedef enum : NSUInteger {
     StartupStatus,
@@ -27,15 +28,23 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) UIBarButtonItem *helpItem;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *pcImgVTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *pcImgVHeightConstraint;
+
 @property (weak, nonatomic) IBOutlet UIImageView *pcImgV;
 @property (weak, nonatomic) IBOutlet UIButton *searchButton;
 @property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentViewHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentViewTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentViewWidthConstraint;
+
+
 @property (weak, nonatomic) IBOutlet UIView *refreshView;
 @property (weak, nonatomic) IBOutlet UIView *refreshImgv;
 
-@property (weak, nonatomic) IBOutlet UIView *num1View;
-@property (weak, nonatomic) IBOutlet UIView *num2View;
+@property (weak, nonatomic) IBOutlet UILabel *searchLabel;
+
+@property (weak, nonatomic) IBOutlet UIImageView *num1View;
+@property (weak, nonatomic) IBOutlet UIImageView *num2View;
 @property (weak, nonatomic) IBOutlet UILabel *instruction1Label;
 @property (weak, nonatomic) IBOutlet UILabel *instruction2Label;
 
@@ -116,7 +125,37 @@ typedef enum : NSUInteger {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.pcImgV.image = [Commons getPdfImageFromResource:@"Channels_icon_airscreen"];
+    
+    self.pcImgVHeightConstraint.constant = 270 * kHSCALE;
+    
+    NSMutableAttributedString *instruction1Attr = [[NSMutableAttributedString alloc] initWithString:@"INSTALL SKYBOX FOR PC FROM SKYBOX.XYZ"];
+    
+    UIFont *lightFont = [UIFont fontWithName:@"Calibri-Light" size:13.0];
+    UIFont *boldFont = [UIFont fontWithName:@"Calibri-Bold" size:13.0];
+    [instruction1Attr addAttributes:@{NSFontAttributeName : lightFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]} range:NSMakeRange(0, 8)];
+    [instruction1Attr addAttributes:@{NSFontAttributeName : boldFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]} range:NSMakeRange(8, 6)];
+    [instruction1Attr addAttributes:@{NSFontAttributeName : lightFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]} range:NSMakeRange(14, 13)];
+    [instruction1Attr addAttributes:@{NSFontAttributeName : boldFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]} range:NSMakeRange(27, 10)];
+    
+    self.instruction1Label.attributedText = [instruction1Attr copy];
+    
+    NSMutableAttributedString *instruction2Attr = [[NSMutableAttributedString alloc] initWithString:@"RUN SKYBOX FOR PC AND ADD VIDEOS TO IT"];
+    [instruction2Attr addAttributes:@{NSFontAttributeName : lightFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]} range:NSMakeRange(0, 4)];
+    [instruction2Attr addAttributes:@{NSFontAttributeName : boldFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]} range:NSMakeRange(4, 6)];
+    [instruction2Attr addAttributes:@{NSFontAttributeName : lightFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]} range:NSMakeRange(10, 28)];
+    self.instruction2Label.attributedText = [instruction2Attr copy];
+    
+    self.searchLabel.text = @"SEARCHING...";
+    self.searchLabel.font = [UIFont fontWithName:@"Calibri-Light" size:14.0];
+    self.searchLabel.textColor = [SPColorUtil getHexColor:@"ffffff"];
+    
+    self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
+    [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateNormal];
+    self.searchButton.backgroundColor = [SPColorUtil getHexColor:@"#ffde9e"];
+    self.searchButton.layer.cornerRadius = 21;
+    self.searchButton.layer.masksToBounds = YES;
+    
+    self.contentView.backgroundColor = [UIColor clearColor];
 }
 
 - (NSString *)titleOfLabelView {
@@ -130,8 +169,8 @@ typedef enum : NSUInteger {
 - (UIBarButtonItem *)helpItem {
     if (!_helpItem) {
         UIButton *helpBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [helpBtn setImage:nil forState:UIControlStateNormal];
-        helpBtn.backgroundColor = [UIColor blueColor];
+        [helpBtn setImage:[Commons getPdfImageFromResource:@"AirScreen_titlebar_button_help"] forState:UIControlStateNormal];
+        helpBtn.backgroundColor = [UIColor clearColor];
         helpBtn.frame = CGRectMake(0, 0, 20, 20);
         [helpBtn addTarget:self action:@selector(helpItemClick:) forControlEvents:UIControlEventTouchUpInside];
         _helpItem = [[UIBarButtonItem alloc] initWithCustomView:helpBtn];
@@ -152,20 +191,28 @@ typedef enum : NSUInteger {
     _instruction2Label.hidden = hidden;
 }
 - (void)resetViewsAndConstraints {
+
+    
     switch (_status) {
         case StartupStatus:
         {
             [self.resultView removeFromSuperview];
-            _pcImgVTopConstraint.constant = 80*kHSCALE;
-            _contentViewHeightConstraint.constant = 80*kHSCALE;
+            _pcImgVTopConstraint.constant = [SPDeviceUtil isiPhoneX] ? (160 - 34 - 44) : (160 - 64);
+            _contentViewTopConstraint.constant = -50;
+            
+            CGFloat width1 = [self.instruction1Label labelSizeWithAttributeString].width;
+            CGFloat width2 = [self.instruction2Label labelSizeWithAttributeString].width;
+            _contentViewWidthConstraint.constant = MAX(width1, width2) + 6 + 18;
+            _contentViewHeightConstraint.constant = 18 * 2 + 12;
             _refreshView.hidden = YES;
             [self showOrHiddenInstructionViews:NO];
         }
             break;
         case SearchStatus:
         {
-            _pcImgVTopConstraint.constant = 80*kHSCALE;
-            _contentViewHeightConstraint.constant = 80*kHSCALE;
+            _pcImgVTopConstraint.constant = [SPDeviceUtil isiPhoneX] ? (160 - 34 - 44) : (160 - 64);
+            _contentViewTopConstraint.constant = -50;
+            _contentViewHeightConstraint.constant = 18 * 2 + 12;
             [self showOrHiddenInstructionViews:YES];
             _refreshView.hidden = NO;
         }
@@ -173,6 +220,7 @@ typedef enum : NSUInteger {
         case ResultStatus:
         {
             _pcImgVTopConstraint.constant = [SPDeviceUtil isiPhoneX] ? 40 : 20*kHSCALE;
+            _contentViewTopConstraint.constant = -60;
             _contentViewHeightConstraint.constant = 190*kHSCALE;
             [self showOrHiddenInstructionViews:YES];
             _refreshView.hidden = YES;
@@ -431,7 +479,7 @@ static NSString *cellID = @"AIRSCREEN_CELLID";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 40;
+    return 42;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
