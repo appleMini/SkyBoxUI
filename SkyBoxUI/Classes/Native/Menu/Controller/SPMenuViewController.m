@@ -55,7 +55,7 @@ static NSString *cellID = @"MenuCell";
             make.leading.mas_equalTo(0);
             make.trailing.mas_equalTo(0);
             make.top.mas_equalTo(top);
-            make.bottom.mas_equalTo(-(kWSCALE*49));
+            make.bottom.mas_equalTo(-(kHSCALE*94));
         }];
     }
 }

@@ -294,7 +294,7 @@
  */
 - (CGFloat)waterFallLayout:(SPWaterFallLayout *)waterFallLayout heightForItemAtIndex:(NSInteger)index width:(CGFloat)width
 {
-    return 180 * kWSCALE;
+    return 180 * kHSCALE;
 }
 
 - (CGFloat)columnMarginOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
@@ -314,7 +314,7 @@
 
 - (UIEdgeInsets)edgeInsetsOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
 {
-    return UIEdgeInsetsMake(0, 17, 0, 17);
+    return UIEdgeInsetsMake(20, 17, 0, 17);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {

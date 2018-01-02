@@ -156,24 +156,24 @@ typedef enum : NSUInteger {
         case StartupStatus:
         {
             [self.resultView removeFromSuperview];
-            _pcImgVTopConstraint.constant = 80*kWSCALE;
-            _contentViewHeightConstraint.constant = 80*kWSCALE;
+            _pcImgVTopConstraint.constant = 80*kHSCALE;
+            _contentViewHeightConstraint.constant = 80*kHSCALE;
             _refreshView.hidden = YES;
             [self showOrHiddenInstructionViews:NO];
         }
             break;
         case SearchStatus:
         {
-            _pcImgVTopConstraint.constant = 80*kWSCALE;
-            _contentViewHeightConstraint.constant = 80*kWSCALE;
+            _pcImgVTopConstraint.constant = 80*kHSCALE;
+            _contentViewHeightConstraint.constant = 80*kHSCALE;
             [self showOrHiddenInstructionViews:YES];
             _refreshView.hidden = NO;
         }
             break;
         case ResultStatus:
         {
-            _pcImgVTopConstraint.constant = [SPDeviceUtil isiPhoneX] ? 40 : 20*kWSCALE;
-            _contentViewHeightConstraint.constant = 190*kWSCALE;
+            _pcImgVTopConstraint.constant = [SPDeviceUtil isiPhoneX] ? 40 : 20*kHSCALE;
+            _contentViewHeightConstraint.constant = 190*kHSCALE;
             [self showOrHiddenInstructionViews:YES];
             _refreshView.hidden = YES;
             [self.contentView addSubview:self.resultView];
@@ -226,11 +226,11 @@ typedef enum : NSUInteger {
         _socketOpened = YES;
         
         [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"StartSKYBOX"}];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.sendTimer fire];
+        });
     }
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.sendTimer fire];
-    });
 }
 
 - (NSTimer *)sendTimer {
@@ -394,7 +394,7 @@ typedef enum : NSUInteger {
         
         [_resultView addSubview:self.topView];
         [self.topView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(30*kWSCALE);
+            make.height.mas_equalTo(30*kHSCALE);
             make.leading.mas_equalTo(0);
             make.top.mas_equalTo(0);
             make.trailing.mas_equalTo(0);

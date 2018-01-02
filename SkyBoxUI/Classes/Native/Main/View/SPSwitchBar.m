@@ -11,8 +11,8 @@
 #define CBGItem          kWSCALE*94
 #define CSamllItem       kWSCALE*30
 #define WSpace           kWSCALE*80
-#define BottomSpace      kWSCALE*20
-#define UpperSpace       kWSCALE*8
+#define BottomSpace      kHSCALE*20
+#define UpperSpace       kHSCALE*8
 #define leadingSpace     kWSCALE*0
 
 @interface SPSwitchBar()

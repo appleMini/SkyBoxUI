@@ -291,7 +291,7 @@
 
 - (UIEdgeInsets)edgeInsetsOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
 {
-    return UIEdgeInsetsMake(0, 17, 0, 17);
+    return UIEdgeInsetsMake(20, 17, 0, 17);
 }
 @end
 

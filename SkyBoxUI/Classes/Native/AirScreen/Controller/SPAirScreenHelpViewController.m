@@ -18,7 +18,7 @@
 
 - (CGSize)preferredContentSize
 {
-    CGFloat height = [SPDeviceUtil isiPhoneX] ? (SCREEN_HEIGHT - 34 - 44 - kWSCALE*49*1.5 - 50 - 50 - 35) : (SCREEN_HEIGHT - 44 - kWSCALE*49*1.5 - 50 - 50 - 35);
+    CGFloat height = [SPDeviceUtil isiPhoneX] ? (SCREEN_HEIGHT - 34 - 44 - kHSCALE*49*1.5 - 50 - 50 - 35) : (SCREEN_HEIGHT - 44 - kHSCALE*49*1.5 - 50 - 50 - 35);
     return CGSizeMake(SCREEN_WIDTH - 70, height);
 }
 
