@@ -10,4 +10,5 @@
 @interface UILabel(SPAttri)
 
 - (CGSize)labelSizeWithAttributeString;
+- (CGSize)labelSizeWithAttributes:(NSDictionary<NSAttributedStringKey,id> *)attri;
 @end

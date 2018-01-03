@@ -8,6 +8,5 @@
 #import <UIKit/UIKit.h>
 
 @interface UIImage(Radius)
-
-- (UIImage *)drawRectWithRoundedCorner:(CGFloat)radius inRect:(CGRect)rect;
+- (UIImage *)drawRectWithRoundedCorner:(CGFloat)radius bgColor:(UIColor *)bgColor inRect:(CGRect)rect;
 @end

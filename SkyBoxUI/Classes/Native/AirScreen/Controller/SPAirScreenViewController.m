@@ -15,6 +15,7 @@ typedef enum : NSUInteger {
     StartupStatus,
     SearchStatus,
     ResultStatus,
+    ResultEmptyStatus
 } AirScreenStatus;
 
 @interface SPAirScreenViewController () <UITableViewDelegate, UITableViewDataSource> {
@@ -39,7 +40,7 @@ typedef enum : NSUInteger {
 
 
 @property (weak, nonatomic) IBOutlet UIView *refreshView;
-@property (weak, nonatomic) IBOutlet UIView *refreshImgv;
+@property (weak, nonatomic) IBOutlet UIImageView *refreshImgv;
 
 @property (weak, nonatomic) IBOutlet UILabel *searchLabel;
 
@@ -147,12 +148,14 @@ typedef enum : NSUInteger {
     
     self.searchLabel.text = @"SEARCHING...";
     self.searchLabel.font = [UIFont fontWithName:@"Calibri-Light" size:14.0];
-    self.searchLabel.textColor = [SPColorUtil getHexColor:@"ffffff"];
+    self.searchLabel.textColor = [SPColorUtil getHexColor:@"#ffffff"];
     
     self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
     [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateNormal];
     self.searchButton.backgroundColor = [SPColorUtil getHexColor:@"#ffde9e"];
-    self.searchButton.layer.cornerRadius = 21;
+    [self.searchButton setTitle:@"SEARCH DEVICE" forState:UIControlStateNormal];
+    self.searchButton.layer.cornerRadius = 21.0;//
+    self.searchButton.layer.borderWidth = 0.0f;//设置边框颜色
     self.searchButton.layer.masksToBounds = YES;
     
     self.contentView.backgroundColor = [UIColor clearColor];
@@ -191,8 +194,6 @@ typedef enum : NSUInteger {
     _instruction2Label.hidden = hidden;
 }
 - (void)resetViewsAndConstraints {
-
-    
     switch (_status) {
         case StartupStatus:
         {
@@ -210,18 +211,39 @@ typedef enum : NSUInteger {
             break;
         case SearchStatus:
         {
+            self.searchLabel.text = @"SEARCHING...";
+            self.searchLabel.font = [UIFont fontWithName:@"Calibri-Light" size:14.0];
+            self.searchLabel.textColor = [SPColorUtil getHexColor:@"#ffffff"];
             _pcImgVTopConstraint.constant = [SPDeviceUtil isiPhoneX] ? (160 - 34 - 44) : (160 - 64);
+            CGFloat width1 = [self.instruction1Label labelSizeWithAttributeString].width;
+            CGFloat width2 = [self.instruction2Label labelSizeWithAttributeString].width;
+            _contentViewWidthConstraint.constant = MAX(width1, width2) + 6 + 18;
             _contentViewTopConstraint.constant = -50;
             _contentViewHeightConstraint.constant = 18 * 2 + 12;
             [self showOrHiddenInstructionViews:YES];
             _refreshView.hidden = NO;
+            
+            [self configRefreshImageView];
         }
             break;
         case ResultStatus:
         {
-            _pcImgVTopConstraint.constant = [SPDeviceUtil isiPhoneX] ? 40 : 20*kHSCALE;
             _contentViewTopConstraint.constant = -60;
-            _contentViewHeightConstraint.constant = 190*kHSCALE;
+            CGFloat topH = [SPDeviceUtil isiPhoneX] ? (160 - 34 - 44) : (160 - 64);
+            
+            CGFloat height = 35;
+            if (_dataArr.count >= 4) {
+                height = height + 42 * 3 + 21;
+                topH = topH -   (4 -1) * 21;
+            }else{
+                height = height + 42 * _dataArr.count;
+                topH = topH -  (_dataArr.count -1) * 21;
+            }
+            
+            _pcImgVTopConstraint.constant = topH;
+            
+            _contentViewWidthConstraint.constant = 286;
+            _contentViewHeightConstraint.constant = height;
             [self showOrHiddenInstructionViews:YES];
             _refreshView.hidden = YES;
             [self.contentView addSubview:self.resultView];
@@ -230,9 +252,53 @@ typedef enum : NSUInteger {
             }];
         }
             break;
+        case ResultEmptyStatus:
+        {
+            [self.resultView removeFromSuperview];
+            [self.refreshImgv stopAnimating];
+            self.refreshImgv.image = [Commons getImageFromResource:@"AirScreen_search_warning"];
+            
+            UIFont *lightFont = [UIFont fontWithName:@"Calibri-Light" size:14.0];
+            self.searchLabel.text = @"CANNOT FIND ANY DEVICES, PLEASE TRY AGAIN";
+            self.searchLabel.font = lightFont;
+            self.searchLabel.textColor = [SPColorUtil getHexColor:@"#ffffff"];
+            
+            CGFloat width = [self.searchLabel labelSizeWithAttributes:@{NSFontAttributeName : lightFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]}].width;
+            
+            _contentViewWidthConstraint.constant = width + 8 + 20;
+            
+            _pcImgVTopConstraint.constant = [SPDeviceUtil isiPhoneX] ? (160 - 34 - 44) : (160 - 64);
+            _contentViewTopConstraint.constant = -50;
+            _contentViewHeightConstraint.constant = 18 * 2 + 12;
+            [self showOrHiddenInstructionViews:YES];
+            _refreshView.hidden = NO;
+        }
+            break;
         default:
             break;
     }
+}
+
+- (NSArray *)initialImageArray {
+    NSMutableArray *imageArray = [[NSMutableArray alloc] init];
+    for (int i = 1; i < 15; i++) {
+        NSString *imageName = [NSString stringWithFormat:@"Home_videos_album_loading_000%02d", (i*2 + 1)];
+        
+        UIImage *image = [Commons getImageFromResource:imageName];
+        if (image) {
+            [imageArray addObject:image];
+        }
+    }
+        
+    return imageArray;
+}
+
+// 配置imageview的序列帧动画属性
+- (void)configRefreshImageView {
+    self.refreshImgv.animationImages = [self initialImageArray];// 序列帧动画的uiimage数组
+    self.refreshImgv.animationDuration = 1.0f;// 序列帧全部播放完所用时间
+    self.refreshImgv.animationRepeatCount = MAXFLOAT;// 序列帧动画重复次数
+    [self.refreshImgv startAnimating];//开始动画
 }
 
 - (void)tickSocketIO_MainThread {
@@ -317,9 +383,22 @@ typedef enum : NSUInteger {
 
 - (IBAction)searchClick:(id)sender {
     if (_status == StartupStatus) {
+        self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
+        [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
+        self.searchButton.backgroundColor = [UIColor clearColor];
         [self.searchButton setTitle:@"CANCEL" forState:UIControlStateNormal];
+        self.searchButton.layer.cornerRadius = 21.0;//
+        self.searchButton.layer.borderColor = [UIColor whiteColor].CGColor;//设置边框颜色
+        self.searchButton.layer.borderWidth = 2.0f;//设置边框颜色
+        self.searchButton.layer.masksToBounds = YES;
     }else{
+        self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
+        [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateNormal];
+        self.searchButton.backgroundColor = [SPColorUtil getHexColor:@"#ffde9e"];
         [self.searchButton setTitle:@"SEARCH DEVICE" forState:UIControlStateNormal];
+        self.searchButton.layer.cornerRadius = 21.0;//
+        self.searchButton.layer.borderWidth = 0.0f;//设置边框颜色
+        self.searchButton.layer.masksToBounds = YES;
     }
     
     switch (_status) {
@@ -352,6 +431,11 @@ typedef enum : NSUInteger {
             _status = StartupStatus;
         }
             break;
+        case ResultEmptyStatus:
+        {
+            _status = StartupStatus;
+        }
+            break;
         default:
             break;
     }
@@ -360,16 +444,26 @@ typedef enum : NSUInteger {
 }
 
 - (void)showResultView {
+//    _dataArr = nil;
+//    _status = ResultEmptyStatus;
+//    [self updateViewConstraints];
+    
     __weak typeof(self) ws = self;
     self.refreshBlock = ^(NSString *dataStr){
-        NSLog(@"showResultView  === %@", dataStr);
         if (!ws) {
             return ;
         }
         
         __strong typeof(ws) strongfy = ws;
         strongfy.dataArr = [SPAirscreen mj_objectArrayWithKeyValuesArray:dataStr];
+        //        strongfy.dataArr = nil;
+        //        NSMutableArray *arr = [strongfy.dataArr copy];
+        //        strongfy.dataArr = [arr subarrayWithRange:NSMakeRange(0, 5)];
+        
         strongfy.devicesLabel.text = [NSString stringWithFormat:@"%lu DEVICES FOUND", (unsigned long)[strongfy.dataArr count]];
+        if (strongfy.dataArr.count == 0) {
+            _status = ResultEmptyStatus;
+        }
         
         [strongfy updateViewConstraints];
         [strongfy.tableView reloadData];
@@ -386,7 +480,7 @@ typedef enum : NSUInteger {
         _tableView.dataSource = self;
         _tableView.separatorColor = [UIColor darkGrayColor];
         _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        _tableView.layer.cornerRadius = 15;
+        _tableView.layer.cornerRadius = 21;
         _tableView.layer.masksToBounds = YES;
     }
     
@@ -437,7 +531,7 @@ typedef enum : NSUInteger {
 - (UIView *)resultView {
     if (!_resultView) {
         UIView *reultV = [[UIView alloc] initWithFrame:CGRectZero];
-        reultV.backgroundColor = [UIColor blueColor];
+        reultV.backgroundColor = [UIColor clearColor];
         _resultView = reultV;
         
         [_resultView addSubview:self.topView];

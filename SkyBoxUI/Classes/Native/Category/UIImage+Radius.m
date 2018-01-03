@@ -9,7 +9,7 @@
 
 @implementation UIImage(Radius)
 
-- (UIImage *)drawRectWithRoundedCorner:(CGFloat)radius inRect:(CGRect)rect {
+- (UIImage *)drawRectWithRoundedCorner:(CGFloat)radius bgColor:(UIColor *)bgColor inRect:(CGRect)rect {
     
     CGSize imageSize = self.size;
     CGFloat width = CGImageGetWidth(self.CGImage);
@@ -49,7 +49,6 @@
     CGContextAddPath(ctx, path.CGPath);
     CGContextClip(ctx);
     
-    UIColor *bgColor = [SPColorUtil getHexColor:@"#585E69"];
     CGContextSetFillColorWithColor(ctx, bgColor.CGColor);
 //    CGContextSetLineWidth(ctx, 3.0);//线的宽度
 //    CGContextSetStrokeColorWithColor(ctx, bgColor.CGColor);

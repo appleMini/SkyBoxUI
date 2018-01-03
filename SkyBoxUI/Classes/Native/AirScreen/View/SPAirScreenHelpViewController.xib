@@ -13,6 +13,17 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SPAirScreenHelpViewController">
             <connections>
+                <outlet property="help1ContentLabel" destination="mj1-98-3ut" id="YVe-zD-DAf"/>
+                <outlet property="help1TitleLabel" destination="xCX-Ph-1C2" id="qsf-aZ-SeF"/>
+                <outlet property="help2ContentLabel" destination="Hah-JM-8aq" id="mf4-q4-vCz"/>
+                <outlet property="help2TitleLabel" destination="blp-KE-b1G" id="Wj2-KB-4En"/>
+                <outlet property="help3ContentLabel" destination="94G-gN-EXk" id="QaS-OC-ADT"/>
+                <outlet property="help3TitleLabel" destination="Tdw-oI-0cr" id="b9X-3p-DuP"/>
+                <outlet property="help4ContentLabel" destination="nFX-hD-6SZ" id="I6l-x6-eax"/>
+                <outlet property="help4TitleLabel" destination="u3U-ua-KT4" id="JAK-JK-fNT"/>
+                <outlet property="helpLabel" destination="FMD-hz-P43" id="qjW-wX-8B5"/>
+                <outlet property="topLabel" destination="zbR-Rq-xlg" id="Xdz-XJ-Sl7"/>
+                <outlet property="topView" destination="OUY-tR-uUQ" id="ecq-gt-lbh"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -24,14 +35,16 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OUY-tR-uUQ" userLabel="topView">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="133.5"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HELP" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FMD-hz-P43">
-                            <rect key="frame" x="165.5" y="5" width="44" height="21"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HELP" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FMD-hz-P43">
+                            <rect key="frame" x="164.5" y="5" width="46" height="22.5"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
+                            <color key="shadowColor" white="0.0" alpha="0.25" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <size key="shadowOffset" width="2" height="2"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AirScreen is a tool that can wireless streaming local videos from PC to mobile devices." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zbR-Rq-xlg">
-                            <rect key="frame" x="20" y="31" width="335" height="33.5"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use AirScreen to stream videos from PC to your mobile devices." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zbR-Rq-xlg">
+                            <rect key="frame" x="20" y="32.5" width="335" height="33.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
@@ -50,11 +63,10 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KGl-UK-LrN" userLabel="View1">
                     <rect key="frame" x="0.0" y="133.5" width="375" height="133.5"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="6tU-lD-EVl">
-                            <rect key="frame" x="20" y="20" width="40" height="30"/>
-                            <color key="backgroundColor" red="1" green="0.1470601822" blue="0.12790239219999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AirScreen_help_icon_1.png" translatesAutoresizingMaskIntoConstraints="NO" id="6tU-lD-EVl">
+                            <rect key="frame" x="20" y="20" width="40" height="40"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="30" id="TAt-9U-6bX"/>
+                                <constraint firstAttribute="height" constant="40" id="TAt-9U-6bX"/>
                                 <constraint firstAttribute="width" constant="40" id="gB0-c1-I6h"/>
                             </constraints>
                         </imageView>
@@ -85,12 +97,11 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tHj-Yl-IK1" userLabel="View2">
                     <rect key="frame" x="0.0" y="267" width="375" height="133.5"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Oxo-az-DRS">
-                            <rect key="frame" x="20" y="20" width="40" height="30"/>
-                            <color key="backgroundColor" red="1" green="0.1470601822" blue="0.12790239219999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AirScreen_help_icon_2.png" translatesAutoresizingMaskIntoConstraints="NO" id="Oxo-az-DRS">
+                            <rect key="frame" x="20" y="20" width="40" height="40"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="40" id="GiP-ON-eFW"/>
-                                <constraint firstAttribute="height" constant="30" id="wId-XZ-H1W"/>
+                                <constraint firstAttribute="height" constant="40" id="wId-XZ-H1W"/>
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2:ADD VIDEOS" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="blp-KE-b1G">
@@ -120,11 +131,10 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Up4-TG-NOo" userLabel="View3">
                     <rect key="frame" x="0.0" y="400.5" width="375" height="133.5"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7Ci-k1-Mq4">
-                            <rect key="frame" x="20" y="20" width="40" height="30"/>
-                            <color key="backgroundColor" red="1" green="0.1470601822" blue="0.12790239219999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AirScreen_help_icon_3.png" translatesAutoresizingMaskIntoConstraints="NO" id="7Ci-k1-Mq4">
+                            <rect key="frame" x="20" y="20" width="40" height="40"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="30" id="N6d-4L-PHV"/>
+                                <constraint firstAttribute="height" constant="40" id="N6d-4L-PHV"/>
                                 <constraint firstAttribute="width" constant="40" id="bO9-pB-CnO"/>
                             </constraints>
                         </imageView>
@@ -155,12 +165,11 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3cg-t4-oLX">
                     <rect key="frame" x="0.0" y="534" width="375" height="133.5"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8Q7-IJ-geb">
-                            <rect key="frame" x="20" y="20" width="40" height="30"/>
-                            <color key="backgroundColor" red="1" green="0.1470601822" blue="0.12790239219999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AirScreen_help_icon_4.png" translatesAutoresizingMaskIntoConstraints="NO" id="8Q7-IJ-geb">
+                            <rect key="frame" x="20" y="20" width="40" height="40"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="40" id="Wfl-wp-CB2"/>
-                                <constraint firstAttribute="height" constant="30" id="t7Q-tQ-RZk"/>
+                                <constraint firstAttribute="height" constant="40" id="t7Q-tQ-RZk"/>
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4:ENJOY IT" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u3U-ua-KT4">
@@ -212,7 +221,13 @@
                 <constraint firstItem="Up4-TG-NOo" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="1/5" id="vQn-Q5-8Sn"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
-            <point key="canvasLocation" x="-529.5" y="-90.5"/>
+            <point key="canvasLocation" x="-487" y="-350"/>
         </view>
     </objects>
+    <resources>
+        <image name="AirScreen_help_icon_1.png" width="40" height="40"/>
+        <image name="AirScreen_help_icon_2.png" width="40" height="40"/>
+        <image name="AirScreen_help_icon_3.png" width="40" height="40"/>
+        <image name="AirScreen_help_icon_4.png" width="40" height="40"/>
+    </resources>
 </document>

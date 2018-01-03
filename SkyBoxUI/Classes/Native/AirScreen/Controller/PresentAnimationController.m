@@ -36,7 +36,7 @@
     
     UIView *markeView = [[UIView alloc] initWithFrame:containerView.bounds];
     markeView.backgroundColor = [UIColor blackColor];
-    markeView.alpha = 0.7;
+    markeView.alpha = 0.75;
     [containerView addSubview:markeView];
     
     [markeView mas_makeConstraints:^(MASConstraintMaker *make) {

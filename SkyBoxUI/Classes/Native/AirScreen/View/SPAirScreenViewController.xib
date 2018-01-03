@@ -23,7 +23,7 @@
                 <outlet property="pcImgV" destination="6wb-XR-GTZ" id="nkt-ov-Om8"/>
                 <outlet property="pcImgVHeightConstraint" destination="I4o-zX-Y0e" id="bsw-i3-olx"/>
                 <outlet property="pcImgVTopConstraint" destination="9Wb-0d-X1K" id="9B2-4s-BOr"/>
-                <outlet property="refreshImgv" destination="An1-gz-yvJ" id="9LU-TD-UwT"/>
+                <outlet property="refreshImgv" destination="eeN-xZ-ZNT" id="Hsx-MY-270"/>
                 <outlet property="refreshView" destination="An1-gz-yvJ" id="AwM-zg-KRD"/>
                 <outlet property="searchButton" destination="TJZ-Gz-ZOx" id="zZZ-oj-4PU"/>
                 <outlet property="searchLabel" destination="1j0-0P-d5I" id="6I9-ts-mNU"/>
@@ -83,26 +83,25 @@
                                 <constraint firstAttribute="height" constant="18" id="dRG-vm-cXU"/>
                             </constraints>
                         </imageView>
-                        <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="An1-gz-yvJ" userLabel="RefreshView">
-                            <rect key="frame" x="24" y="91" width="245" height="120"/>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="An1-gz-yvJ" userLabel="RefreshView">
+                            <rect key="frame" x="0.0" y="0.0" width="313" height="219"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="SEARCHING FOR DEVICE" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1j0-0P-d5I">
-                                    <rect key="frame" x="124" y="32" width="164" height="17"/>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SEARCHING FOR DEVICE" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1j0-0P-d5I">
+                                    <rect key="frame" x="88.5" y="100.5" width="164" height="17"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eeN-xZ-ZNT">
-                                    <rect key="frame" x="72" y="26" width="44" height="44"/>
-                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eeN-xZ-ZNT">
+                                    <rect key="frame" x="14" y="87" width="44" height="44"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="44" id="ZZB-wB-sNo"/>
-                                        <constraint firstAttribute="height" constant="44" id="ker-Bf-aUO"/>
+                                        <constraint firstAttribute="width" constant="20" id="ZZB-wB-sNo"/>
+                                        <constraint firstAttribute="height" constant="20" id="ker-Bf-aUO"/>
                                     </constraints>
                                 </imageView>
                             </subviews>
                             <constraints>
-                                <constraint firstItem="eeN-xZ-ZNT" firstAttribute="centerX" secondItem="An1-gz-yvJ" secondAttribute="centerX" constant="-64" id="3Gm-rB-Kpt"/>
+                                <constraint firstItem="1j0-0P-d5I" firstAttribute="centerX" secondItem="An1-gz-yvJ" secondAttribute="centerX" constant="14" id="Fl8-Ae-SPl"/>
                                 <constraint firstItem="1j0-0P-d5I" firstAttribute="leading" secondItem="eeN-xZ-ZNT" secondAttribute="trailing" constant="8" id="Onv-5y-W5D"/>
                                 <constraint firstItem="eeN-xZ-ZNT" firstAttribute="centerY" secondItem="An1-gz-yvJ" secondAttribute="centerY" id="SCU-QX-A2J"/>
                                 <constraint firstItem="1j0-0P-d5I" firstAttribute="centerY" secondItem="eeN-xZ-ZNT" secondAttribute="centerY" id="tzg-xf-G75"/>
