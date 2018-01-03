@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SkyBoxUI'
-  s.version          = '0.3.24'
+  s.version          = '0.3.25'
   s.summary          = 'SkyBoxUI UI 插件'
 
 # This description is used to generate tags and improve search results.
