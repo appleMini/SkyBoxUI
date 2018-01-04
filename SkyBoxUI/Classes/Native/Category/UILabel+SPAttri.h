@@ -11,4 +11,5 @@
 
 - (CGSize)labelSizeWithAttributeString;
 - (CGSize)labelSizeWithAttributes:(NSDictionary<NSAttributedStringKey,id> *)attri;
+- (CGSize)labelSizeWithAttributes:(NSDictionary<NSAttributedStringKey,id> *)attri boundSize:(CGSize)size;
 @end

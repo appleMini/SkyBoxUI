@@ -351,6 +351,7 @@ SPSingletonM(SPSwitchBar)
 - (void)leftBtnClick:(UIButton *)btn {
     if (self.selectIndex == 0) {
         [self scale:self.leftBtn];
+        [self scale:self.leftBtn_active];
         return;
     }
     
@@ -376,6 +377,7 @@ SPSingletonM(SPSwitchBar)
 - (void)rightBtnClick:(UIButton *)btn {
     if (self.selectIndex == 2) {
         [self scale:self.rightBtn];
+        [self scale:self.rightBtn_active];
         return ;
     }
     self.selectIndex = 2;

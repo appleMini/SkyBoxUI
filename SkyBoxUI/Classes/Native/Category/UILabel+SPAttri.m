@@ -15,8 +15,11 @@
 }
 
 - (CGSize)labelSizeWithAttributes:(NSDictionary<NSAttributedStringKey,id> *)attri {
-    
     return [[self text] boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingTruncatesLastVisibleLine) attributes:attri context:nil].size;
     
+}
+
+- (CGSize)labelSizeWithAttributes:(NSDictionary<NSAttributedStringKey,id> *)attri boundSize:(CGSize)size {
+    return [[self text] boundingRectWithSize:size options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingTruncatesLastVisibleLine) attributes:attri context:nil].size;
 }
 @end
