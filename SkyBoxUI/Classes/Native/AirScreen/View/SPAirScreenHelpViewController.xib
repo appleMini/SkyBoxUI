@@ -88,7 +88,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Open skybox.xyz on PC, download and install AirScreen app." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mj1-98-3ut">
-                            <rect key="frame" x="70" y="53" width="285" height="33.5"/>
+                            <rect key="frame" x="70" y="51" width="285" height="33.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
@@ -102,7 +102,7 @@
                         <constraint firstItem="6tU-lD-EVl" firstAttribute="top" secondItem="KGl-UK-LrN" secondAttribute="top" constant="25" id="Vpl-eR-hIJ"/>
                         <constraint firstItem="xCX-Ph-1C2" firstAttribute="top" secondItem="6tU-lD-EVl" secondAttribute="top" id="ckg-gY-GL5"/>
                         <constraint firstItem="xCX-Ph-1C2" firstAttribute="leading" secondItem="6tU-lD-EVl" secondAttribute="trailing" constant="10" id="d0e-Cs-PvD"/>
-                        <constraint firstItem="mj1-98-3ut" firstAttribute="top" secondItem="xCX-Ph-1C2" secondAttribute="bottom" constant="10" id="whh-bb-Ht9"/>
+                        <constraint firstItem="mj1-98-3ut" firstAttribute="top" secondItem="xCX-Ph-1C2" secondAttribute="bottom" constant="8" id="whh-bb-Ht9"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tHj-Yl-IK1" userLabel="View2">
@@ -122,7 +122,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Open Airscreen and drag videos into it." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hah-JM-8aq">
-                            <rect key="frame" x="70" y="48" width="285" height="17"/>
+                            <rect key="frame" x="70" y="46" width="285" height="17"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
@@ -134,7 +134,7 @@
                         <constraint firstItem="Oxo-az-DRS" firstAttribute="top" secondItem="tHj-Yl-IK1" secondAttribute="top" constant="20" id="DFf-ZK-5aX"/>
                         <constraint firstAttribute="trailing" secondItem="Hah-JM-8aq" secondAttribute="trailing" constant="20" id="NY5-bE-b3i"/>
                         <constraint firstItem="Hah-JM-8aq" firstAttribute="leading" secondItem="blp-KE-b1G" secondAttribute="leading" id="Np6-wv-cg7"/>
-                        <constraint firstItem="Hah-JM-8aq" firstAttribute="top" secondItem="blp-KE-b1G" secondAttribute="bottom" constant="10" id="gEg-yh-SGz"/>
+                        <constraint firstItem="Hah-JM-8aq" firstAttribute="top" secondItem="blp-KE-b1G" secondAttribute="bottom" constant="8" id="gEg-yh-SGz"/>
                         <constraint firstItem="Oxo-az-DRS" firstAttribute="leading" secondItem="tHj-Yl-IK1" secondAttribute="leading" constant="20" id="mU1-yf-0y3"/>
                         <constraint firstItem="blp-KE-b1G" firstAttribute="top" secondItem="Oxo-az-DRS" secondAttribute="top" id="upe-c1-Olt"/>
                     </constraints>
@@ -156,7 +156,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Search and connect AirScreen app on your phone in the same WI-FI." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="94G-gN-EXk">
-                            <rect key="frame" x="70" y="48" width="285" height="33.5"/>
+                            <rect key="frame" x="70" y="46" width="285" height="33.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
@@ -167,7 +167,7 @@
                         <constraint firstAttribute="trailing" secondItem="94G-gN-EXk" secondAttribute="trailing" constant="20" id="0EV-rr-iUc"/>
                         <constraint firstItem="7Ci-k1-Mq4" firstAttribute="top" secondItem="Up4-TG-NOo" secondAttribute="top" constant="20" id="Utd-p3-2Dp"/>
                         <constraint firstItem="94G-gN-EXk" firstAttribute="leading" secondItem="Tdw-oI-0cr" secondAttribute="leading" id="W8Q-22-E1G"/>
-                        <constraint firstItem="94G-gN-EXk" firstAttribute="top" secondItem="Tdw-oI-0cr" secondAttribute="bottom" constant="10" id="X5B-DD-1wC"/>
+                        <constraint firstItem="94G-gN-EXk" firstAttribute="top" secondItem="Tdw-oI-0cr" secondAttribute="bottom" constant="8" id="X5B-DD-1wC"/>
                         <constraint firstItem="7Ci-k1-Mq4" firstAttribute="leading" secondItem="Up4-TG-NOo" secondAttribute="leading" constant="20" id="YVx-VN-cTZ"/>
                         <constraint firstItem="Tdw-oI-0cr" firstAttribute="leading" secondItem="7Ci-k1-Mq4" secondAttribute="trailing" constant="10" id="qsC-3Y-DOc"/>
                         <constraint firstItem="Tdw-oI-0cr" firstAttribute="top" secondItem="7Ci-k1-Mq4" secondAttribute="top" id="yJ1-vE-DmY"/>
@@ -190,7 +190,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Click the mirrored videos and put your phone into VR glasses." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nFX-hD-6SZ">
-                            <rect key="frame" x="70" y="48" width="285" height="33.5"/>
+                            <rect key="frame" x="70" y="46" width="285" height="33.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
@@ -201,7 +201,7 @@
                         <constraint firstItem="8Q7-IJ-geb" firstAttribute="top" secondItem="3cg-t4-oLX" secondAttribute="top" constant="20" id="8fR-zA-T53"/>
                         <constraint firstItem="u3U-ua-KT4" firstAttribute="leading" secondItem="8Q7-IJ-geb" secondAttribute="trailing" constant="10" id="MkT-zZ-zzU"/>
                         <constraint firstItem="u3U-ua-KT4" firstAttribute="top" secondItem="8Q7-IJ-geb" secondAttribute="top" id="R88-hh-dwb"/>
-                        <constraint firstItem="nFX-hD-6SZ" firstAttribute="top" secondItem="u3U-ua-KT4" secondAttribute="bottom" constant="10" id="XMz-lz-S98"/>
+                        <constraint firstItem="nFX-hD-6SZ" firstAttribute="top" secondItem="u3U-ua-KT4" secondAttribute="bottom" constant="8" id="XMz-lz-S98"/>
                         <constraint firstAttribute="trailing" secondItem="nFX-hD-6SZ" secondAttribute="trailing" constant="20" id="g7T-yD-hcp"/>
                         <constraint firstItem="nFX-hD-6SZ" firstAttribute="leading" secondItem="u3U-ua-KT4" secondAttribute="leading" id="gNT-aP-djF"/>
                         <constraint firstItem="8Q7-IJ-geb" firstAttribute="leading" secondItem="3cg-t4-oLX" secondAttribute="leading" constant="20" id="uNj-Gz-mb9"/>
