@@ -101,6 +101,9 @@
     }else{
         [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
     }
+    
+    self.video.isFavourite = sender.selected;
+    [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"SetFavAction", @"video" : [self.video mj_JSONString]}];
 }
 
 @end
