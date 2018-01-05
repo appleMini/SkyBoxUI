@@ -7,6 +7,7 @@
 
 #import "SPDLANView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImage+Radius.h"
 
 @interface SPDLANView ()
 @property (weak, nonatomic) IBOutlet UIImageView *iconV;
@@ -28,14 +29,33 @@
     return self;
 }
 
+- (void)prepareForReuse {
+     self.upperV.image = nil;
+}
+
 - (void)setDevice:(SPCmdAddDevice *)device {
     _device = device;
     
     if (device.deviceType) {
-        NSLog(@"device.deviceType  =====  %@", device.deviceType);
+        if([device.deviceType isEqualToString:@"Synology Inc"]){
+            self.upperV.image = [Commons getImageFromResource:@"Network_folder_device_Synology"];
+        }else if([device.deviceType isEqualToString:@"Sonos, Inc."]){
+            self.upperV.image = [Commons getImageFromResource:@"Network_folder_device_normal"];
+        }else if([device.deviceType isEqualToString:@"UMS"]){
+            self.upperV.image = [Commons getImageFromResource:@"Network_folder_device_Universalmediaserver"];
+        }else if([device.deviceType isEqualToString:@"Plex, Inc."]){
+            self.upperV.image = [Commons getImageFromResource:@"Network_folder_device_PlexTv"];
+        }else if([device.deviceType isEqualToString:@"Microsoft Corporation"]){
+            self.upperV.image = [Commons getImageFromResource:@"Network_folder_device_win10"];
+        }else if([device.deviceType isEqualToString:@"Emby"]){
+            self.upperV.image = [Commons getImageFromResource:@"Network_folder_device_EmbyMedia"];
+        }else if([device.deviceType isEqualToString:@"XBMC Foundation"]){
+            self.upperV.image = [Commons getImageFromResource:@"Network_folder_device_KodiTv"];
+        }else if([device.deviceType isEqualToString:@"Bubblesoft"]){
+            self.upperV.image = [Commons getImageFromResource:@"Network_folder_device_BubbleUPnP"];
+        }
     }else {
-        self.upperV.image = [Commons getImageFromResource:@"Network_folder_device_Universalmediaserver"];
-        self.iconV.image = [Commons getImageFromResource:@"Network_folder"];
+        
     }
     
     self.tagLabel.text = device.deviceName;
@@ -44,10 +64,27 @@
     
     CGFloat imgvHeight = 208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324;
     self.iconVHeightConstraint.constant = imgvHeight;
-    self.durationLabelTopConstraint.constant = 0;
-    self.durationLabel.hidden = YES;
-    self.durationLabel.font = [UIFont fontWithName:@"Calibri-light" size:12];
-    self.durationLabel.textColor = [SPColorUtil getHexColor:@"#b0b1b3"];
+    
+    if([device.deviceType isEqualToString:@"object.item.videoItem"]){
+        self.tagLabel.textAlignment = NSTextAlignmentLeft;
+        
+        SPCmdVideoDevice *video = (SPCmdVideoDevice *)device;
+        self.iconV.image = [Commons getImageFromResource:@"Home_videos_album_default"];
+        self.durationLabelTopConstraint.constant = 8;
+        self.durationLabel.hidden = NO;
+        self.durationLabel.font = [UIFont fontWithName:@"Calibri-light" size:12];
+        self.durationLabel.textColor = [SPColorUtil getHexColor:@"#b0b1b3"];
+        self.durationLabel.textAlignment = NSTextAlignmentLeft;
+        self.durationLabel.text = [Commons durationText:video.duration.doubleValue];
+    }else{
+        self.iconV.image = [Commons getImageFromResource:@"Network_folder"];
+        self.tagLabel.textAlignment = NSTextAlignmentCenter;
+        
+        self.durationLabelTopConstraint.constant = 0;
+        self.durationLabel.hidden = YES;
+        self.durationLabel.font = [UIFont fontWithName:@"Calibri-light" size:12];
+        self.durationLabel.textColor = [SPColorUtil getHexColor:@"#b0b1b3"];
+    }
 }
 
 @end
@@ -70,6 +107,12 @@
     [super setSelected:selected animated:animated];
     
     // Configure the view for the selected state
+}
+
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    
+    [_dlanView prepareForReuse];
 }
 
 - (void)setupViews {
@@ -103,6 +146,12 @@
         [self setupViews];
     }
     return self;
+}
+
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    
+    [_dlanView prepareForReuse];
 }
 
 - (void)setupViews {

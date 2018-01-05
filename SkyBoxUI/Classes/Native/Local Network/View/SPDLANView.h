@@ -9,6 +9,8 @@
 
 @interface SPDLANView : UIView
 @property (nonatomic, strong) SPCmdAddDevice *device;
+
+- (void)prepareForReuse;
 @end
 
 @interface SPDLANCell : UITableViewCell

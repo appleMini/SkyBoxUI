@@ -94,12 +94,12 @@
     CGFloat x = -7 + width * index;
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(x, 0, width+7, 28)];
     UIImage *bgImg = [Commons getPdfImageFromResource:@"Network_navigator_path_bg"];
-    [button setBackgroundImage:[bgImg resizableImageWithCapInsets:UIEdgeInsetsMake(0, 79/2-1, 0, 79/2-1)] forState:UIControlStateNormal];
+    
 //    button.backgroundColor  = randomColor;
     button.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:13.0];
     button.userInteractionEnabled = userInteractionEnabled;
     [button setTitle:(userInteractionEnabled ? device.deviceName : @"... ...") forState:UIControlStateNormal];
-    button.titleEdgeInsets = UIEdgeInsetsMake(0, 7, 0, 7);
+    button.titleEdgeInsets = UIEdgeInsetsMake(0, 18, 0, 15);
     if (userInteractionEnabled) {
         [button setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
         button.alpha = 1.0;
@@ -110,6 +110,8 @@
     
     if (islast) {
         [button setTitleColor:[SPColorUtil getHexColor:@"#ffd570"] forState:UIControlStateNormal];
+    }else {
+        [button setBackgroundImage:[bgImg resizableImageWithCapInsets:UIEdgeInsetsMake(0, 79/2-1, 0, 79/2-1)] forState:UIControlStateNormal];
     }
     [button addTarget:self action:@selector(goDeviceAction:) forControlEvents:UIControlEventTouchUpInside];
     button.tag = tag;

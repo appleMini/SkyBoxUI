@@ -11,6 +11,7 @@
 
 @interface SPDLANManager() <NSXMLParserDelegate>
 @property (nonatomic, strong) CADisplayLink *displink;
+@property (nonatomic, strong) NSTimer *timeoutTimer;
 
 @end
 
@@ -39,6 +40,16 @@ static SPDLANManager *_manager = nil;
     return self;
 }
 
+- (void)emptyServers {
+    [self.timeoutTimer invalidate];
+    self.timeoutTimer = nil;
+    
+    [self closeDLAN];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(addDlanDevice: parentID:)]) {
+        [self.delegate addDlanDevice:nil parentID:@"-1"];
+    }
+}
+
 - (void)startupDLAN {
     [self closeDLAN];
     
@@ -49,6 +60,7 @@ static SPDLANManager *_manager = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"StartDLAN", @"AddDLNADeviceCallback" : addDLNADeviceCallback, @"RemoveDLNADeviceCallback" : removeDLNADeviceCallback, @"BrowseDLNAFolderCallback" : browseDLNAFolderCallback}];
     
     self.status = AddDeviceStatus;
+    _timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(emptyServers) userInfo:nil repeats:NO];
 }
 - (void)closeDLAN {
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"DestroyDLAN"}];
@@ -82,17 +94,22 @@ static SPDLANManager *_manager = nil;
     self.status = BrowseFolderStatus;
 }
 
-void AddDLNADeviceCallback(const char *UUID, int UUIDLength, const char *DeviceTitle, int DeviceTitleLength,
-                           const char *iconURL, int iconURLLength) {
-    NSString *uuid = [[NSString alloc] initWithData:[NSData dataWithBytes:UUID length:UUIDLength] encoding:NSUTF8StringEncoding];
-    NSString *deviceTitle = [[NSString alloc] initWithData:[NSData dataWithBytes:DeviceTitle length:DeviceTitleLength] encoding:NSUTF8StringEncoding];
-    NSString *iconUrl = [[NSString alloc] initWithData:[NSData dataWithBytes:iconURL length:iconURLLength] encoding:NSUTF8StringEncoding];
+void AddDLNADeviceCallback(const char* UUID, int uuidLength, const char* title, int titleLength, const char* iconurl, int iconLength, const char* Manufacturer, int manufacturerLength) {
+    
+    NSString *uuid = [[NSString alloc] initWithData:[NSData dataWithBytes:UUID length:uuidLength] encoding:NSUTF8StringEncoding];
+    NSString *deviceTitle = [[NSString alloc] initWithData:[NSData dataWithBytes:title length:titleLength] encoding:NSUTF8StringEncoding];
+    NSString *iconUrl = [[NSString alloc] initWithData:[NSData dataWithBytes:iconurl length:iconLength] encoding:NSUTF8StringEncoding];
+    NSString *manufacturer = [[NSString alloc] initWithData:[NSData dataWithBytes:Manufacturer length:manufacturerLength] encoding:NSUTF8StringEncoding];
     
     SPCmdAddDevice *device = [[SPCmdAddDevice alloc] init];
     device.deviceId = uuid;
     device.deviceName = deviceTitle;
     device.iconURL = iconUrl;
+    device.deviceType = manufacturer;
     SPDLANManager *dlan = [SPDLANManager shareDLANManager];
+    
+    [dlan.timeoutTimer invalidate];
+    dlan.timeoutTimer = nil;
     if (dlan.delegate && [dlan.delegate respondsToSelector:@selector(addDlanDevice: parentID:)]) {
         [dlan.delegate addDlanDevice:device parentID:@"-1"];
     }
@@ -157,6 +174,9 @@ void BrowseDLNAFolderCallback(const char *BrowseFolderXML, int xmlLength, const 
                 DDXMLElement *typeElement = [item elementForName:@"upnp:class"];
                 device.deviceType = [typeElement stringValue];
                 if (device.deviceType && [device.deviceType isEqualToString:@"object.item.imageItem.photo"]) {
+                    
+                    continue;
+                    
                     SPCmdAlbumDevice *albumDevice = [[SPCmdAlbumDevice alloc] init];
                     albumDevice.deviceId = device.deviceId;
                     

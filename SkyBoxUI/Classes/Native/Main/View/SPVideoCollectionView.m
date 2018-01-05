@@ -68,7 +68,7 @@
         if (image) {
             self.imgv.image = [image drawRectWithRoundedCorner:10 bgColor:[SPColorUtil getHexColor:@"#585E69"] inRect:self.imgv.bounds];
         }else{
-            self.imgv.image = [[Commons getPdfImageFromResource:@"Home_videos_album_none_small"] drawRectWithRoundedCorner:10 bgColor:[SPColorUtil getHexColor:@"#585E69"] inRect:self.imgv.bounds];
+            self.imgv.image = [[Commons getImageFromResource:@"Home_videos_album_default"] drawRectWithRoundedCorner:10 bgColor:[SPColorUtil getHexColor:@"#585E69"] inRect:self.imgv.bounds];
         }
     }];
     

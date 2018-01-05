@@ -29,6 +29,7 @@
 @end
 
 @implementation SPNetworkViewController
+@synthesize emptyView = _emptyView;
 
 - (instancetype)initWithSomething {
     self = [self initWithDisplayType:CollectionViewType];
@@ -76,6 +77,26 @@
     return nil;
 }
 
+- (UIView *)emptyView {
+    if(!_emptyView) {
+        UIView *emptyV = [[UIView alloc] initWithFrame:CGRectZero];
+        emptyV.backgroundColor = [UIColor redColor];
+        _emptyView = emptyV;
+    }
+    
+    return _emptyView;
+}
+- (void)reload {
+    if(!_dataArr || _dataArr.count <= 0) {
+        [self.view addSubview:self.emptyView];
+        [self.emptyView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.mas_equalTo(UIEdgeInsetsMake(0, 0, 0, 0));
+        }];
+        
+        return;
+    }
+    [self.collectionView reloadData];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -202,10 +223,14 @@ static CGFloat height = 0;
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     SPCmdAddDevice *device = _dataArr[indexPath.row];
-    
-    if (device.deviceType && ![device.deviceType containsString:@"storageFolder"]) {
+    if(device.deviceType && [device.deviceType isEqualToString:@"object.item.videoItem"]){
+        NSUInteger selectedIndex = -1;
+        NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:NativeToUnityType],
+                                 kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+                                 };
         
-        return ;
+        [self bubbleEventWithUserInfo:notify];
+        return;
     }
     
     self.headerView.device = device;
@@ -213,6 +238,12 @@ static CGFloat height = 0;
 }
 #pragma -mark SPDLANManagerDelegate
 - (void)addDlanDevice:(SPCmdAddDevice *)device parentID:(NSString *)pid {
+    if(!device) {
+        _dataArr = nil;
+        [self reload];
+        return;
+    }
+    
     if ([[SPDLANManager shareDLANManager] status] != AddDeviceStatus) {
         return;
     }

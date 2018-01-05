@@ -41,6 +41,7 @@ typedef void (^RefreshBlock) (NSString *dataStr);
 
 @property (nonatomic, copy) RefreshBlock refreshBlock;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UIView *emptyView;
 
 - (instancetype)initWithSomething;
 - (NSString *)titleOfLabelView;
@@ -51,6 +52,7 @@ typedef void (^RefreshBlock) (NSString *dataStr);
 - (void)releaseAction;
 - (void)showOrHiddenTopView:(BOOL)show;
 - (void)showTopViewAlpha:(CGFloat)alpha;
+- (UIView *)emptyView;
 @end
 
 @interface SPCmdEvent : NSObject
