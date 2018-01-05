@@ -106,7 +106,7 @@ typedef enum : NSUInteger {
         NSUInteger selectedIndex = -1;
         NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenResultMiddleVCType],
                                  kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
-                                 kParams : @{@"dataSorece": mediaListResult, @"airscreen" :_airscreen}
+                                 kParams : @{@"dataSource": mediaListResult, @"airscreen" :_airscreen}
                                  };
         
         [self.view bubbleEventWithUserInfo:notify];

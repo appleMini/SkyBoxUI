@@ -50,6 +50,7 @@ typedef void (^RefreshBlock) (NSString *dataStr);
 - (void)refresh;
 - (void)releaseAction;
 - (void)showOrHiddenTopView:(BOOL)show;
+- (void)showTopViewAlpha:(CGFloat)alpha;
 @end
 
 @interface SPCmdEvent : NSObject

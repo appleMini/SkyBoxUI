@@ -120,6 +120,7 @@
     
 }
 - (void)showOrHiddenTopView:(BOOL)show {}
+- (void)showTopViewAlpha:(CGFloat)alpha {}
 @end
 
 @implementation SPCmdEvent

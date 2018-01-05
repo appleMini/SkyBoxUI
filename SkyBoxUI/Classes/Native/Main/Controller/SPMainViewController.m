@@ -153,12 +153,12 @@
         return;
     }
     
-    SPBaseViewController *middleVC = self.childViewControllers[1];
-    if (index != 1) {
-        [middleVC showOrHiddenTopView:NO];
-    }else {
-        [middleVC showOrHiddenTopView:YES];
-    }
+//    SPBaseViewController *middleVC = self.childViewControllers[1];
+//    if (index != 1) {
+//        [middleVC showOrHiddenTopView:NO];
+//    }else {
+//        [middleVC showOrHiddenTopView:YES];
+//    }
     
     SPBaseViewController *vc = [self setupNaviItem:index];
     
@@ -181,7 +181,7 @@
 }
 
 - (void)jumpToAirScreenResultVC:(NSDictionary *)dict {
-    NSArray *videos = dict[@"dataSorece"];
+    NSArray *videos = dict[@"dataSource"];
     SPAirscreen *airscreen = dict[@"airscreen"];
     SPAirScreenResultViewController *airscreenResult = [[SPAirScreenResultViewController alloc] initWithDataSource:videos type:AirScreenType displayType:CollectionViewType];
     airscreenResult.airscreen = airscreen;
@@ -224,6 +224,12 @@
     }
     
     self.navigationController.navigationBar.alpha = fabs(alpha);
+    
+    if (self.childViewControllers.count == 0 || index < 0 || index > self.childViewControllers.count - 1) {
+        return;
+    }
+    SPBaseViewController *vc = self.childViewControllers[1];
+    [vc showTopViewAlpha:fabs(alpha)];
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {

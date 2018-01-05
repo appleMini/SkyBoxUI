@@ -9,9 +9,12 @@
 #import "SPVideo.h"
 #import "UIImage+Radius.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "UILabel+SPAttri.h"
 
 @interface SPVideoCollectionView()
 @property (weak, nonatomic) IBOutlet UIImageView *imgv;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imgvHeightConstraint;
+
 @property (weak, nonatomic) IBOutlet UILabel *label;
 @property (weak, nonatomic) IBOutlet UILabel *durationLabel;
 @property (weak, nonatomic) IBOutlet UIButton *favBtn;
@@ -57,6 +60,7 @@
 
 - (void)setVideo:(SPVideo *)video {
     _video = video;
+    self.imgvHeightConstraint.constant = 208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324;
     if (video.thumbnail_uri && ![video.thumbnail_uri hasPrefix:@"file://"] && ![video.thumbnail_uri hasPrefix:@"http://"] && ![video.thumbnail_uri hasPrefix:@"https://"]) {
         video.thumbnail_uri = [NSString stringWithFormat:@"file://%@", video.thumbnail_uri];
     }

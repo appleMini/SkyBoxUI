@@ -66,7 +66,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dissmiss:)];
-    [self.view addGestureRecognizer:tap];
+    
+    [KEYWINDOW addGestureRecognizer:tap];
     
     [self configSubViewStyle];
 }
