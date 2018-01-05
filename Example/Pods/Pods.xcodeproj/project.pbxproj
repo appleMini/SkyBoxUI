@@ -285,6 +285,30 @@
 		6059D7C01FFE36D0001CAAC2 /* SPButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 6059D7BE1FFE36D0001CAAC2 /* SPButton.h */; };
 		6059D7C11FFE36D0001CAAC2 /* SPButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6059D7BF1FFE36D0001CAAC2 /* SPButton.m */; };
 		6059D7CB1FFE3E62001CAAC2 /* AirScreen_titlebar_arrow.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 6059D7CA1FFE3E62001CAAC2 /* AirScreen_titlebar_arrow.pdf */; };
+		607824591FFF2BDD00D63747 /* Network_folder_device_PlexTv@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824451FFF2BDA00D63747 /* Network_folder_device_PlexTv@2x.png */; };
+		6078245A1FFF2BDD00D63747 /* Network_folder_device_Synology@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824461FFF2BDB00D63747 /* Network_folder_device_Synology@2x.png */; };
+		6078245B1FFF2BDD00D63747 /* Network_folder_device_BubbleUPnP@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824471FFF2BDB00D63747 /* Network_folder_device_BubbleUPnP@2x.png */; };
+		6078245C1FFF2BDD00D63747 /* Network_folder_device_Universalmediaserver@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824481FFF2BDB00D63747 /* Network_folder_device_Universalmediaserver@3x.png */; };
+		6078245D1FFF2BDD00D63747 /* Network_folder_device_EmbyMedia@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824491FFF2BDB00D63747 /* Network_folder_device_EmbyMedia@3x.png */; };
+		6078245E1FFF2BDD00D63747 /* Network_folder_device_normal@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6078244A1FFF2BDB00D63747 /* Network_folder_device_normal@3x.png */; };
+		6078245F1FFF2BDD00D63747 /* Network_folder@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6078244B1FFF2BDB00D63747 /* Network_folder@3x.png */; };
+		607824601FFF2BDD00D63747 /* Network_folder_device_win10@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6078244C1FFF2BDC00D63747 /* Network_folder_device_win10@2x.png */; };
+		607824611FFF2BDD00D63747 /* Network_folder_device_PlexTv@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6078244D1FFF2BDC00D63747 /* Network_folder_device_PlexTv@3x.png */; };
+		607824621FFF2BDD00D63747 /* Network_folder_device_KodiTv@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6078244E1FFF2BDC00D63747 /* Network_folder_device_KodiTv@3x.png */; };
+		607824631FFF2BDD00D63747 /* Network_folder_device_win10@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6078244F1FFF2BDC00D63747 /* Network_folder_device_win10@3x.png */; };
+		607824641FFF2BDD00D63747 /* Network_folder_device_MirageDLNA@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824501FFF2BDC00D63747 /* Network_folder_device_MirageDLNA@3x.png */; };
+		607824651FFF2BDD00D63747 /* Network_folder_device_BubbleUPnP@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824511FFF2BDC00D63747 /* Network_folder_device_BubbleUPnP@3x.png */; };
+		607824661FFF2BDD00D63747 /* Network_folder_device_KodiTv@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824521FFF2BDC00D63747 /* Network_folder_device_KodiTv@2x.png */; };
+		607824671FFF2BDD00D63747 /* Network_folder_device_Synology@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824531FFF2BDC00D63747 /* Network_folder_device_Synology@3x.png */; };
+		607824681FFF2BDD00D63747 /* Network_folder_device_EmbyMedia@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824541FFF2BDC00D63747 /* Network_folder_device_EmbyMedia@2x.png */; };
+		607824691FFF2BDD00D63747 /* Network_folder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824551FFF2BDC00D63747 /* Network_folder@2x.png */; };
+		6078246A1FFF2BDD00D63747 /* Network_folder_device_MirageDLNA@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824561FFF2BDD00D63747 /* Network_folder_device_MirageDLNA@2x.png */; };
+		6078246B1FFF2BDD00D63747 /* Network_folder_device_Universalmediaserver@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824571FFF2BDD00D63747 /* Network_folder_device_Universalmediaserver@2x.png */; };
+		6078246C1FFF2BDD00D63747 /* Network_folder_device_normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 607824581FFF2BDD00D63747 /* Network_folder_device_normal@2x.png */; };
+		607824991FFF4E3600D63747 /* Network_navigator_home.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 607824951FFF4E3500D63747 /* Network_navigator_home.pdf */; };
+		6078249A1FFF4E3600D63747 /* Network_navigator_path_bg.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 607824961FFF4E3600D63747 /* Network_navigator_path_bg.pdf */; };
+		6078249B1FFF4E3600D63747 /* Network_navigator_refresh.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 607824971FFF4E3600D63747 /* Network_navigator_refresh.pdf */; };
+		6078249C1FFF4E3600D63747 /* Network_navigator_home_bg.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 607824981FFF4E3600D63747 /* Network_navigator_home_bg.pdf */; };
 		60F71CDFF8E006FD4EB21BEABCE75AAE /* Channels_icon_favorites@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 58793E7415ABDCBB412227BE18042F5C /* Channels_icon_favorites@2x.png */; };
 		611EDC72DCA1AF86FCF0CD2C1CA57B19 /* NSImage+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 21BE94DA03A11A6C28924E8F08D60043 /* NSImage+WebCache.m */; };
 		622E7C43938EDE3623EBE7F8E83F634A /* SDWebImageFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = A6D407B364BCE8466329190EB9F3FC9C /* SDWebImageFrame.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1188,6 +1212,30 @@
 		6059D7BF1FFE36D0001CAAC2 /* SPButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPButton.m; sourceTree = "<group>"; };
 		6059D7CA1FFE3E62001CAAC2 /* AirScreen_titlebar_arrow.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = AirScreen_titlebar_arrow.pdf; sourceTree = "<group>"; };
 		6067C9C88CF30BEDA9F7FBDA82A69A94 /* KWRegisterMatchersNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = KWRegisterMatchersNode.m; path = Classes/Nodes/KWRegisterMatchersNode.m; sourceTree = "<group>"; };
+		607824451FFF2BDA00D63747 /* Network_folder_device_PlexTv@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_PlexTv@2x.png"; sourceTree = "<group>"; };
+		607824461FFF2BDB00D63747 /* Network_folder_device_Synology@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_Synology@2x.png"; sourceTree = "<group>"; };
+		607824471FFF2BDB00D63747 /* Network_folder_device_BubbleUPnP@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_BubbleUPnP@2x.png"; sourceTree = "<group>"; };
+		607824481FFF2BDB00D63747 /* Network_folder_device_Universalmediaserver@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_Universalmediaserver@3x.png"; sourceTree = "<group>"; };
+		607824491FFF2BDB00D63747 /* Network_folder_device_EmbyMedia@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_EmbyMedia@3x.png"; sourceTree = "<group>"; };
+		6078244A1FFF2BDB00D63747 /* Network_folder_device_normal@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_normal@3x.png"; sourceTree = "<group>"; };
+		6078244B1FFF2BDB00D63747 /* Network_folder@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder@3x.png"; sourceTree = "<group>"; };
+		6078244C1FFF2BDC00D63747 /* Network_folder_device_win10@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_win10@2x.png"; sourceTree = "<group>"; };
+		6078244D1FFF2BDC00D63747 /* Network_folder_device_PlexTv@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_PlexTv@3x.png"; sourceTree = "<group>"; };
+		6078244E1FFF2BDC00D63747 /* Network_folder_device_KodiTv@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_KodiTv@3x.png"; sourceTree = "<group>"; };
+		6078244F1FFF2BDC00D63747 /* Network_folder_device_win10@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_win10@3x.png"; sourceTree = "<group>"; };
+		607824501FFF2BDC00D63747 /* Network_folder_device_MirageDLNA@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_MirageDLNA@3x.png"; sourceTree = "<group>"; };
+		607824511FFF2BDC00D63747 /* Network_folder_device_BubbleUPnP@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_BubbleUPnP@3x.png"; sourceTree = "<group>"; };
+		607824521FFF2BDC00D63747 /* Network_folder_device_KodiTv@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_KodiTv@2x.png"; sourceTree = "<group>"; };
+		607824531FFF2BDC00D63747 /* Network_folder_device_Synology@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_Synology@3x.png"; sourceTree = "<group>"; };
+		607824541FFF2BDC00D63747 /* Network_folder_device_EmbyMedia@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_EmbyMedia@2x.png"; sourceTree = "<group>"; };
+		607824551FFF2BDC00D63747 /* Network_folder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder@2x.png"; sourceTree = "<group>"; };
+		607824561FFF2BDD00D63747 /* Network_folder_device_MirageDLNA@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_MirageDLNA@2x.png"; sourceTree = "<group>"; };
+		607824571FFF2BDD00D63747 /* Network_folder_device_Universalmediaserver@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_Universalmediaserver@2x.png"; sourceTree = "<group>"; };
+		607824581FFF2BDD00D63747 /* Network_folder_device_normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Network_folder_device_normal@2x.png"; sourceTree = "<group>"; };
+		607824951FFF4E3500D63747 /* Network_navigator_home.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Network_navigator_home.pdf; sourceTree = "<group>"; };
+		607824961FFF4E3600D63747 /* Network_navigator_path_bg.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Network_navigator_path_bg.pdf; sourceTree = "<group>"; };
+		607824971FFF4E3600D63747 /* Network_navigator_refresh.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Network_navigator_refresh.pdf; sourceTree = "<group>"; };
+		607824981FFF4E3600D63747 /* Network_navigator_home_bg.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Network_navigator_home_bg.pdf; sourceTree = "<group>"; };
 		612713AC6F2203D9FD46B6EB1E4CE777 /* SkyBoxUI.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = SkyBoxUI.modulemap; sourceTree = "<group>"; };
 		613AE063C3A90AD29B6396F8BF416E36 /* KWMessageTracker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = KWMessageTracker.h; path = Classes/Core/KWMessageTracker.h; sourceTree = "<group>"; };
 		6164E1AA24CCEE4D719C1A2A91569D8A /* Home_help_number_4.pdf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.pdf; path = Home_help_number_4.pdf; sourceTree = "<group>"; };
@@ -2247,6 +2295,30 @@
 		3D7492B705332572A51D092AD9A7191C /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				607824981FFF4E3600D63747 /* Network_navigator_home_bg.pdf */,
+				607824951FFF4E3500D63747 /* Network_navigator_home.pdf */,
+				607824961FFF4E3600D63747 /* Network_navigator_path_bg.pdf */,
+				607824971FFF4E3600D63747 /* Network_navigator_refresh.pdf */,
+				607824471FFF2BDB00D63747 /* Network_folder_device_BubbleUPnP@2x.png */,
+				607824511FFF2BDC00D63747 /* Network_folder_device_BubbleUPnP@3x.png */,
+				607824541FFF2BDC00D63747 /* Network_folder_device_EmbyMedia@2x.png */,
+				607824491FFF2BDB00D63747 /* Network_folder_device_EmbyMedia@3x.png */,
+				607824521FFF2BDC00D63747 /* Network_folder_device_KodiTv@2x.png */,
+				6078244E1FFF2BDC00D63747 /* Network_folder_device_KodiTv@3x.png */,
+				607824561FFF2BDD00D63747 /* Network_folder_device_MirageDLNA@2x.png */,
+				607824501FFF2BDC00D63747 /* Network_folder_device_MirageDLNA@3x.png */,
+				607824581FFF2BDD00D63747 /* Network_folder_device_normal@2x.png */,
+				6078244A1FFF2BDB00D63747 /* Network_folder_device_normal@3x.png */,
+				607824451FFF2BDA00D63747 /* Network_folder_device_PlexTv@2x.png */,
+				6078244D1FFF2BDC00D63747 /* Network_folder_device_PlexTv@3x.png */,
+				607824461FFF2BDB00D63747 /* Network_folder_device_Synology@2x.png */,
+				607824531FFF2BDC00D63747 /* Network_folder_device_Synology@3x.png */,
+				607824571FFF2BDD00D63747 /* Network_folder_device_Universalmediaserver@2x.png */,
+				607824481FFF2BDB00D63747 /* Network_folder_device_Universalmediaserver@3x.png */,
+				6078244C1FFF2BDC00D63747 /* Network_folder_device_win10@2x.png */,
+				6078244F1FFF2BDC00D63747 /* Network_folder_device_win10@3x.png */,
+				607824551FFF2BDC00D63747 /* Network_folder@2x.png */,
+				6078244B1FFF2BDB00D63747 /* Network_folder@3x.png */,
 				6059D7CA1FFE3E62001CAAC2 /* AirScreen_titlebar_arrow.pdf */,
 				7407020548074FFE4DA05B56B30E2BE4 /* AirScreen_help_icon_1@2x.png */,
 				3F185335E1714E44FDFBFA1DE02D906C /* AirScreen_help_icon_1@3x.png */,
@@ -4172,21 +4244,28 @@
 				53EF82084D4C40148EBC86A52E4925B6 /* AirScreen_help_icon_3@2x.png in Resources */,
 				982857FFB57C77685E573F01172BF038 /* AirScreen_help_icon_3@3x.png in Resources */,
 				D0D34130911DA8BBC13D5D6047C30A0C /* AirScreen_help_icon_4@2x.png in Resources */,
+				607824631FFF2BDD00D63747 /* Network_folder_device_win10@3x.png in Resources */,
 				E7E8223DF8A8C8346B1962B9B271C273 /* AirScreen_help_icon_4@3x.png in Resources */,
 				C8090F84504F635F1EE18EB0A6CC3A29 /* AirScreen_PC@2x.png in Resources */,
 				36B7360C19379539DF26500D2B31C651 /* AirScreen_PC@3x.png in Resources */,
+				6078246A1FFF2BDD00D63747 /* Network_folder_device_MirageDLNA@2x.png in Resources */,
 				E890965231A300CF9308520687ACF3AB /* AirScreen_search_warning@2x.png in Resources */,
+				6078249A1FFF4E3600D63747 /* Network_navigator_path_bg.pdf in Resources */,
 				7ABA82F79082551D2CFBC266BABBB960 /* AirScreen_search_warning@3x.png in Resources */,
 				77BC116205A6753D190935373522C9F3 /* AirScreen_titlebar_button_help.pdf in Resources */,
 				A3A19B7E118B685BC892F45D8C4BA8A3 /* Calibri_Bold.ttf in Resources */,
+				607824651FFF2BDD00D63747 /* Network_folder_device_BubbleUPnP@3x.png in Resources */,
 				2B965610411C326CC0DC8C9A4C0C4B62 /* Calibri_light.ttf in Resources */,
 				8C13DB14DE6EB478D8CCE7D748963414 /* Calibri_Regular.ttf in Resources */,
+				6078245F1FFF2BDD00D63747 /* Network_folder@3x.png in Resources */,
+				607824641FFF2BDD00D63747 /* Network_folder_device_MirageDLNA@3x.png in Resources */,
 				48955BFBAEA2B388BA444171901D8666 /* Channels_icon_airscreen.pdf in Resources */,
 				2A054AFFE0A8773F31A89F80579E619D /* Channels_icon_airscreen@3x.png in Resources */,
 				640A8C85E37549399CAAB3A0A2F6D7DB /* Channels_icon_airscreen_active.pdf in Resources */,
 				C1C960F70495B9241FB100698B4EF3EA /* Channels_icon_airscreen_active@3x.png in Resources */,
 				5BF202EE46DE6EBBB73A059E14AD4EB5 /* Channels_icon_allfiles.pdf in Resources */,
 				037C40202A6F7B6B3E1321ADEE9D8EEB /* Channels_icon_allfiles@3x.png in Resources */,
+				607824671FFF2BDD00D63747 /* Network_folder_device_Synology@3x.png in Resources */,
 				7F3A3A30BC4A3E9C1E660E2E1FC13BA4 /* Channels_icon_allfiles_active.pdf in Resources */,
 				EA8787348C5EF642BE031FBD06CF5512 /* Channels_icon_allfiles_active@3x.png in Resources */,
 				9B44798AF6271070AF684819A0D93FDE /* Channels_icon_favorites.pdf in Resources */,
@@ -4197,12 +4276,14 @@
 				7D504DA43E7FE8053C74680FDF11D304 /* Channels_icon_favorites_active@3x.png in Resources */,
 				DD4AD35AECBCB39DCB66AFDD07792F1F /* Channels_icon_network.pdf in Resources */,
 				3ED77460320529A74EEEE2CE90706C11 /* Channels_icon_network@3x.png in Resources */,
+				6078246C1FFF2BDD00D63747 /* Network_folder_device_normal@2x.png in Resources */,
 				7358043048FE044B940E71159E6263AD /* Channels_icon_network_active.pdf in Resources */,
 				4568A18165C13B76162C26E980A80F95 /* Channels_icon_network_active@3x.png in Resources */,
 				D546BD6EC46693792FFF315737E504EB /* Channels_icon_online.pdf in Resources */,
 				1642246465550D80D443E11DF145D0E7 /* Channels_icon_online@3x.png in Resources */,
 				C9A6070C8AA8557B4626C71FA62EDAC5 /* Channels_icon_online_active.pdf in Resources */,
 				55DDFA47C89BD873E095BD6408C7D4AC /* Channels_icon_online_active@3x.png in Resources */,
+				607824601FFF2BDD00D63747 /* Network_folder_device_win10@2x.png in Resources */,
 				14D0B327EAA43CF5A5EE29D470D303D4 /* Channels_icon_VRvideos.pdf in Resources */,
 				C8A6E644DD5952AA740C17CAE180C72C /* Channels_icon_VRvideos@3x.png in Resources */,
 				C43964541DBF6AA876FD3D7827BF9CCA /* Channels_icon_VRvideos_active.pdf in Resources */,
@@ -4219,10 +4300,12 @@
 				C1F19E176C1951EF4A9CDAEE759629EB /* Home_help_number_1.pdf in Resources */,
 				BEBACDCFC996CF7CAE302B41AD69A1C1 /* Home_help_number_1@2x.png in Resources */,
 				BFD5A3D0CD8721A2CC38B05FD9DBC968 /* Home_help_number_1@3x.png in Resources */,
+				6078249C1FFF4E3600D63747 /* Network_navigator_home_bg.pdf in Resources */,
 				345B62F5A42AF0131A6581F0AEBC3197 /* Home_help_number_2.pdf in Resources */,
 				9741E109870B5F3FFD34690C7FA652F0 /* Home_help_number_2@2x.png in Resources */,
 				9AC5E9D1B6246B52F7E0414715859D25 /* Home_help_number_2@3x.png in Resources */,
 				6BDB45652124D8108BB990C7368361FC /* Home_help_number_3.pdf in Resources */,
+				6078245B1FFF2BDD00D63747 /* Network_folder_device_BubbleUPnP@2x.png in Resources */,
 				77DDEA03C3F38B2BA5CBA33D35A13EFB /* Home_help_number_3@2x.png in Resources */,
 				08AD58A2C5277EEF8CDA1904EA96E673 /* Home_help_number_3@3x.png in Resources */,
 				774ACA9831390D238EBCAA67DFD9151B /* Home_help_number_4.pdf in Resources */,
@@ -4231,6 +4314,7 @@
 				EA9E90B5194A62AA7F2AE51A0415C8B4 /* Home_tabbar_button_bg@2x.png in Resources */,
 				51798FD321717404B0E415C10C60E0EF /* Home_tabbar_button_bg@3x.png in Resources */,
 				1385E0E0B69EA51A4BAA01DE6017DE68 /* Home_tabbar_button_channels@2x.png in Resources */,
+				607824611FFF2BDD00D63747 /* Network_folder_device_PlexTv@3x.png in Resources */,
 				A7E0EC3F504BD9A7B0149D8E51B6F788 /* Home_tabbar_button_channels@3x.png in Resources */,
 				BCDAC778FE0F270352DD06B2B905EFB6 /* Home_tabbar_button_channels_active@2x.png in Resources */,
 				F46264CB9B703FEC32BE87CAB69D3D7A /* Home_tabbar_button_channels_active@3x.png in Resources */,
@@ -4241,18 +4325,24 @@
 				F29F8343B8B5C68EDDDFD585DFF5E119 /* Home_tabbar_button_history_active@2x.png in Resources */,
 				9C2324BDAD48349DC0B35DD7F042B2BC /* Home_tabbar_button_history_active@3x.png in Resources */,
 				F3DC0A9A7D32A0D9B8DDEB1C2748FB79 /* Home_tabbar_button_history_shadow@2x.png in Resources */,
+				607824991FFF4E3600D63747 /* Network_navigator_home.pdf in Resources */,
 				CE16B3842DADAFFEED141C2F64F788B4 /* Home_tabbar_button_history_shadow@3x.png in Resources */,
 				521D6BAF831F9039C23C058B2AB9A75B /* Home_tabbar_button_videos.pdf in Resources */,
 				D1C152114CE186AD89752C3587EDCE31 /* Home_tabbar_button_VR.pdf in Resources */,
+				607824591FFF2BDD00D63747 /* Network_folder_device_PlexTv@2x.png in Resources */,
 				736854B1E02E848DF33EB4677602DC83 /* Home_titlebar_button_add.pdf in Resources */,
 				3CE82C0F69B881960DF670A32E3E74A9 /* Home_titlebar_button_grid.pdf in Resources */,
 				1293230305B42D541EB89121FC8ED106 /* Home_titlebar_button_list.pdf in Resources */,
+				607824691FFF2BDD00D63747 /* Network_folder@2x.png in Resources */,
 				B88BA6154224F5992C60CCABE0A1A08F /* Home_videos_album_loading.pdf in Resources */,
 				0065BBDA6A6F8D7C837A0FCDB714727C /* Home_videos_album_loading_00000@2x.png in Resources */,
 				06BAADF51D28A0724888D375375EA6BE /* Home_videos_album_loading_00000@3x.png in Resources */,
 				7EF80511D45FDB340C61A6A9A9532ADA /* Home_videos_album_loading_00001@2x.png in Resources */,
 				2D643E148B6D621D4F841C99A9941221 /* Home_videos_album_loading_00001@3x.png in Resources */,
+				6078245E1FFF2BDD00D63747 /* Network_folder_device_normal@3x.png in Resources */,
+				607824621FFF2BDD00D63747 /* Network_folder_device_KodiTv@3x.png in Resources */,
 				9990F830609DCE5160F0745AE8D2EFBD /* Home_videos_album_loading_00002@2x.png in Resources */,
+				607824681FFF2BDD00D63747 /* Network_folder_device_EmbyMedia@2x.png in Resources */,
 				954267795C26689CB9B2C7C04CF7D1DA /* Home_videos_album_loading_00002@3x.png in Resources */,
 				7CC71C54AAB3A2923930BA3F3FED6137 /* Home_videos_album_loading_00003@2x.png in Resources */,
 				DB348152DEEAD2B9E152FE4335F3BE33 /* Home_videos_album_loading_00003@3x.png in Resources */,
@@ -4266,6 +4356,7 @@
 				8C806B9074C9EC3AC61E10E1256C6CD1 /* Home_videos_album_loading_00007@3x.png in Resources */,
 				CAD41C10554D82FBAD698456D3BB7151 /* Home_videos_album_loading_00008@2x.png in Resources */,
 				DD1B525FF2552783B89FF34CA6A743B4 /* Home_videos_album_loading_00008@3x.png in Resources */,
+				6078246B1FFF2BDD00D63747 /* Network_folder_device_Universalmediaserver@2x.png in Resources */,
 				B08F6423E371DF3F0F57C9FC9C59EE87 /* Home_videos_album_loading_00009@2x.png in Resources */,
 				C4CA5E06FFEC3D8F822CFCB662947C5D /* Home_videos_album_loading_00009@3x.png in Resources */,
 				3CDC1549E6721A53A73E610020693353 /* Home_videos_album_loading_00010@2x.png in Resources */,
@@ -4274,6 +4365,7 @@
 				3003A86D23CAF167877BA71DD563D913 /* Home_videos_album_loading_00011@3x.png in Resources */,
 				8742E9569269A627C17B855EB56FC89A /* Home_videos_album_loading_00012@2x.png in Resources */,
 				84DFED1C96E613A60932C6876F9B4477 /* Home_videos_album_loading_00012@3x.png in Resources */,
+				6078245D1FFF2BDD00D63747 /* Network_folder_device_EmbyMedia@3x.png in Resources */,
 				86B82B0AEE3E1C8A5860EC2697A4E9ED /* Home_videos_album_loading_00013@2x.png in Resources */,
 				FDBB19BD8C44F7FA3B04859D7071CA2D /* Home_videos_album_loading_00013@3x.png in Resources */,
 				52C45D3FBD26389182507C8D1B7BF28C /* Home_videos_album_loading_00014@2x.png in Resources */,
@@ -4293,6 +4385,7 @@
 				D08D3CC468953795F396A5F7AC54C465 /* Home_videos_album_loading_00020@3x.png in Resources */,
 				A6067536E3EC9689D727A8DC65EA42BA /* Home_videos_album_loading_00021@2x.png in Resources */,
 				2D854EA92185FFF1F32060A91A72863A /* Home_videos_album_loading_00021@3x.png in Resources */,
+				6078245C1FFF2BDD00D63747 /* Network_folder_device_Universalmediaserver@3x.png in Resources */,
 				6F57AB29248826409C9B9808F3BCE6FE /* Home_videos_album_loading_00022@2x.png in Resources */,
 				146465AE622097899FEB828A503604E2 /* Home_videos_album_loading_00022@3x.png in Resources */,
 				0A9B740BC51CBD25D8DD22BCC5B59D5F /* Home_videos_album_loading_00023@2x.png in Resources */,
@@ -4317,11 +4410,14 @@
 				67603AFECE7A4311C1929606875722D4 /* Home_videos_button_unfav_small.pdf in Resources */,
 				49E4A6BD825D573D512ABD317A3439A0 /* SPAirScreenHelpViewController.xib in Resources */,
 				E7894A93A2D456155F1E17104773D5C2 /* SPAirScreenViewController.xib in Resources */,
+				607824661FFF2BDD00D63747 /* Network_folder_device_KodiTv@2x.png in Resources */,
+				6078245A1FFF2BDD00D63747 /* Network_folder_device_Synology@2x.png in Resources */,
 				5E0D7723B5AD54E2E42B52ABD726141F /* SPDLANView.xib in Resources */,
 				A6137B59200D0E83C0845C09508A079B /* SPHeaderView.xib in Resources */,
 				996CF81FB87801A03C29D6B9C5453026 /* SPHelpRootViewController.xib in Resources */,
 				23C11FF74DB91BD6EBAFEC5CAC73E29A /* SPHomeHelpViewController.xib in Resources */,
 				B895632ACC5C085E486A72B49D946683 /* SPVideoCollectionView.xib in Resources */,
+				6078249B1FFF4E3600D63747 /* Network_navigator_refresh.pdf in Resources */,
 				0E8F7C41356F1688337955BBC6CB83AD /* SPVideoView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

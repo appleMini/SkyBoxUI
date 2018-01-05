@@ -10,7 +10,11 @@
 
 @interface SPDLANView ()
 @property (weak, nonatomic) IBOutlet UIImageView *iconV;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconVHeightConstraint;
+@property (weak, nonatomic) IBOutlet UIImageView *upperV;
 @property (weak, nonatomic) IBOutlet UILabel *tagLabel;
+@property (weak, nonatomic) IBOutlet UILabel *durationLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *durationLabelTopConstraint;
 
 @end
 @implementation SPDLANView
@@ -26,8 +30,24 @@
 
 - (void)setDevice:(SPCmdAddDevice *)device {
     _device = device;
-    [self.iconV sd_setImageWithURL:[NSURL URLWithString:device.iconURL]];
+    
+    if (device.deviceType) {
+        NSLog(@"device.deviceType  =====  %@", device.deviceType);
+    }else {
+        self.upperV.image = [Commons getImageFromResource:@"Network_folder_device_Universalmediaserver"];
+        self.iconV.image = [Commons getImageFromResource:@"Network_folder"];
+    }
+    
     self.tagLabel.text = device.deviceName;
+    self.tagLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15];
+    self.tagLabel.textColor = [SPColorUtil getHexColor:@"#ffffff"];
+    
+    CGFloat imgvHeight = 208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324;
+    self.iconVHeightConstraint.constant = imgvHeight;
+    self.durationLabelTopConstraint.constant = 0;
+    self.durationLabel.hidden = YES;
+    self.durationLabel.font = [UIFont fontWithName:@"Calibri-light" size:12];
+    self.durationLabel.textColor = [SPColorUtil getHexColor:@"#b0b1b3"];
 }
 
 @end
@@ -88,6 +108,7 @@
 - (void)setupViews {
     SPDLANView *dlanView = [[[UINib nibWithNibName:@"SPDLANView" bundle:[Commons resourceBundle]] instantiateWithOwner:nil options:nil] firstObject];
     
+    dlanView.backgroundColor = [UIColor clearColor];
     [self addSubview:dlanView];
     _dlanView = dlanView;
     [dlanView mas_makeConstraints:^(MASConstraintMaker *make) {
