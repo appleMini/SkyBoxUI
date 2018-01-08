@@ -77,6 +77,8 @@
             [ws.view bringSubviewToFront:backgroundView];
             
             ws.emptyView = backgroundView;
+            
+            [ws.headerView cleanHeadViews];
             [ws.dlanManager releaseAction];
             ws.dlanManager = nil;
         }else {
@@ -114,13 +116,12 @@
         if(!_dataArr || _dataArr.count <= 0) {
             SPBackgrondView *backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:(_level == -1 ? NoLocalMediaServers : NoFiles)];
             [self.view insertSubview:backgroundView aboveSubview:self.collectionView];
-            
+            [self.view bringSubviewToFront:self.headerView];
             _emptyView = backgroundView;
-            return;
         }else{
             [_emptyView removeFromSuperview];
         }
-       
+        
         [self.collectionView reloadData];
     });
 }
@@ -280,7 +281,7 @@ static CGFloat height = 0;
         }
         
         [_dataArr addObject:device];
-        [self.collectionView reloadData];
+        [self reload];
     }
 }
 
@@ -293,7 +294,7 @@ static CGFloat height = 0;
     _dataArr = [NSMutableArray array];
     
     _dataArr = [folders copy];
-    [self.collectionView reloadData];
+    [self reload];
 }
 @end
 

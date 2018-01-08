@@ -30,7 +30,7 @@
 }
 
 - (void)prepareForReuse {
-     self.upperV.image = nil;
+    self.upperV.image = nil;
 }
 
 - (void)setDevice:(SPCmdAddDevice *)device {
@@ -69,11 +69,9 @@
         self.tagLabel.textAlignment = NSTextAlignmentLeft;
         
         SPCmdVideoDevice *video = (SPCmdVideoDevice *)device;
-        [self.iconV sd_setImageWithURL:[NSURL URLWithString:video.iconURL] placeholderImage:[Commons getPdfImageFromResource:@"Home_videos_album_none_small"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        [self.iconV sd_setImageWithURL:[NSURL URLWithString:video.iconURL] placeholderImage:[Commons getImageFromResource:@"Home_videos_album_default"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             if (image) {
-                self.iconV.image = [image drawRectWithRoundedCorner:20 bgColor:[SPColorUtil getHexColor:@"#585E69"] inRect:self.iconV.bounds];
-            }else{
-                self.iconV.image = [[Commons getImageFromResource:@"Home_videos_album_default"] drawRectWithRoundedCorner:20 bgColor:[SPColorUtil getHexColor:@"#585E69"] inRect:self.iconV.bounds];
+                self.iconV.image = [image drawRectWithRoundedCorner:10 bgColor:[SPColorUtil getHexColor:@"#585E69"] inRect:self.iconV.bounds];
             }
         }];
         self.durationLabelTopConstraint.constant = 8;

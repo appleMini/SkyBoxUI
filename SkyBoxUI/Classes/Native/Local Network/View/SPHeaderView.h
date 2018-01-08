@@ -10,4 +10,5 @@
 @interface SPHeaderView : UIView
 @property (nonatomic, strong) SPCmdAddDevice *device;
 
+- (void)cleanHeadViews;
 @end

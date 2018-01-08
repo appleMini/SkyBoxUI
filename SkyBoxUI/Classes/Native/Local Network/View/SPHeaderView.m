@@ -55,6 +55,13 @@
     self.layer.masksToBounds = YES;
 }
 
+- (void)cleanHeadViews {
+    [self.devices removeAllObjects];
+    [self setupContentViews];
+    
+    _device = nil;
+}
+
 - (IBAction)homeAction:(id)sender {
     NSLog(@"go home...");
     [self.devices removeAllObjects];
@@ -95,7 +102,7 @@
     UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(x, 0, width+7, 28)];
     UIImage *bgImg = [Commons getPdfImageFromResource:@"Network_navigator_path_bg"];
     
-//    button.backgroundColor  = randomColor;
+    //    button.backgroundColor  = randomColor;
     button.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:13.0];
     button.userInteractionEnabled = userInteractionEnabled;
     [button setTitle:(userInteractionEnabled ? device.deviceName : @"... ...") forState:UIControlStateNormal];
