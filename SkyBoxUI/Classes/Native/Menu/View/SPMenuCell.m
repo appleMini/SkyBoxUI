@@ -49,7 +49,7 @@
 }
 
 - (void)setupView {
-    [self getFontNames];
+//    [self getFontNames];
     UIImageView *iconV = [[UIImageView alloc] initWithFrame:CGRectZero];
     [self.contentView addSubview:iconV];
     [iconV mas_makeConstraints:^(MASConstraintMaker *make) {

@@ -44,8 +44,6 @@
     if (self) {
         _level = -1;
         _showType = show;
-        _dlanManager = [SPDLANManager shareDLANManager];
-        _dlanManager.delegate = self;
         _dataArr = [NSMutableArray array];
     }
     return self;
@@ -65,6 +63,40 @@
     NSLog(@"NetworkViewController  释放.....");
 }
 
+- (void)monitorNetWorkState {
+    AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
+    AFNetworkReachabilityStatus status = [manager networkReachabilityStatus];
+    
+    __weak typeof(self) ws = self;
+    self.netStateBlock = ^(AFNetworkReachabilityStatus status) {
+        if (status == -1 || status == 0 || status == 1) {
+            SPBackgrondView *backgroundView = [[SPBackgrondView alloc] initWithFrame:ws.view.bounds
+                                                                      backgroundType:NoWifi];
+            backgroundView.backgroundColor = RGBCOLOR(59, 63, 72);
+            [ws.view addSubview:backgroundView];
+            [ws.view bringSubviewToFront:backgroundView];
+            
+            ws.emptyView = backgroundView;
+            [ws.dlanManager releaseAction];
+            ws.dlanManager = nil;
+        }else {
+            [ws.emptyView removeFromSuperview];
+            ws.dlanManager = [SPDLANManager shareDLANManager];
+            ws.dlanManager.delegate = ws;
+        }
+    };
+    
+    self.netStateBlock(status);
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self setupHeaderView];
+    [self setupScrollView];
+    
+    [self monitorNetWorkState];
+}
+
 - (NSString *)titleOfLabelView {
     return @"Local Network";
 }
@@ -77,31 +109,20 @@
     return nil;
 }
 
-- (UIView *)emptyView {
-    if(!_emptyView) {
-        UIView *emptyV = [[UIView alloc] initWithFrame:CGRectZero];
-        emptyV.backgroundColor = [UIColor redColor];
-        _emptyView = emptyV;
-    }
-    
-    return _emptyView;
-}
 - (void)reload {
-    if(!_dataArr || _dataArr.count <= 0) {
-        [self.view addSubview:self.emptyView];
-        [self.emptyView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.mas_equalTo(UIEdgeInsetsMake(0, 0, 0, 0));
-        }];
-        
-        return;
-    }
-    [self.collectionView reloadData];
-}
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    [self setupHeaderView];
-    [self setupScrollView];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if(!_dataArr || _dataArr.count <= 0) {
+            SPBackgrondView *backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:(_level == -1 ? NoLocalMediaServers : NoFiles)];
+            [self.view insertSubview:backgroundView aboveSubview:self.collectionView];
+            
+            _emptyView = backgroundView;
+            return;
+        }else{
+            [_emptyView removeFromSuperview];
+        }
+       
+        [self.collectionView reloadData];
+    });
 }
 
 - (void)setupHeaderView {

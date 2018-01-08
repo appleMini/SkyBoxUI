@@ -77,6 +77,7 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
         #import "SPBaseViewController.h"
         #import "ServiceCall.h"
         #import <MJExtension/MJExtension.h>
+        #import <AFNetworking/AFNetworking.h>
     #endif /* __OBJC__*/
   EOS
 

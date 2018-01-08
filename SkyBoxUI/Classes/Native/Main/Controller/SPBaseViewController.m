@@ -121,9 +121,6 @@
 }
 - (void)showOrHiddenTopView:(BOOL)show {}
 - (void)showTopViewAlpha:(CGFloat)alpha {}
-- (UIView *)emptyView {
-    return nil;
-}
 @end
 
 @implementation SPCmdEvent

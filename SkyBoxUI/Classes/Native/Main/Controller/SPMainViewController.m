@@ -50,6 +50,26 @@
     return @"MY VIDEOS";
 }
 
+#pragma mark----网络检测
+- (void)monitorNetWorkState
+{
+    AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
+    // 提示：要监控网络连接状态，必须要先调用单例的startMonitoring方法
+    [manager startMonitoring];
+    
+    //检测的结果
+    __weak typeof(self) wself = self;
+    [manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        if (wself.childViewControllers.count != 3) {
+            return;
+        }
+        SPBaseViewController *vc = wself.childViewControllers[1];
+        if (vc.netStateBlock) {
+            vc.netStateBlock(status);
+        }
+    }];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -67,6 +87,8 @@
     
     [SPSwitchBar shareSPSwitchBar].delegate = self;
     [self.view addSubview:[SPSwitchBar shareSPSwitchBar]];
+    
+    [self monitorNetWorkState];
 }
 
 -(void)viewWillAppear:(BOOL)animated{

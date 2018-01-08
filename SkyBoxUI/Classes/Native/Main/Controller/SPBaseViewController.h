@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SPBackgrondView.h"
+ #import <AFNetworking/AFNetworking.h>
 
 #define  adjustsScrollViewInsets(scrollView)\
 do {\
@@ -36,12 +38,14 @@ typedef enum : NSUInteger {
 } DisplayType;
 
 typedef void (^RefreshBlock) (NSString *dataStr);
+typedef void (^NetStateBlock) (AFNetworkReachabilityStatus status);
 
 @interface SPBaseViewController : UIViewController
 
 @property (nonatomic, copy) RefreshBlock refreshBlock;
+@property (nonatomic, copy) NetStateBlock netStateBlock;
 @property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UIView *emptyView;
+@property (nonatomic, strong) SPBackgrondView *emptyView;
 
 - (instancetype)initWithSomething;
 - (NSString *)titleOfLabelView;
@@ -52,7 +56,6 @@ typedef void (^RefreshBlock) (NSString *dataStr);
 - (void)releaseAction;
 - (void)showOrHiddenTopView:(BOOL)show;
 - (void)showTopViewAlpha:(CGFloat)alpha;
-- (UIView *)emptyView;
 @end
 
 @interface SPCmdEvent : NSObject

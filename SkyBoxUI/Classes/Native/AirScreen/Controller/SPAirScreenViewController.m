@@ -59,6 +59,7 @@ typedef enum : NSUInteger {
 @end
 
 @implementation SPAirScreenViewController
+@synthesize emptyView = _emptyView;
 
 - (instancetype)initWithSomething {
     self = [super initWithNibName:@"SPAirScreenViewController" bundle:[Commons resourceBundle]];
@@ -72,6 +73,33 @@ typedef enum : NSUInteger {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveMessage:) name:UNITYTOUINOTIFICATIONNAME object:nil];
     }
     return self;
+}
+
+- (void)monitorNetWorkState {
+    AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
+    AFNetworkReachabilityStatus status = [manager networkReachabilityStatus];
+    
+    __weak typeof(self) ws = self;
+    self.netStateBlock = ^(AFNetworkReachabilityStatus status) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            ws.status = StartupStatus;
+            
+            [ws updateViewConstraints];
+            if (status == -1 || status == 0 || status == 1) {
+                SPBackgrondView *backgroundView = [[SPBackgrondView alloc] initWithFrame:ws.view.bounds
+                                                                          backgroundType:NoWifi];
+                backgroundView.backgroundColor = RGBCOLOR(59, 63, 72);
+                [ws.view addSubview:backgroundView];
+                [ws.view bringSubviewToFront:backgroundView];
+                
+                ws.emptyView = backgroundView;
+            }else {
+                [ws.emptyView removeFromSuperview];
+            }
+        });
+    };
+    
+    self.netStateBlock(status);
 }
 
 - (void)receiveMessage:(NSNotification *)notify {
@@ -159,6 +187,8 @@ typedef enum : NSUInteger {
     self.searchButton.layer.masksToBounds = YES;
     
     self.contentView.backgroundColor = [UIColor clearColor];
+    
+    [self monitorNetWorkState];
 }
 
 - (NSString *)titleOfLabelView {
@@ -194,6 +224,25 @@ typedef enum : NSUInteger {
     _instruction2Label.hidden = hidden;
 }
 - (void)resetViewsAndConstraints {
+    if (_status == StartupStatus) {
+        self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
+        [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateNormal];
+        self.searchButton.backgroundColor = [SPColorUtil getHexColor:@"#ffde9e"];
+        [self.searchButton setTitle:@"SEARCH DEVICE" forState:UIControlStateNormal];
+        self.searchButton.layer.cornerRadius = 21.0;//
+        self.searchButton.layer.borderWidth = 0.0f;//设置边框颜色
+        self.searchButton.layer.masksToBounds = YES;
+    }else{
+        self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
+        [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
+        self.searchButton.backgroundColor = [UIColor clearColor];
+        [self.searchButton setTitle:@"CANCEL" forState:UIControlStateNormal];
+        self.searchButton.layer.cornerRadius = 21.0;//
+        self.searchButton.layer.borderColor = [UIColor whiteColor].CGColor;//设置边框颜色
+        self.searchButton.layer.borderWidth = 2.0f;//设置边框颜色
+        self.searchButton.layer.masksToBounds = YES;
+    }
+    
     switch (_status) {
         case StartupStatus:
         {
@@ -382,25 +431,6 @@ typedef enum : NSUInteger {
 }
 
 - (IBAction)searchClick:(id)sender {
-    if (_status == StartupStatus) {
-        self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
-        [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
-        self.searchButton.backgroundColor = [UIColor clearColor];
-        [self.searchButton setTitle:@"CANCEL" forState:UIControlStateNormal];
-        self.searchButton.layer.cornerRadius = 21.0;//
-        self.searchButton.layer.borderColor = [UIColor whiteColor].CGColor;//设置边框颜色
-        self.searchButton.layer.borderWidth = 2.0f;//设置边框颜色
-        self.searchButton.layer.masksToBounds = YES;
-    }else{
-        self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
-        [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateNormal];
-        self.searchButton.backgroundColor = [SPColorUtil getHexColor:@"#ffde9e"];
-        [self.searchButton setTitle:@"SEARCH DEVICE" forState:UIControlStateNormal];
-        self.searchButton.layer.cornerRadius = 21.0;//
-        self.searchButton.layer.borderWidth = 0.0f;//设置边框颜色
-        self.searchButton.layer.masksToBounds = YES;
-    }
-    
     switch (_status) {
         case StartupStatus:
         {
