@@ -44,6 +44,7 @@ typedef enum : NSUInteger {
 
 @interface Commons : NSObject
 
++ (NSURL *)getMovieFromResource:(NSString *)name extension:(NSString *)ext;
 + (UIImage *)getImageFromResource:(NSString *)name;
 + (UIImage *)getPdfImageFromResource:(NSString *)name;
 + (NSBundle *)resourceBundle;

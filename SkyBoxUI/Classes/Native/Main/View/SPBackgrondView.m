@@ -10,7 +10,7 @@
 
 @interface SPBackgrondView()
 
-@property (nonatomic, strong) NSString *movieUrl;
+@property (nonatomic, strong) NSURL *movieUrl;
 @property (nonatomic, strong) AVPlayer *player;
 @property (strong, nonatomic) AVPlayerLayer *playerLayer;
 @property (nonatomic, assign) SPBackgroundType type;
@@ -88,6 +88,7 @@
             break;
         case NoAirScreenResult:
         {
+            self.movieUrl = [Commons getMovieFromResource:@"2017" extension:@"mp4"];
             [self setMediaPlayer];
             
             //监听AVPlayerItem状态
@@ -144,9 +145,9 @@
 }
 
 #pragma -mark 设置AVPlayerItem
-- (AVPlayerItem *)getPlayItem:(NSString *)strURL {
-    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:strURL]];
-   
+- (AVPlayerItem *)getPlayItem:(NSURL *)URL {
+    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:URL];
+    
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0")) {
         playerItem.canUseNetworkResourcesForLiveStreamingWhilePaused = YES;
     }
@@ -214,7 +215,7 @@
         AVPlayerItemStatus status= [[change objectForKey:@"new"] intValue];
         if(status == AVPlayerItemStatusReadyToPlay){
             NSLog(@"开始播放。。。。。。。。");
-//            [self startPlayer:self.currentTime];
+            //            [self startPlayer:self.currentTime];
             [self.player play];
         }else if(status == AVPlayerItemStatusUnknown){
             NSLog(@"%@",@"AVPlayerItemStatusUnknown");
@@ -246,3 +247,4 @@
     }];
 }
 @end
+

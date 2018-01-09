@@ -10,6 +10,11 @@
 
 @implementation Commons
 
++ (NSURL *)getMovieFromResource:(NSString *)name extension:(NSString *)ext {
+    NSURL *movieUrl = [[Commons resourceBundle] URLForResource:name withExtension:ext];
+    return movieUrl;
+}
+
 + (UIImage *)getImageFromResource:(NSString *)name {
     NSString *ext = [SPDeviceUtil isiPhoneX] ? @"@3x" : @"@2x";
     UIImage *img =  [UIImage imageWithContentsOfFile:[[Commons resourceBundle] pathForResource:[NSString stringWithFormat:@"%@%@",name, ext] ofType:@"png"]];

@@ -41,6 +41,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *help4TitleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *help4ContentLabel;
 
+@property (strong, nonatomic) UITapGestureRecognizer *tapGesture;
+
 @end
 
 @implementation SPAirScreenHelpViewController
@@ -69,7 +71,12 @@
     
     [KEYWINDOW addGestureRecognizer:tap];
     
+    _tapGesture = tap;
     [self configSubViewStyle];
+}
+
+- (void)dealloc {
+    [KEYWINDOW removeGestureRecognizer:_tapGesture];
 }
 
 - (void)configSubViewStyle {

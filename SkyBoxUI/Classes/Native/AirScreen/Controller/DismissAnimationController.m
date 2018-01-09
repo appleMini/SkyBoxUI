@@ -24,15 +24,18 @@
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
     NSTimeInterval duration = [self transitionDuration:transitionContext];
-    
+    UIView *containerView = [transitionContext containerView];
+    UIView *markeView = [containerView viewWithTag:99999];
     [UIView animateWithDuration:3.0 * duration / 4.0
                           delay:duration / 4.0
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          fromViewController.view.alpha = 0.0;
+                         markeView.alpha = 0.0;
                      }
                      completion:^(BOOL finished) {
                          [fromViewController.view removeFromSuperview];
+                         [markeView removeFromSuperview];
                          [transitionContext completeTransition:YES];
                      }];
     
