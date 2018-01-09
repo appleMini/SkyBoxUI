@@ -7,7 +7,6 @@
 //
 
 #import "PresentAnimationController.h"
-#import "Masonry.h"
 
 @interface PresentAnimationController ()<UIViewControllerAnimatedTransitioning>
 

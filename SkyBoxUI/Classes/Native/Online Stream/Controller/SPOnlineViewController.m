@@ -6,6 +6,7 @@
 //
 
 #import "SPOnlineViewController.h"
+#import "SPOnlineAddURLViewController.h"
 
 @interface SPOnlineViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *noticLabel;
@@ -46,6 +47,9 @@
 }
 
 - (IBAction)addUrlAction:(id)sender {
+    
+    SPOnlineAddURLViewController *addURLVC = [[SPOnlineAddURLViewController alloc] initWithNibName:@"SPOnlineAddURLViewController" bundle:[Commons resourceBundle]];
+    [self presentViewController:addURLVC animated:YES completion:nil];
 }
 
 @end

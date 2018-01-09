@@ -62,6 +62,8 @@
 #import "SPCellSelectedView.h"
 #import "SPMenuCell.h"
 #import "SPMyCenterViewController.h"
+#import "SPOnlineAddURLViewController.h"
+#import "SPOnlineResultViewController.h"
 #import "SPOnlineViewController.h"
 #import "SPSearchViewController.h"
 #import "ServiceCall.h"
