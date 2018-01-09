@@ -64,6 +64,7 @@
 
 - (IBAction)homeAction:(id)sender {
     NSLog(@"go home...");
+    _device = nil;
     [self.devices removeAllObjects];
     [self setupContentViews];
     [[SPDLANManager shareDLANManager] startupDLAN];

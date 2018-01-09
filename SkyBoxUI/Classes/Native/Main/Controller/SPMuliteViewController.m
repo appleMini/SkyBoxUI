@@ -158,7 +158,9 @@
 }
 
 - (void)refresh {
-    [_scrollView.tg_header beginRefreshing];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_scrollView.tg_header beginRefreshing];
+    });
 }
 
 - (void)configRefresh {
