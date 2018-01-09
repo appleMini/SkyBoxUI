@@ -6,8 +6,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SPMuliteViewController.h"
+#import "SPBaseViewController.h"
 
-@interface SPOnlineViewController : SPMuliteViewController
+@interface SPOnlineViewController : SPBaseViewController
 
 @end

@@ -114,12 +114,16 @@
 - (void)reload {
     dispatch_async(dispatch_get_main_queue(), ^{
         if(!_dataArr || _dataArr.count <= 0) {
+            [_emptyView removeFromSuperview];
+            _emptyView = nil;
+            
             SPBackgrondView *backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:(_level == -1 ? NoLocalMediaServers : NoFiles)];
             [self.view insertSubview:backgroundView aboveSubview:self.collectionView];
             [self.view bringSubviewToFront:self.headerView];
             _emptyView = backgroundView;
         }else{
             [_emptyView removeFromSuperview];
+            _emptyView = nil;
         }
         
         [self.collectionView reloadData];

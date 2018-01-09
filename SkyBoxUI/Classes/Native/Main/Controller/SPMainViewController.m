@@ -251,7 +251,8 @@
         return;
     }
     SPBaseViewController *vc = self.childViewControllers[1];
-    [vc showTopViewAlpha:fabs(alpha)];
+    
+    [vc showTopViewAlpha:alpha];
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {

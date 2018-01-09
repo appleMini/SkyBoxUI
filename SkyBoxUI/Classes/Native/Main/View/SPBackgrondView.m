@@ -6,9 +6,13 @@
 //
 
 #import "SPBackgrondView.h"
+#import <AVFoundation/AVFoundation.h>
 
 @interface SPBackgrondView()
 
+@property (nonatomic, strong) NSString *movieUrl;
+@property (nonatomic, strong) AVPlayer *player;
+@property (strong, nonatomic) AVPlayerLayer *playerLayer;
 @property (nonatomic, assign) SPBackgroundType type;
 @property (weak, nonatomic) IBOutlet UIImageView *iconV;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconVHeightConstraint;
@@ -82,8 +86,163 @@
             self.noticeLabel.text = @"NO LOCAL MEDIA SERVERS";
         }
             break;
+        case NoAirScreenResult:
+        {
+            [self setMediaPlayer];
+            
+            //监听AVPlayerItem状态
+            [self addObserverToPlayerItem];
+            [self addNotification];//广播监听播放状态
+            
+            self.noticeLabel.text = @"ADD VIDEOS TO SKYBOX ON YOUR COMPUTER";
+        }
+            break;
         default:
             break;
     }
+}
+
+- (void)dealloc{
+    if (_type == NoAirScreenResult) {
+        [self.player.currentItem cancelPendingSeeks];
+        [self.player.currentItem.asset cancelLoading];
+        
+        [self removeObserverFromPlayerItem:self.player.currentItem];
+    }
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (AVPlayerLayer *)playerLayer {
+    if(!_playerLayer){
+        AVPlayerLayer *layer = [AVPlayerLayer playerLayerWithPlayer:self.player];
+        _playerLayer = layer;
+    }
+    
+    return _playerLayer;
+}
+
+- (void)setMediaPlayer{
+    //创建播放器层
+    self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+    self.playerLayer.frame = CGRectMake(0, 0, SCREEN_WIDTH, 300);
+    [self.layer insertSublayer:self.playerLayer atIndex:0];
+}
+
+#pragma mark - set/get
+- (AVPlayer *)player{
+    if (!_player) {
+        AVPlayerItem *playerItem = [self getPlayItem:self.movieUrl];
+        _player = [AVPlayer playerWithPlayerItem:playerItem];
+        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.0")){
+            //增加下面这行可以解决iOS10兼容性问题了
+            _player.automaticallyWaitsToMinimizeStalling = NO;
+        }
+        _player.volume = 0.5;
+    }
+    return _player;
+}
+
+#pragma -mark 设置AVPlayerItem
+- (AVPlayerItem *)getPlayItem:(NSString *)strURL {
+    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:strURL]];
+   
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0")) {
+        playerItem.canUseNetworkResourcesForLiveStreamingWhilePaused = YES;
+    }
+    return playerItem;
+}
+
+#pragma mark - 通知
+//给AVPlayerItem添加播放完成通知
+- (void)addNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playbackFinished:) name:AVPlayerItemDidPlayToEndTimeNotification object:_player.currentItem];
+}
+
+// 播放完成通知
+- (void)playbackFinished:(NSNotification *)notification{
+    NSLog(@"视频播放完成.");
+}
+
+/**
+ *  给AVPlayer添加监控
+ *  @param player AVPlayer对象
+ */
+//- (void)addObserverToPlayer:(AVPlayer *)player{
+//    //监控状态属性，注意AVPlayer也有一个status属性，通过监控它的status也可以获得播放状态
+//    [player addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+//}
+
+/**
+ *  给AVPlayerItem添加监控
+ */
+- (void)addObserverToPlayerItem{
+    
+    AVPlayerItem *playerItem = self.player.currentItem;
+    //监控状态属性，注意AVPlayer也有一个status属性，通过监控它的status也可以获得播放状态
+    [playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+    //监控网络加载情况属性
+    [playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
+    //监听播放的区域缓存是否为空
+    [playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:NSKeyValueObservingOptionNew context:nil];
+    //缓存可以播放的时候调用
+    [playerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:NSKeyValueObservingOptionNew context:nil];
+    
+    [self.player addObserver:self forKeyPath:@"rate" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)removeObserverFromPlayerItem:(AVPlayerItem *)playerItem{
+    if(playerItem){
+        [playerItem removeObserver:self forKeyPath:@"status"];
+        [playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+        [playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
+        [playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
+    }
+    
+    [self.player removeObserver:self forKeyPath:@"rate"];
+}
+/**
+ *  通过KVO监控播放器状态
+ *  @param keyPath 监控属性
+ *  @param object  监视器
+ *  @param change  状态改变
+ *  @param context 上下文
+ */
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
+    AVPlayerItem *playerItem = object;
+    if ([keyPath isEqualToString:@"status"]) {
+        AVPlayerItemStatus status= [[change objectForKey:@"new"] intValue];
+        if(status == AVPlayerItemStatusReadyToPlay){
+            NSLog(@"开始播放。。。。。。。。");
+//            [self startPlayer:self.currentTime];
+            [self.player play];
+        }else if(status == AVPlayerItemStatusUnknown){
+            NSLog(@"%@",@"AVPlayerItemStatusUnknown");
+        }else if (status == AVPlayerItemStatusFailed){
+            NSLog(@"%@",@"AVPlayerItemStatusFailed");
+            NSLog(@"%@",self.player.currentItem.error);
+        }
+    }else if([keyPath isEqualToString:@"loadedTimeRanges"]){
+        NSArray *array = playerItem.loadedTimeRanges;
+        CMTimeRange timeRange = [array.firstObject CMTimeRangeValue];//本次缓冲时间范围
+        float startSeconds = CMTimeGetSeconds(timeRange.start);
+        float durationSeconds = CMTimeGetSeconds(timeRange.duration);
+        NSTimeInterval totalBuffer = startSeconds + durationSeconds;//缓冲总长度
+        NSLog(@"缓冲：%.2f",totalBuffer);
+    }else if ([keyPath isEqualToString:@"playbackBufferEmpty"]){
+        NSLog(@"playbackBufferEmpty");
+    }else if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]){
+        NSLog(@"playbackLikelyToKeepUp");
+    }
+}
+
+#pragma -mark 播放器开始
+
+- (void)startPlayer:(NSTimeInterval)time {
+    [self.player seekToTime:CMTimeMakeWithSeconds(time, self.player.currentItem.duration.timescale) completionHandler:^(BOOL finished) {
+        if (finished) {
+            [self.player play];
+        }
+    }];
 }
 @end

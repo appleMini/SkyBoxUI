@@ -14,6 +14,7 @@ typedef enum : NSUInteger {
     NoFiles,
     NoFavorite,
     NoHistory,
+    NoAirScreenResult
 } SPBackgroundType;
 @interface SPBackgrondView : UIView
 

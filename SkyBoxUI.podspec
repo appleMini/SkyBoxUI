@@ -45,7 +45,7 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
 #}
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  s.frameworks = "UIKit", "Foundation"
+  s.frameworks = "UIKit", "Foundation", "AVFoundation"
 # s.libraries = "iconv", "xml2"
   s.libraries = "sqlite3.0", "xml2"
 
