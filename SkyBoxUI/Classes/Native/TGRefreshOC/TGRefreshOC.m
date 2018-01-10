@@ -271,7 +271,7 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
                                        (self.tipLabel.frame.origin.x - (self.tipIcon.frame.size.width + 3))),
                                       self.activityIndicatorView.center.y);
     self.tipIcon.hidden = NO;
-    self.tipLabel.hidden = NO;
+    self.tipLabel.hidden = YES;
     [self.activityIndicatorView stopAnimating];
     self.tipLabel.alpha = 0.1;
     [UIView animateWithDuration:0.25 animations:^{

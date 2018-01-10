@@ -178,7 +178,14 @@
             switch (_type) {
                 case LocalFilesType:
                 {
-                    backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoVideos];
+                    NSUInteger selectedIndex = -1;
+                    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:HomeHelpMiddleVCType],
+                                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+                                             };
+                    
+                    [self.view bubbleEventWithUserInfo:notify];
+                    
+                    return;
                 }
                     break;
                 case VRVideosType:
