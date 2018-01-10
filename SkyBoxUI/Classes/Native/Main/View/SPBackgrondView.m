@@ -41,8 +41,8 @@
         case NoVideos:
         {
             self.iconV.image = [Commons getPdfImageFromResource:@"Empty_icon_VRvideos"];
-            self.iconVWidthConstraint.constant = 104;
-            self.iconVHeightConstraint.constant = 78;
+            self.iconVWidthConstraint.constant = 153;
+            self.iconVHeightConstraint.constant = 113;
             self.noticeLabel.text = @"NO VR VIDEOS";
         }
             break;
