@@ -102,7 +102,10 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self.menuVC selectMenuItem:0];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self.menuVC selectMenuItem:0];
+    });
 }
 
 - (void)viewWillLayoutSubviews {

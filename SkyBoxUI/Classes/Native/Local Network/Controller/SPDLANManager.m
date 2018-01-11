@@ -12,6 +12,9 @@
 @interface SPDLANManager() <NSXMLParserDelegate>
 @property (nonatomic, strong) CADisplayLink *displink;
 @property (nonatomic, strong) NSTimer *timeoutTimer;
+@property (nonatomic, strong) SPCmdEvent *addDLNADeviceCallback;
+@property (nonatomic, strong) SPCmdEvent *removeDLNADeviceCallback;
+@property (nonatomic, strong) SPCmdEvent *browseDLNAFolderCallback;
 
 @end
 
@@ -50,14 +53,37 @@ static SPDLANManager *_manager = nil;
     }
 }
 
+- (SPCmdEvent *)addDLNADeviceCallback {
+    if (!_addDLNADeviceCallback) {
+        SPCmdEvent *addDLNADeviceCallback = [[SPCmdEvent alloc] initWithEventName:@"AddDLNADeviceCallback" callBack:(void *)AddDLNADeviceCallback];
+        _addDLNADeviceCallback = addDLNADeviceCallback;
+    }
+    
+    return _addDLNADeviceCallback;
+}
+- (SPCmdEvent *)removeDLNADeviceCallback {
+    if (!_removeDLNADeviceCallback) {
+        SPCmdEvent *removeDLNADeviceCallback = [[SPCmdEvent alloc] initWithEventName:@"RemoveDLNADeviceCallback" callBack:(void *)RemoveDLNADeviceCallback];
+        
+        _removeDLNADeviceCallback = removeDLNADeviceCallback;
+    }
+    
+    return _removeDLNADeviceCallback;
+}
+- (SPCmdEvent *)browseDLNAFolderCallback {
+    if (!_browseDLNAFolderCallback) {
+        SPCmdEvent *browseDLNAFolderCallback = [[SPCmdEvent alloc] initWithEventName:@"BrowseDLNAFolderCallback" callBack:(void *)BrowseDLNAFolderCallback];
+        
+        _browseDLNAFolderCallback = browseDLNAFolderCallback;
+    }
+    
+    return _browseDLNAFolderCallback;
+}
+
 - (void)startupDLAN {
     [self closeDLAN];
     
-    SPCmdEvent *addDLNADeviceCallback = [[SPCmdEvent alloc] initWithEventName:@"AddDLNADeviceCallback" callBack:(void *)AddDLNADeviceCallback];
-    SPCmdEvent *removeDLNADeviceCallback = [[SPCmdEvent alloc] initWithEventName:@"RemoveDLNADeviceCallback" callBack:(void *)RemoveDLNADeviceCallback];
-    SPCmdEvent *browseDLNAFolderCallback = [[SPCmdEvent alloc] initWithEventName:@"BrowseDLNAFolderCallback" callBack:(void *)BrowseDLNAFolderCallback];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"StartDLAN", @"AddDLNADeviceCallback" : addDLNADeviceCallback, @"RemoveDLNADeviceCallback" : removeDLNADeviceCallback, @"BrowseDLNAFolderCallback" : browseDLNAFolderCallback}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"StartDLAN", @"AddDLNADeviceCallback" : self.addDLNADeviceCallback, @"RemoveDLNADeviceCallback" : self.removeDLNADeviceCallback, @"BrowseDLNAFolderCallback" : self.browseDLNAFolderCallback}];
     
     self.status = AddDeviceStatus;
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
