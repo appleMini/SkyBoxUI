@@ -72,7 +72,7 @@
         if (status == -1 || status == 0 || status == 1) {
             SPBackgrondView *backgroundView = [[SPBackgrondView alloc] initWithFrame:ws.view.bounds
                                                                       backgroundType:NoWifi];
-            backgroundView.backgroundColor = RGBCOLOR(59, 63, 72);
+            backgroundView.backgroundColor = SPBgColor;
             [ws.view addSubview:backgroundView];
             [ws.view bringSubviewToFront:backgroundView];
             

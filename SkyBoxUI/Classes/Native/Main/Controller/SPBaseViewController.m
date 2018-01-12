@@ -70,7 +70,7 @@
     } else {
         self.automaticallyAdjustsScrollViewInsets = NO;
     }
-    self.view.backgroundColor = RGBCOLOR(59, 63, 72);
+    self.view.backgroundColor = SPBgColor;
     
     NSString *til = [self titleOfLabelView];
     if(til) {

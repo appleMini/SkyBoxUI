@@ -165,7 +165,9 @@
 
 - (void)configRefresh {
     //默认为QQ效果
-    _scrollView.tg_header = [TGRefreshOC  refreshWithTarget:self action:@selector(doRefreshSenior) config:nil];
+    _scrollView.tg_header = [TGRefreshOC  refreshWithTarget:self action:@selector(doRefreshSenior) config:^(TGRefreshOC *refresh) {
+        refresh.tg_bgColor(SPBgColor);
+    }];
 }
 
 - (void)reload {
