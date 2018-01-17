@@ -104,7 +104,7 @@
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        [self.menuVC selectMenuItem:0];
+        [self.menuVC selectMenuItem:0 jump:YES];
     });
 }
 
@@ -269,6 +269,16 @@
     [self showChildVCViewAtIndex:index];
 }
 
+#pragma -mark jumpToMiddleVC
+- (void)jumpToMiddleVC:(SPBaseViewController *)vc menuIndex:(NSInteger)index {
+    _selectMenuIndex = index;
+    if (index < 0) {
+        return;
+    }
+    [self.menuVC selectMenuItem:index jump:NO];
+    [self changeMiddleContentView:vc];
+}
+
 #pragma -mark SPMenuJumpProtocol
 - (void)MenuViewController:(UIViewController *)menu jumpViewController:(NSString *)ctrS menuIndex:(NSInteger)index{
     if (_selectMenuIndex == index) {
@@ -300,6 +310,11 @@
         {
             [MBProgressHUD hideHUDForView:keyWindow animated:YES];
             if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity: intoVRMode:)]) {
+                if (self.childViewControllers.count < 3) {
+                    return;
+                }
+                SPBaseViewController *vc = self.childViewControllers[1];
+                [vc releaseAction];
                 [self.jumpDelegate nativeToUnity:target intoVRMode:nil];
             }
         }

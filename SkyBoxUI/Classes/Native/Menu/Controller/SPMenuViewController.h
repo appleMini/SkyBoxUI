@@ -13,7 +13,7 @@
 
 @property (weak, nonatomic) id<SPMenuJumpProtocol> delegate;
 
-- (void)selectMenuItem:(NSInteger)index;
+- (void)selectMenuItem:(NSInteger)index jump:(BOOL)isScroll;
 @end
 
 @protocol SPMenuJumpProtocol <NSObject>

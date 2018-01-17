@@ -13,3 +13,8 @@
 #import "SPHomeViewController.h"
 #import "SPHistoryViewController.h"
 #import "SPMainViewController.h"
+#import "SPVRViewController.h"
+#import "SPFavoriteViewController.h"
+#import "SPNetworkViewController.h"
+#import "SPAirScreenViewController.h"
+#import "SPOnlineViewController.h"

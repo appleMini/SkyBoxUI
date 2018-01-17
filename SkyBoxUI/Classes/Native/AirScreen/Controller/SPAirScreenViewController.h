@@ -10,4 +10,5 @@
 
 @interface SPAirScreenViewController : SPBaseViewController
 
+- (instancetype)initWithAirscreen:(SPAirscreen *)airscreen AutoLogin:(BOOL)autoLogin;
 @end

@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UIButton *serverBtn;
 @property (nonatomic, strong) UIView *topView;
 @property (nonatomic, strong) UIView *maskView;
+@property (strong, nonatomic) UITapGestureRecognizer *tapGesture;
 @end
 
 @implementation SPAirScreenResultViewController
@@ -134,6 +135,10 @@
     return _disconnBtn;
 }
 
+- (void)releaseAction {
+    [self.maskView removeGestureRecognizer:_tapGesture];
+}
+
 - (void)disconnection:(id)sender {
     NSUInteger selectedIndex = -1;
     NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenMiddleVCType],
@@ -153,6 +158,7 @@
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(colseTopView:)];
         [maskView addGestureRecognizer:tapGesture];
         _maskView = maskView;
+        _tapGesture = tapGesture;
     }
     return _maskView;
 }

@@ -57,6 +57,11 @@
     return self;
 }
 
+- (void)releaseAction {
+    [_dlanManager releaseAction];
+    _dlanManager = nil;
+}
+
 - (void)dealloc {
     [_dlanManager releaseAction];
     _dlanManager = nil;

@@ -19,11 +19,11 @@
 
 static NSString *cellID = @"MenuCell";
 
-- (void)selectMenuItem:(NSInteger)index {
+- (void)selectMenuItem:(NSInteger)index jump:(BOOL)isScroll {
     NSIndexPath * indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
     
-    [self tableView:self.tableView didSelectRowAtIndexPath:indexPath];
+    isScroll ? [self tableView:self.tableView didSelectRowAtIndexPath:indexPath] : nil;
 }
 
 - (void)viewDidLoad {

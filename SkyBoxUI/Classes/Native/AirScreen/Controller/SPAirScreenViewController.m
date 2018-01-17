@@ -23,6 +23,8 @@ typedef enum : NSUInteger {
     BOOL _socketOpened;
 }
 
+@property (nonatomic, assign)  BOOL isAutoLogin;
+
 @property (nonatomic, strong) NSArray<SPAirscreen *> *dataArr;
 @property (nonatomic, strong) SPAirscreen *   airscreen;
 @property (nonatomic, assign) AirScreenStatus status;
@@ -61,6 +63,15 @@ typedef enum : NSUInteger {
 @implementation SPAirScreenViewController
 @synthesize emptyView = _emptyView;
 
+- (instancetype)initWithAirscreen:(SPAirscreen *)airscreen AutoLogin:(BOOL)autoLogin {
+    self = [self initWithSomething];
+    if (self) {
+        _isAutoLogin = autoLogin;
+        _airscreen = airscreen;
+    }
+    return self;
+    
+}
 - (instancetype)initWithSomething {
     self = [super initWithNibName:@"SPAirScreenViewController" bundle:[Commons resourceBundle]];
     if (self) {
@@ -145,6 +156,17 @@ typedef enum : NSUInteger {
     [self updateViewConstraints];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
+    AFNetworkReachabilityStatus status = [manager networkReachabilityStatus];
+    if (_isAutoLogin && (status == AFNetworkReachabilityStatusReachableViaWiFi)) {
+        [self startupAirscreen];
+        [self connectServer:_airscreen];
+    }
+}
+
 - (void)updateViewConstraints {
     [super updateViewConstraints];
     [self resetViewsAndConstraints];
@@ -152,8 +174,6 @@ typedef enum : NSUInteger {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.pcImgVHeightConstraint.constant = 270 * kHSCALE;
     
     NSMutableAttributedString *instruction1Attr = [[NSMutableAttributedString alloc] initWithString:@"INSTALL SKYBOX FOR PC FROM SKYBOX.XYZ"];
     
@@ -240,6 +260,8 @@ typedef enum : NSUInteger {
         self.searchButton.layer.borderWidth = 2.0f;//设置边框颜色
         self.searchButton.layer.masksToBounds = YES;
     }
+    
+    self.pcImgVHeightConstraint.constant = 270 * kHSCALE;
     
     switch (_status) {
         case StartupStatus:
@@ -382,11 +404,18 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UNITYTOUINOTIFICATIONNAME object:nil];
     NSLog(@"airscreen 销毁。。。。。。。");
 }
+
 - (void)startupAirscreen {
     if (!_socketOpened) {
         _socketOpened = YES;
         
         [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"StartSKYBOX"}];
+    }
+}
+
+- (void)startupAndSendPackage {
+    if (!_socketOpened) {
+        [self startupAirscreen];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.sendTimer fire];
@@ -434,7 +463,7 @@ typedef enum : NSUInteger {
         {
             _status = SearchStatus;
             
-            [self startupAirscreen];
+            [self startupAndSendPackage];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (_status == StartupStatus) {
