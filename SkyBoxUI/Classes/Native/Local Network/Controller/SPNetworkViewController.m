@@ -18,6 +18,7 @@
     NSInteger _level;
 }
 
+@property (nonatomic, assign) BOOL isAutoConnect;
 @property (nonatomic, assign) DisplayType showType;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) SPHeaderView *headerView;
@@ -25,11 +26,22 @@
 @property (nonatomic, strong) UIBarButtonItem *menuItem;
 @property (nonatomic, strong) UIButton *menuBtn;
 
+@property (nonatomic, strong) NSMutableArray <SPCmdAddDevice *>*devices;
+
 @property (nonatomic, strong) SPDLANManager *dlanManager;
 @end
 
 @implementation SPNetworkViewController
 @synthesize emptyView = _emptyView;
+
+- (instancetype)initWithHeadView:(NSArray <SPCmdAddDevice *> *)devices {
+    self = [self initWithSomething];
+    if (self) {
+        _isAutoConnect = YES;
+        _devices = [devices mutableCopy];
+    }
+    return self;
+}
 
 - (instancetype)initWithSomething {
     self = [self initWithDisplayType:CollectionViewType];
@@ -90,6 +102,15 @@
             [ws.emptyView removeFromSuperview];
             ws.dlanManager = [SPDLANManager shareDLANManager];
             ws.dlanManager.delegate = ws;
+            
+            if (_isAutoConnect && _devices) {
+                [ws.dlanManager openDLAN];
+                [ws.headerView setDevices:ws.devices];
+                SPCmdAddDevice *device = [ws.devices lastObject];
+                [ws.dlanManager browseDLNAFolder:device];
+            }else {
+                [ws.dlanManager startupDLAN];
+            }
         }
     };
     

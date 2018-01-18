@@ -7,7 +7,8 @@
 
 #import <Foundation/Foundation.h>
 typedef enum : NSUInteger {
-    AddDeviceStatus = 0,
+    StartupStatus = 0,
+    AddDeviceStatus,
     BrowseFolderStatus,
     ShutdownStatus
 } DLANManagerStatus;
@@ -19,6 +20,7 @@ typedef enum : NSUInteger {
 
 + (instancetype)shareDLANManager;
 
+- (void)openDLAN;
 - (void)startupDLAN;
 - (void)refreshAction:(SPCmdAddDevice *)device;
 - (void)browseDLNAFolder:(SPCmdAddDevice *)device;

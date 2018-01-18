@@ -158,5 +158,10 @@
     [self setupContentViews];
 }
 
+- (void)setDevices:(NSMutableArray<SPCmdAddDevice *> *)devices {
+    _devices = devices;
+    [self setupContentViews];
+}
+
 @end
 

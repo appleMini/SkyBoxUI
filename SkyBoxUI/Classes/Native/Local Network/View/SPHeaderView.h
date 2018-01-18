@@ -11,4 +11,6 @@
 @property (nonatomic, strong) SPCmdAddDevice *device;
 
 - (void)cleanHeadViews;
+- (void)setDevices:(NSMutableArray<SPCmdAddDevice *> *)devices;
 @end
+

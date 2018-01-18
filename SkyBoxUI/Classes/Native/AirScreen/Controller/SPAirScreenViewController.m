@@ -449,7 +449,7 @@ typedef enum : NSUInteger {
 }
 
 - (void)connectServer:(SPAirscreen *)airscreen {
-    if (_socketOpened) {
+    if (_socketOpened && airscreen) {
         UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
         [MBProgressHUD showHUDAddedTo:keyWindow animated:YES];
         [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"WebSocketConnect", @"airscreen" : airscreen}];

@@ -38,7 +38,6 @@ static SPDLANManager *_manager = nil;
         [displink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
         self.displink = displink;
         
-        [self startupDLAN];
     }
     return self;
 }
@@ -80,16 +79,19 @@ static SPDLANManager *_manager = nil;
     return _browseDLNAFolderCallback;
 }
 
-- (void)startupDLAN {
+- (void)openDLAN {
     [self closeDLAN];
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"StartDLAN", @"AddDLNADeviceCallback" : self.addDLNADeviceCallback, @"RemoveDLNADeviceCallback" : self.removeDLNADeviceCallback, @"BrowseDLNAFolderCallback" : self.browseDLNAFolderCallback}];
+    self.status = StartupStatus;
+}
+- (void)startupDLAN {
+    [self openDLAN];
     
     self.status = AddDeviceStatus;
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         _timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(emptyServers) userInfo:nil repeats:NO];
         [[NSRunLoop currentRunLoop] run];
-    
+        
     });
 }
 - (void)closeDLAN {
@@ -120,6 +122,9 @@ static SPDLANManager *_manager = nil;
 }
 
 - (void)browseDLNAFolder:(SPCmdAddDevice *)device {
+    if (!device) {
+        return;
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"BrowseDLNAFolder", @"device" : device}];
     self.status = BrowseFolderStatus;
 }
