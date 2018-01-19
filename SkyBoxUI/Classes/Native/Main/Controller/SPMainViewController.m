@@ -271,10 +271,11 @@
 
 #pragma -mark jumpToMiddleVC
 - (void)jumpToMiddleVC:(SPBaseViewController *)vc menuIndex:(NSInteger)index {
-    _selectMenuIndex = index;
     if (index < 0) {
         return;
     }
+    
+    _selectMenuIndex = index;
     [self.menuVC selectMenuItem:index jump:NO];
     [self changeMiddleContentView:vc];
 }
