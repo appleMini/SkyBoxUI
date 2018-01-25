@@ -88,14 +88,20 @@
             break;
         case NoAirScreenResult:
         {
-            self.movieUrl = [Commons getMovieFromResource:@"2017" extension:@"mp4"];
+            self.movieUrl = [Commons getMovieFromResource:@"AirScreen_empty" extension:@"mp4"];
             [self setMediaPlayer];
             
             //监听AVPlayerItem状态
             [self addObserverToPlayerItem];
             [self addNotification];//广播监听播放状态
             
-            self.noticeLabel.text = @"ADD VIDEOS TO SKYBOX ON YOUR COMPUTER";
+            UIFont *boldFont = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
+            UIFont *regularFont = [UIFont fontWithName:@"Calibri" size:15.0];
+            NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] init];
+            [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@"ADD VIDEOS TO " attributes:@{NSFontAttributeName : regularFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]}]];
+            [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@"SKYBOX" attributes:@{NSFontAttributeName : boldFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]}]];
+            [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@" ON YOUR COMPUTER" attributes:@{NSFontAttributeName : regularFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]}]];
+            self.noticeLabel.attributedText = [attributedString copy];
         }
             break;
         default:
@@ -123,10 +129,19 @@
     return _playerLayer;
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    CGFloat y = self.noticeLabel.frame.origin.y;
+    CGRect frame = self.playerLayer.frame;
+    frame.origin.y = y - 20 - frame.size.height;
+    self.playerLayer.frame = frame;
+}
+
 - (void)setMediaPlayer{
     //创建播放器层
     self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
-    self.playerLayer.frame = CGRectMake(0, 0, SCREEN_WIDTH, 300);
+    self.playerLayer.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH * (1.0 * 360 / 750));
     [self.layer insertSublayer:self.playerLayer atIndex:0];
 }
 
@@ -163,6 +178,10 @@
 // 播放完成通知
 - (void)playbackFinished:(NSNotification *)notification{
     NSLog(@"视频播放完成.");
+    // 播放完成后重复播放
+    // 跳到最新的时间点开始播放
+    [_player seekToTime:CMTimeMake(0, 1)];
+    [_player play];
 }
 
 /**

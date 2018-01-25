@@ -12,6 +12,7 @@
 @interface SPVideoView()
 
 @property (unsafe_unretained, nonatomic) IBOutlet UIImageView *imgv;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imgvHeightConstraint;
 @property (unsafe_unretained, nonatomic) IBOutlet UILabel *titleLabel;
 @property (unsafe_unretained, nonatomic) IBOutlet UILabel *durationLabel;
 @property (unsafe_unretained, nonatomic) IBOutlet UIButton *favButton;
@@ -21,11 +22,18 @@
 
 @implementation SPVideoView
 
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    
+    _imgvHeightConstraint.constant = 1.0 * 104 / (162 / (SCREEN_WIDTH - 34));
+}
+
 - (void)setVideo:(SPVideo *)video {
     _video = video;
     if (video.thumbnail_uri && ![video.thumbnail_uri hasPrefix:@"file://"] && ![video.thumbnail_uri hasPrefix:@"http://"] && ![video.thumbnail_uri hasPrefix:@"https://"]) {
         video.thumbnail_uri = [NSString stringWithFormat:@"file://%@", video.thumbnail_uri];
     }
+    self.imgv.contentMode = UIViewContentModeScaleAspectFill;
     [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[Commons getImageFromResource:@"Home_videos_album_default"] options:SDWebImageRetryFailed];
     
     self.imgv.userInteractionEnabled = YES;

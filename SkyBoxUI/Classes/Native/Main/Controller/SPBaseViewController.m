@@ -76,6 +76,11 @@
     if(til) {
         [self setupTitleView:til];
     }
+    
+    UIView *titleView = [self customTitleView];
+    if (titleView) {
+        self.navigationItem.titleView = titleView;
+    }
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
@@ -100,6 +105,9 @@
     self.navigationItem.titleView = label;
 }
 
+- (UIView *)customTitleView {
+    return nil;
+}
 - (NSString *)titleOfLabelView {
     return nil;
 }

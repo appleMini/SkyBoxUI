@@ -48,6 +48,7 @@ typedef void (^NetStateBlock) (AFNetworkReachabilityStatus status);
 @property (nonatomic, strong) SPBackgrondView *emptyView;
 
 - (instancetype)initWithSomething;
+- (UIView *)customTitleView;
 - (NSString *)titleOfLabelView;
 - (NSArray *)leftNaviItem;
 - (NSArray *)rightNaviItem;

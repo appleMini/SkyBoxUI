@@ -32,9 +32,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [self topViewAddToKeyWindow];
     self.topView.hidden = NO;
+    [KEYWINDOW bringSubviewToFront:self.topView];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [_topView removeFromSuperview];
+    _topView = nil;
 }
 
 - (void)setAirscreen:(SPAirscreen *)airscreen {
@@ -52,18 +62,24 @@
 }
 
 - (void)dealloc {
-    [self.topView removeFromSuperview];
-    [self.maskView removeFromSuperview];
+    [_topView removeFromSuperview];
+    [_maskView removeGestureRecognizer:_tapGesture];
+    [_maskView removeFromSuperview];
 }
 
+//- (UIWindow *)keyWindow {
+//    NSArray *windows = [UIApplication sharedApplication].windows;
+//    for (UIWindow *win in windows) {
+//        win.windowLevel
+//    }
+//}
 - (void)topViewAddToKeyWindow {
-    UIWindow *window = [UIApplication sharedApplication].keyWindow;
     CGFloat height = 32;
     CGFloat x = (SCREEN_WIDTH - 334/2)/2;
     CGFloat y = [SPDeviceUtil isiPhoneX] ? 34 + (44 - 32)/2 : 20 + (44 - 32)/2;
     CGFloat width = 334/2;
     self.topView.frame = CGRectMake(x, y, width, height);
-    [window addSubview:self.topView];
+    [KEYWINDOW addSubview:self.topView];
     
     //    [self.topView mas_makeConstraints:^(MASConstraintMaker *make) {
     //        CGFloat height = 32;
@@ -136,7 +152,11 @@
 }
 
 - (void)releaseAction {
-    [self.maskView removeGestureRecognizer:_tapGesture];
+    [_topView removeFromSuperview];
+    _topView = nil;
+    [_maskView removeGestureRecognizer:_tapGesture];
+    [_maskView removeFromSuperview];
+    _maskView = nil;
 }
 
 - (void)disconnection:(id)sender {

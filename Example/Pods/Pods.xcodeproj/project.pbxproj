@@ -308,10 +308,19 @@
 		5EFE3C1316AE3DF65B81286439987953 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDC3AB569E4EBF3E6D93D9D564721DAF /* QuartzCore.framework */; };
 		5F15304F06BAA09E176CEF6238DA8AAC /* KWValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D32A2DBDF2AE4E23A905BD0D5014B6 /* KWValue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		603288F5B1EA85A66FA1F0262D550746 /* AirScreen_help_icon_1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 660E4E8E85FD18AB69A897DBC7B2AE36 /* AirScreen_help_icon_1@2x.png */; };
+		6074A18620173A2E003EC598 /* AirScreen_empty.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6074A18520173A2D003EC598 /* AirScreen_empty.mp4 */; };
 		6075E5962004955300A60CD7 /* SPOnlinePresentAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6075E5922004955300A60CD7 /* SPOnlinePresentAnimationController.m */; };
 		6075E5972004955300A60CD7 /* SPOnlineDismissAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6075E5932004955300A60CD7 /* SPOnlineDismissAnimationController.m */; };
 		6075E5982004955300A60CD7 /* SPOnlineDismissAnimationController.h in Headers */ = {isa = PBXBuildFile; fileRef = 6075E5942004955300A60CD7 /* SPOnlineDismissAnimationController.h */; };
 		6075E5992004955300A60CD7 /* SPOnlinePresentAnimationController.h in Headers */ = {isa = PBXBuildFile; fileRef = 6075E5952004955300A60CD7 /* SPOnlinePresentAnimationController.h */; };
+		60769A4A2019CEAE00C516EC /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = 60769A442019CEAE00C516EC /* UIImage+Alpha.m */; };
+		60769A4B2019CEAE00C516EC /* UIImage+Resize.h in Headers */ = {isa = PBXBuildFile; fileRef = 60769A452019CEAE00C516EC /* UIImage+Resize.h */; };
+		60769A4C2019CEAE00C516EC /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 60769A462019CEAE00C516EC /* UIImage+Resize.m */; };
+		60769A4D2019CEAE00C516EC /* UIImage+Alpha.h in Headers */ = {isa = PBXBuildFile; fileRef = 60769A472019CEAE00C516EC /* UIImage+Alpha.h */; };
+		60769A4E2019CEAE00C516EC /* UIImage+RoundedCorner.h in Headers */ = {isa = PBXBuildFile; fileRef = 60769A482019CEAE00C516EC /* UIImage+RoundedCorner.h */; };
+		60769A4F2019CEAE00C516EC /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 60769A492019CEAE00C516EC /* UIImage+RoundedCorner.m */; };
+		60811FF820187CAE004F205C /* UIWindow+SPLoading.h in Headers */ = {isa = PBXBuildFile; fileRef = 60811FF620187CAE004F205C /* UIWindow+SPLoading.h */; };
+		60811FF920187CAE004F205C /* UIWindow+SPLoading.m in Sources */ = {isa = PBXBuildFile; fileRef = 60811FF720187CAE004F205C /* UIWindow+SPLoading.m */; };
 		611EDC72DCA1AF86FCF0CD2C1CA57B19 /* NSImage+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 21BE94DA03A11A6C28924E8F08D60043 /* NSImage+WebCache.m */; };
 		622E7C43938EDE3623EBE7F8E83F634A /* SDWebImageFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = A6D407B364BCE8466329190EB9F3FC9C /* SDWebImageFrame.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		630E9AD7C04C02A853D56B8D8708F21A /* Home_titlebar_button_grid.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 82BDE651C746DDA8F435BFE9166FB332 /* Home_titlebar_button_grid.pdf */; };
@@ -662,7 +671,6 @@
 		D7E807543B3BB75DAB3B09AEA63B893B /* SDWebImageCoderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E006C586604AAF9205FD755A23461BC /* SDWebImageCoderHelper.m */; };
 		D80BF9905294B020B93FEE11A3DE5453 /* SDWebImagePrefetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D16D3476AD56E6ED580E2796B37591B /* SDWebImagePrefetcher.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D817978D23E76181A18709AD39D3871A /* SPHeaderView.h in Headers */ = {isa = PBXBuildFile; fileRef = B8C9ACAE77CAD362E812903D116DE1A2 /* SPHeaderView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D8185363287CD7585FCED71458A9A96E /* Home_videos_album_none@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E60BDAE9EBC76961B880C9C2AF2710B4 /* Home_videos_album_none@3x.png */; };
 		D88A15008C5C38FFBD3AEB1722FDC140 /* SPVideoCollectionView.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E95AF85EC849F5F0CEB06493623544E /* SPVideoCollectionView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D8B1525CB3DFCBD8E5032680530413D9 /* NSArray+MASShorthandAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = CC16A10B375D94E12C6F73D0E7B40A75 /* NSArray+MASShorthandAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D90E0E63945D273E39F8ADBF96905196 /* Home_videos_button_fav_small.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A028AE7A121C313D96F4CE60B7134160 /* Home_videos_button_fav_small.pdf */; };
@@ -711,7 +719,6 @@
 		E72EDE323AC9F92EC8A00A93AC186093 /* NSArray+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D51D057535A3FFCA10F39CF49428AEA8 /* NSArray+MASAdditions.m */; };
 		E8224ABE7AE12F42BD990A937FE95E6F /* UIButton+WebCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 9567FE9C26A9505F30F4AD7D9998E8CB /* UIButton+WebCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9C7070D681DA5BE9822DEE6579D9B79 /* SPOnlineViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9F88DC9E4D608B649670209365513D21 /* SPOnlineViewController.xib */; };
-		EA4B57D965420315AA20D7FD087FB874 /* Home_videos_album_none@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E4E836E6E45DF32A4B9BB9FA766067A1 /* Home_videos_album_none@2x.png */; };
 		EA6D9A791370AA2D3729822DE31CA194 /* Network_navigator_home_bg.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 6891AEABD4A618FE6F9296CF9AE807ED /* Network_navigator_home_bg.pdf */; };
 		EAF16633DB3C992CF975BE4A2932D41C /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 121D340DCE5B415C1A5A7D53B02AE10C /* AFHTTPSessionManager.m */; };
 		EB7645869AC01EFCF97890D638882359 /* KWRespondToSelectorMatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = C06D97F34B8A659A1D48AB01FD6CFEF5 /* KWRespondToSelectorMatcher.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1256,10 +1263,19 @@
 		604BEEE0D56C88A464CA0484515AF4D8 /* Network_folder_device_KodiTv@3x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = "Network_folder_device_KodiTv@3x.png"; sourceTree = "<group>"; };
 		605E73EEFD21452A794C88011442FFA0 /* SPOnlineResultViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SPOnlineResultViewController.h; sourceTree = "<group>"; };
 		6067C9C88CF30BEDA9F7FBDA82A69A94 /* KWRegisterMatchersNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = KWRegisterMatchersNode.m; path = Classes/Nodes/KWRegisterMatchersNode.m; sourceTree = "<group>"; };
+		6074A18520173A2D003EC598 /* AirScreen_empty.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = AirScreen_empty.mp4; sourceTree = "<group>"; };
 		6075E5922004955300A60CD7 /* SPOnlinePresentAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPOnlinePresentAnimationController.m; sourceTree = "<group>"; };
 		6075E5932004955300A60CD7 /* SPOnlineDismissAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPOnlineDismissAnimationController.m; sourceTree = "<group>"; };
 		6075E5942004955300A60CD7 /* SPOnlineDismissAnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPOnlineDismissAnimationController.h; sourceTree = "<group>"; };
 		6075E5952004955300A60CD7 /* SPOnlinePresentAnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPOnlinePresentAnimationController.h; sourceTree = "<group>"; };
+		60769A442019CEAE00C516EC /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
+		60769A452019CEAE00C516EC /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
+		60769A462019CEAE00C516EC /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
+		60769A472019CEAE00C516EC /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
+		60769A482019CEAE00C516EC /* UIImage+RoundedCorner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+RoundedCorner.h"; sourceTree = "<group>"; };
+		60769A492019CEAE00C516EC /* UIImage+RoundedCorner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RoundedCorner.m"; sourceTree = "<group>"; };
+		60811FF620187CAE004F205C /* UIWindow+SPLoading.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIWindow+SPLoading.h"; sourceTree = "<group>"; };
+		60811FF720187CAE004F205C /* UIWindow+SPLoading.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIWindow+SPLoading.m"; sourceTree = "<group>"; };
 		60BAFE8DBDAEFFEF7FF075FC7FD4FEF9 /* Home_videos_button_unfav_small.pdf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.pdf; path = Home_videos_button_unfav_small.pdf; sourceTree = "<group>"; };
 		60D69C8182DE450F71D730044AA923BA /* Home_videos_album_loading_00004@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = "Home_videos_album_loading_00004@2x.png"; sourceTree = "<group>"; };
 		60F93435D37CA4FCE1979ACD38E6357B /* Home_tabbar_button_history@3x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = "Home_tabbar_button_history@3x.png"; sourceTree = "<group>"; };
@@ -1682,11 +1698,9 @@
 		E32D4CE0F0BBD0B53CB4C5AEE7710196 /* Home_videos_album_loading_00017@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = "Home_videos_album_loading_00017@2x.png"; sourceTree = "<group>"; };
 		E405C4C3609549C3B69C86B87DB9C937 /* Empty_icon_favorite.pdf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.pdf; path = Empty_icon_favorite.pdf; sourceTree = "<group>"; };
 		E40815607617FE2BFD60374492AEA000 /* SDWebImageCoderHelper.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SDWebImageCoderHelper.h; path = SDWebImage/SDWebImageCoderHelper.h; sourceTree = "<group>"; };
-		E4E836E6E45DF32A4B9BB9FA766067A1 /* Home_videos_album_none@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = "Home_videos_album_none@2x.png"; sourceTree = "<group>"; };
 		E4E9E9F2F07B6B64C4A6EEF1C7CE6022 /* Home_tabbar_button_history_shadow@3x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = "Home_tabbar_button_history_shadow@3x.png"; sourceTree = "<group>"; };
 		E5566809CB62C68CD7D59F8119026F69 /* KWExample.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = KWExample.m; path = Classes/Core/KWExample.m; sourceTree = "<group>"; };
 		E600B2E7C8451AAD425E3240C9BBAC0D /* Home_videos_album_loading_00020@3x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = "Home_videos_album_loading_00020@3x.png"; sourceTree = "<group>"; };
-		E60BDAE9EBC76961B880C9C2AF2710B4 /* Home_videos_album_none@3x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = "Home_videos_album_none@3x.png"; sourceTree = "<group>"; };
 		E6490F0DB2ED6EBFDD186A05E23F2E82 /* Home_videos_album_loading_00019@3x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = "Home_videos_album_loading_00019@3x.png"; sourceTree = "<group>"; };
 		E70F5C29E82A0784C008F2A88158D57B /* UIButton+SPRadius.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIButton+SPRadius.m"; sourceTree = "<group>"; };
 		E71155040B263CFAB45C896783F0E298 /* SPOnlineAddURLViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SPOnlineAddURLViewController.m; sourceTree = "<group>"; };
@@ -2184,6 +2198,12 @@
 		30EA79DD4F69A921C4BE890D466C5E21 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				60769A472019CEAE00C516EC /* UIImage+Alpha.h */,
+				60769A442019CEAE00C516EC /* UIImage+Alpha.m */,
+				60769A452019CEAE00C516EC /* UIImage+Resize.h */,
+				60769A462019CEAE00C516EC /* UIImage+Resize.m */,
+				60769A482019CEAE00C516EC /* UIImage+RoundedCorner.h */,
+				60769A492019CEAE00C516EC /* UIImage+RoundedCorner.m */,
 				02037C0B81A96F29A88FDA2001F7C9F0 /* UIButton+SPRadius.h */,
 				E70F5C29E82A0784C008F2A88158D57B /* UIButton+SPRadius.m */,
 				D5C836CFEE94C8B40D251820A8C6E743 /* UIImage+Radius.h */,
@@ -2198,6 +2218,8 @@
 				06582B8623640A700B5BCAA2827B7BC6 /* UIView+Radius.m */,
 				DEE1513E4E0A5AE06EEA7E085C05C85F /* UIView+SPSwitchBar.h */,
 				94B8642FD07F1A861591B5EE79A2EDE2 /* UIView+SPSwitchBar.m */,
+				60811FF620187CAE004F205C /* UIWindow+SPLoading.h */,
+				60811FF720187CAE004F205C /* UIWindow+SPLoading.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -2214,6 +2236,7 @@
 		31D837C66D6ACEB3CCCE6685D6C0F528 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				6074A18520173A2D003EC598 /* AirScreen_empty.mp4 */,
 				660E4E8E85FD18AB69A897DBC7B2AE36 /* AirScreen_help_icon_1@2x.png */,
 				8F1A52A07381E0D2D454659AAACD0882 /* AirScreen_help_icon_1@3x.png */,
 				BEF5F3F128538F5AFF1B26EBA2B43836 /* AirScreen_help_icon_2@2x.png */,
@@ -2303,8 +2326,6 @@
 				044B2CA13B42829291D0C704D91A44B5 /* Home_videos_album_default@2x.png */,
 				6F090B912313B0D9D7F882802128ADC2 /* Home_videos_album_default@3x.png */,
 				23CDC51F9EE4702F9821522C609B6C52 /* Home_videos_album_loading.pdf */,
-				E4E836E6E45DF32A4B9BB9FA766067A1 /* Home_videos_album_none@2x.png */,
-				E60BDAE9EBC76961B880C9C2AF2710B4 /* Home_videos_album_none@3x.png */,
 				0DEC2042B4535409D397024CCDDF60C3 /* Home_videos_button_fav.pdf */,
 				A028AE7A121C313D96F4CE60B7134160 /* Home_videos_button_fav_small.pdf */,
 				42397C3C5C82C1A1361B631B9E345965 /* Home_videos_button_unfav.pdf */,
@@ -3827,6 +3848,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2705BC6F169491476221098867A03EE1 /* Commons.h in Headers */,
+				60769A4D2019CEAE00C516EC /* UIImage+Alpha.h in Headers */,
 				AA578A3E798801496582EFEC33EC3B0F /* DismissAnimationController.h in Headers */,
 				673D711AA90DC13E341D7526A992EF1B /* HYBVideoCell.h in Headers */,
 				DA5CD25760EE4A4D72D80A7B18ED3D91 /* JRTTFTool.h in Headers */,
@@ -3841,6 +3863,7 @@
 				BDD126F16FF54CF828D0965504ACB0C5 /* SPAirScreenViewController.h in Headers */,
 				8D8EF971011BB3FE2FFAC14A729E004E /* SPBackgrondView.h in Headers */,
 				FDC1A192B239DE0A1A130F2797D393DF /* SPBaseViewController.h in Headers */,
+				60769A4E2019CEAE00C516EC /* UIImage+RoundedCorner.h in Headers */,
 				1B241784FD36860DB00CD1B1FD2B4019 /* SPButton.h in Headers */,
 				0608A3340B00EB58440839D04114A980 /* SPCellSelectedView.h in Headers */,
 				3F0C6510677B4AB6769B2370F7A6E9B2 /* SPColorUtil.h in Headers */,
@@ -3848,6 +3871,7 @@
 				2C9EF8E5BE09F3A0FDE5AA01531EC160 /* SPDeviceUtil.h in Headers */,
 				D3943D499A503E88770FEA740BD88BB8 /* SPDLANManager.h in Headers */,
 				496794954130BE1A841A2D49146DF5B5 /* SPDLANVideoInfo.h in Headers */,
+				60769A4B2019CEAE00C516EC /* UIImage+Resize.h in Headers */,
 				1026125881104CEBBF1C68381A213DDA /* SPDLANView.h in Headers */,
 				B4AFD0CA30F801E1650A527355C18425 /* SPDownloadManager.h in Headers */,
 				C39A9E03E37537BA7A956034E4A6EC95 /* SPDownloadOperation.h in Headers */,
@@ -3882,6 +3906,7 @@
 				09AA7DD562BD97AEF231C02CD26C0B7E /* SPVideoCollectionCell.h in Headers */,
 				D88A15008C5C38FFBD3AEB1722FDC140 /* SPVideoCollectionView.h in Headers */,
 				DAD674D960414F14B25FD379E181CE47 /* SPVideoView.h in Headers */,
+				60811FF820187CAE004F205C /* UIWindow+SPLoading.h in Headers */,
 				2B892D30BEF4D1DE1512B0DB608DBF45 /* SPVRViewController.h in Headers */,
 				8410A3EB07BF6C29AD68B31E347907DC /* SPWaterFallLayout.h in Headers */,
 				1599C7FF406523B138727A97AB941FDB /* TGRefresh.h in Headers */,
@@ -4477,14 +4502,13 @@
 				39A8B1CB829D67CEB1E6DED118AD328F /* Home_videos_album_loading_00028@3x.png in Resources */,
 				AADC821C9F2AD3778F3E02C435455A30 /* Home_videos_album_loading_00029@2x.png in Resources */,
 				E15209AFA442691920C0EC51D1ACEB80 /* Home_videos_album_loading_00029@3x.png in Resources */,
-				EA4B57D965420315AA20D7FD087FB874 /* Home_videos_album_none@2x.png in Resources */,
-				D8185363287CD7585FCED71458A9A96E /* Home_videos_album_none@3x.png in Resources */,
 				9A95DF90E02FCD4E35C812BA51A217D0 /* Home_videos_button_fav.pdf in Resources */,
 				D90E0E63945D273E39F8ADBF96905196 /* Home_videos_button_fav_small.pdf in Resources */,
 				DDFC4EF26BA7B7113C1A50541C8B658D /* Home_videos_button_unfav.pdf in Resources */,
 				120F34CF06879B87B099DECB9480C165 /* Home_videos_button_unfav_small.pdf in Resources */,
 				54B8210FC57C76CCAFCF21A7415CA34E /* Network_folder@2x.png in Resources */,
 				C715BFC42E755FE44CF1FD2AE30925F3 /* Network_folder@3x.png in Resources */,
+				6074A18620173A2E003EC598 /* AirScreen_empty.mp4 in Resources */,
 				1803B7858EC32A54B768095077B3798E /* Network_folder_device_BubbleUPnP@2x.png in Resources */,
 				1B0DA0EC276748952E49657FF2C41116 /* Network_folder_device_BubbleUPnP@3x.png in Resources */,
 				A509779C934352D1C828021196ABC00F /* Network_folder_device_EmbyMedia@2x.png in Resources */,
@@ -4728,6 +4752,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F7FACA5F967EC8D75A4324E2A8A9716 /* Commons.m in Sources */,
+				60769A4C2019CEAE00C516EC /* UIImage+Resize.m in Sources */,
 				E693E349ED44BBF91C8730CA325E9950 /* DismissAnimationController.m in Sources */,
 				1563C55F136A09E311590E75DB486039 /* HYBVideoCell.m in Sources */,
 				6D73AA3836A6045C05EF41176832C6FB /* JRTTFTool.m in Sources */,
@@ -4745,6 +4770,7 @@
 				A0E8877E5C48E5E4EA502B4232CA18A3 /* SPCellSelectedView.m in Sources */,
 				3E1DD63C9B29113B20C22A8554EC51CF /* SPColorUtil.m in Sources */,
 				C63AF557461D0B477B74732A6688089B /* SPDBTool.m in Sources */,
+				60769A4A2019CEAE00C516EC /* UIImage+Alpha.m in Sources */,
 				FAC8ADB0225531C1DF881344EAF42528 /* SPDeviceUtil.m in Sources */,
 				F620687A3FFED48D1BA2BAAE0CC97370 /* SPDLANManager.m in Sources */,
 				FC22CD4283E36260F9819728E78FCFA5 /* SPDLANVideoInfo.m in Sources */,
@@ -4765,6 +4791,7 @@
 				AAAAB78C9C4EC929A8B11C3F49A2DAD3 /* SPMenuViewController.m in Sources */,
 				593C4A39DD1F31CE26BC07DA81F1DBB0 /* SPMuliteViewController.m in Sources */,
 				268723A84D9560FDBF522C9FFFA62F6F /* SPMyCenterViewController.m in Sources */,
+				60811FF920187CAE004F205C /* UIWindow+SPLoading.m in Sources */,
 				4E3F033267E8E297E866B5F816E27C98 /* SPNavigationController.m in Sources */,
 				F2C604A6BB32E4E6494A1952B2393087 /* SPNetworkViewController.m in Sources */,
 				B99F7037CA2BA269C5924701D8E4A336 /* SPOnlineAddURLViewController.m in Sources */,
@@ -4788,6 +4815,7 @@
 				CABA2A6C1AA6EDF5C903E1DDC70B1824 /* UIButton+SPRadius.m in Sources */,
 				22CCDBE374FEAA26C65548BF7FE798FA /* UIImage+Radius.m in Sources */,
 				661E2DD4F5ACACF7FED5B3930EF72A3F /* UILabel+SPAttri.m in Sources */,
+				60769A4F2019CEAE00C516EC /* UIImage+RoundedCorner.m in Sources */,
 				EF72B0746B9EAC3186D4A50E5ECB785E /* UIPageControl+Space.m in Sources */,
 				19FA31788E7B1D757E01B31AAC9A29C5 /* UIResponder+SPCategory.m in Sources */,
 				42D270FF1FDF48C58A424E8256A859A1 /* UIScrollView+TGRefreshOC.m in Sources */,

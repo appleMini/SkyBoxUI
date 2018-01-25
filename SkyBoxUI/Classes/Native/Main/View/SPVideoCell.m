@@ -44,7 +44,7 @@
     [self.contentView addSubview:videoView];
     self.contentView.backgroundColor = [UIColor clearColor];
     
-    videoView.layer.cornerRadius = 12;
+    videoView.layer.cornerRadius = 6;
     videoView.layer.masksToBounds = YES;
     
     [videoView mas_makeConstraints:^(MASConstraintMaker *make) {

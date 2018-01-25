@@ -21,6 +21,7 @@
     BOOL _canRefresh;
     NSInteger _selectMenuIndex;
 }
+
 @property (nonatomic, weak) UIScrollView *contentView;
 
 @property (nonatomic, strong) SPMenuViewController *menuVC;
@@ -169,7 +170,21 @@
     
     self.navigationItem.leftBarButtonItems = [vc leftNaviItem];
     self.navigationItem.rightBarButtonItems = [vc rightNaviItem];
-    self.titleLabel.text = [vc titleOfLabelView];
+    
+    UIView *titleView = [vc customTitleView];
+    if (titleView) {
+        self.navigationItem.titleView = titleView;
+    }
+    
+    NSString *til = [vc titleOfLabelView];
+    if(til) {
+        self.titleLabel.text = til;
+        self.navigationItem.titleView = self.titleLabel;
+    }
+    
+    if (!titleView && !til) {
+        self.navigationItem.titleView = nil;
+    }
     return vc;
 }
 
@@ -178,12 +193,12 @@
         return;
     }
     
-//    SPBaseViewController *middleVC = self.childViewControllers[1];
-//    if (index != 1) {
-//        [middleVC showOrHiddenTopView:NO];
-//    }else {
-//        [middleVC showOrHiddenTopView:YES];
-//    }
+    //    SPBaseViewController *middleVC = self.childViewControllers[1];
+    //    if (index != 1) {
+    //        [middleVC showOrHiddenTopView:NO];
+    //    }else {
+    //        [middleVC showOrHiddenTopView:YES];
+    //    }
     
     SPBaseViewController *vc = [self setupNaviItem:index];
     
@@ -223,9 +238,9 @@
     //moving
     [[SPSwitchBar shareSPSwitchBar] fixPosition:moveDistance baseWidth:scrollView.frame.size.width];
     CGFloat alpha = [self fixAlpha:fabs(moveDistance) baseWidth:scrollView.frame.size.width];
-
+    
     NSInteger index = scrollView.contentOffset.x/scrollView.width;
-
+    
     if (index == 0) {
         if(alpha >= 0) {
             [self setupNaviItem:1];
@@ -249,17 +264,21 @@
     }
     
     self.navigationController.navigationBar.alpha = fabs(alpha);
-    
-    if (self.childViewControllers.count == 0 || index < 0 || index > self.childViewControllers.count - 1) {
-        return;
+    if (self.childViewControllers.count == 3) {
+        SPBaseViewController *vc = self.childViewControllers[1];
+        [vc showTopViewAlpha:alpha];
     }
-    SPBaseViewController *vc = self.childViewControllers[1];
-    
-    [vc showTopViewAlpha:alpha];
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [[SPSwitchBar shareSPSwitchBar] resetAnimation];
+    
     NSInteger index = scrollView.contentOffset.x/scrollView.width;
+    
+    NSInteger selectIndex = [SPSwitchBar shareSPSwitchBar].selectIndex;
+    if (selectIndex == index) {
+        return;
+    }
     [SPSwitchBar shareSPSwitchBar].selectIndex = index;
     
     [self showChildVCViewAtIndex:index];
@@ -276,12 +295,13 @@
     }
     
     _selectMenuIndex = index;
+    
     [self.menuVC selectMenuItem:index jump:NO];
     [self changeMiddleContentView:vc];
 }
-
 #pragma -mark SPMenuJumpProtocol
 - (void)MenuViewController:(UIViewController *)menu jumpViewController:(NSString *)ctrS menuIndex:(NSInteger)index{
+    self.navigationController.navigationBar.alpha = 0.0;
     if (_selectMenuIndex == index) {
         [self showChildVCViewAtIndex:1];
         return;
@@ -309,13 +329,16 @@
     switch (respType) {
         case NativeToUnityType:
         {
-            [MBProgressHUD hideHUDForView:keyWindow animated:YES];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideHUDForView:keyWindow animated:YES];
+            });
             if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity: intoVRMode:)]) {
                 if (self.childViewControllers.count < 3) {
                     return;
                 }
                 SPBaseViewController *vc = self.childViewControllers[1];
                 [vc releaseAction];
+                
                 [self.jumpDelegate nativeToUnity:target intoVRMode:nil];
             }
         }

@@ -7,7 +7,7 @@
 
 #import "SPDLANManager.h"
 #import <KissXML/KissXML.h>
-
+#import "UIWindow+SPLoading.h"
 
 @interface SPDLANManager() <NSXMLParserDelegate>
 @property (nonatomic, strong) CADisplayLink *displink;
@@ -43,6 +43,11 @@ static SPDLANManager *_manager = nil;
 }
 
 - (void)emptyServers {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+        [keyWindow hideLoading];
+    });
+    
     [self.timeoutTimer invalidate];
     self.timeoutTimer = nil;
     
@@ -86,6 +91,10 @@ static SPDLANManager *_manager = nil;
 }
 - (void)startupDLAN {
     [self openDLAN];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+        [keyWindow showLoading];
+    });
     
     self.status = AddDeviceStatus;
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -130,6 +139,11 @@ static SPDLANManager *_manager = nil;
 }
 
 static void AddDLNADeviceCallback(const char* UUID, int uuidLength, const char* title, int titleLength, const char* iconurl, int iconLength, const char* Manufacturer, int manufacturerLength) {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+        [keyWindow hideLoading];
+    });
     
     NSString *uuid = [[NSString alloc] initWithData:[NSData dataWithBytes:UUID length:uuidLength] encoding:NSUTF8StringEncoding];
     NSString *deviceTitle = [[NSString alloc] initWithData:[NSData dataWithBytes:title length:titleLength] encoding:NSUTF8StringEncoding];

@@ -16,6 +16,7 @@ SPSingletonH(SPSwitchBar)
 @property (nonatomic, assign) NSInteger selectIndex;
 @property (nonatomic, weak) id<SPSwitchBarProtocol> delegate;
 
+- (void)resetAnimation;
 - (void)fixPosition:(CGFloat)x baseWidth:(CGFloat)width;
 @end
 

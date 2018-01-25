@@ -122,6 +122,7 @@ typedef enum : NSUInteger {
         
         NSString *jsonStr = dict[@"mediaListResult"];
         if (!jsonStr) {
+            NSLog(@"mediaListResult is none....");
             return;
         }
         
@@ -140,6 +141,8 @@ typedef enum : NSUInteger {
             [mediaListResult addObject:video];
         }
         
+        //
+//        [mediaListResult removeAllObjects];
         NSUInteger selectedIndex = -1;
         NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenResultMiddleVCType],
                                  kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
@@ -174,7 +177,6 @@ typedef enum : NSUInteger {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     NSMutableAttributedString *instruction1Attr = [[NSMutableAttributedString alloc] initWithString:@"INSTALL SKYBOX FOR PC FROM SKYBOX.XYZ"];
     
     UIFont *lightFont = [UIFont fontWithName:@"Calibri-Light" size:13.0];
@@ -262,7 +264,6 @@ typedef enum : NSUInteger {
     }
     
     self.pcImgVHeightConstraint.constant = 270 * kHSCALE;
-    
     switch (_status) {
         case StartupStatus:
         {
@@ -358,7 +359,7 @@ typedef enum : NSUInteger {
             [imageArray addObject:image];
         }
     }
-        
+    
     return imageArray;
 }
 
@@ -501,9 +502,9 @@ typedef enum : NSUInteger {
 }
 
 - (void)showResultView {
-//    _dataArr = nil;
-//    _status = ResultEmptyStatus;
-//    [self updateViewConstraints];
+    //    _dataArr = nil;
+    //    _status = ResultEmptyStatus;
+    //    [self updateViewConstraints];
     
     __weak typeof(self) ws = self;
     self.refreshBlock = ^(NSString *dataStr){
@@ -550,7 +551,8 @@ typedef enum : NSUInteger {
         
         _devicesLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _devicesLabel.text = @"4 DEVICES FOUND";
-        _devicesLabel.font = [UIFont systemFontOfSize:13];
+        _devicesLabel.font = [UIFont fontWithName:@"Calibri" size:13.0];
+        _devicesLabel.textColor = [SPColorUtil getHexColor:@"#96989d"];
         _devicesLabel.textAlignment = NSTextAlignmentCenter;
         [_devicesLabel sizeToFit];
         [_topView addSubview:_devicesLabel];
@@ -561,7 +563,7 @@ typedef enum : NSUInteger {
         
         //line
         UIView *line1 = [[UIView alloc] initWithFrame:CGRectZero];
-        line1.backgroundColor = [UIColor whiteColor];
+        line1.backgroundColor = [SPColorUtil getHexColor:@"#595c65"];
         [_topView addSubview:line1];
         
         [line1 mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -572,7 +574,7 @@ typedef enum : NSUInteger {
         }];
         
         UIView *line2 = [[UIView alloc] initWithFrame:CGRectZero];
-        line2.backgroundColor = [UIColor whiteColor];
+        line2.backgroundColor = [SPColorUtil getHexColor:@"#595c65"];
         [_topView addSubview:line2];
         [line2 mas_makeConstraints:^(MASConstraintMaker *make) {
             make.height.mas_equalTo(2);
@@ -625,6 +627,8 @@ static NSString *cellID = @"AIRSCREEN_CELLID";
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = [_dataArr[indexPath.row] computerName];
+    cell.textLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
+    cell.textLabel.textColor = [SPColorUtil getHexColor:@"#3c3f48"];
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
     return cell;
 }

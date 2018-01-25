@@ -35,11 +35,12 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mkc-iH-hfP" userLabel="favBtn">
-                    <rect key="frame" x="282" y="218" width="18" height="18"/>
+                    <rect key="frame" x="274" y="210" width="34" height="34"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="18" id="9Dc-kf-rtU"/>
-                        <constraint firstAttribute="height" constant="18" id="Ytl-Bd-CLK"/>
+                        <constraint firstAttribute="width" constant="34" id="9Dc-kf-rtU"/>
+                        <constraint firstAttribute="height" constant="34" id="Ytl-Bd-CLK"/>
                     </constraints>
+                    <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                     <state key="normal" image="Channels_icon_favorites.png"/>
                     <connections>
                         <action selector="favAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="ydh-gO-Bqj"/>
@@ -55,8 +56,8 @@
                 <constraint firstAttribute="trailing" secondItem="OHl-tu-Ia4" secondAttribute="trailing" id="YIE-dd-3nY"/>
                 <constraint firstItem="OHl-tu-Ia4" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="ZjU-FH-ElE"/>
                 <constraint firstAttribute="trailing" secondItem="BKk-6Q-k7G" secondAttribute="trailing" id="azI-mQ-y8L"/>
-                <constraint firstItem="Mkc-iH-hfP" firstAttribute="bottom" secondItem="OHl-tu-Ia4" secondAttribute="bottom" constant="-8" id="etw-Fb-sPe"/>
-                <constraint firstAttribute="trailing" secondItem="Mkc-iH-hfP" secondAttribute="trailing" constant="8" id="ifN-bT-npD"/>
+                <constraint firstItem="Mkc-iH-hfP" firstAttribute="bottom" secondItem="OHl-tu-Ia4" secondAttribute="bottom" id="etw-Fb-sPe"/>
+                <constraint firstAttribute="trailing" secondItem="Mkc-iH-hfP" secondAttribute="trailing" id="ifN-bT-npD"/>
                 <constraint firstItem="BKk-6Q-k7G" firstAttribute="top" secondItem="OHl-tu-Ia4" secondAttribute="bottom" constant="8" id="yy6-sd-67L"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="i1I-hQ-hwT" secondAttribute="trailing" id="zWF-PA-hLL"/>
             </constraints>

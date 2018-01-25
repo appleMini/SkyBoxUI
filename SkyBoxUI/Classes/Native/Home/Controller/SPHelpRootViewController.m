@@ -13,6 +13,9 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIPageControl *pageControl;
 
+
+@property (strong, nonatomic) SPHomeHelpViewController *page1VC;
+@property (strong, nonatomic) SPHomeHelpViewController *page2VC;
 @end
 
 @implementation SPHelpRootViewController
@@ -50,13 +53,28 @@
     page1VC.view.frame = CGRectMake(0, 0, self.scrollView.width, self.scrollView.height);
     [self.scrollView addSubview:page1VC.view];
     page1VC.currentPage = 0;
+    _page1VC = page1VC;
     
     SPHomeHelpViewController *page2VC = [[SPHomeHelpViewController alloc] initWithSomething];
     page2VC.view.frame = CGRectMake(self.scrollView.width, 0, self.scrollView.width, self.scrollView.height);
     [self.scrollView addSubview:page2VC.view];
     page2VC.currentPage = 1;
+    _page2VC = page2VC;
     
     self.pageControl.numberOfPages = 2;
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    
+    CGRect frame = self.scrollView.frame;
+    frame.size.width = self.view.width;
+    frame.size.height = self.view.height;
+    self.scrollView.frame = frame;
+    self.scrollView.contentSize = CGSizeMake(2 * self.view.width, 0);
+    
+    _page1VC.view.frame = CGRectMake(0, 0, self.scrollView.width, self.scrollView.height);
+    _page2VC.view.frame = CGRectMake(self.scrollView.width, 0, self.scrollView.width, self.scrollView.height);
 }
 
 - (void)pageChange:(UIPageControl *)pageCtrl {

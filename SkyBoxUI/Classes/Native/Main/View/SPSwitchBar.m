@@ -28,6 +28,7 @@
 @property (nonatomic, strong) UIImageView   *centerBg;
 //@property (nonatomic, strong) UIView   *underLine;
 
+@property (nonatomic, assign) BOOL    animation;
 @end
 
 @implementation SPSwitchBar
@@ -39,6 +40,7 @@ SPSingletonM(SPSwitchBar)
     self = [self initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, LargeHeight)];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
+        _animation = YES;
     }
     return self;
 }
@@ -47,6 +49,7 @@ SPSingletonM(SPSwitchBar)
 {
     self = [super initWithFrame:frame];
     if (self) {
+        _animation = YES;
         _selectIndex = 0;
         [self setupViews];
     }
@@ -205,16 +208,37 @@ SPSingletonM(SPSwitchBar)
         return;
     }
     _selectIndex = selectIndex;
-//    [_leftBtn setImage:[Commons getImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_channels%@", _selectIndex == 0 ? @"_active" : @""]] forState:UIControlStateNormal];
-//    [_rightBtn setImage:[Commons getImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_history%@", _selectIndex == 2 ? @"_active" : @""]] forState:UIControlStateNormal];
-//    _rightBtn.imageView.contentMode = UIViewContentModeScaleToFill;
+    //    [_leftBtn setImage:[Commons getImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_channels%@", _selectIndex == 0 ? @"_active" : @""]] forState:UIControlStateNormal];
+    //    [_rightBtn setImage:[Commons getImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_history%@", _selectIndex == 2 ? @"_active" : @""]] forState:UIControlStateNormal];
+    //    _rightBtn.imageView.contentMode = UIViewContentModeScaleToFill;
     //    [_centerBtn setImage:[Commons getPdfImageFromResource:(_selectIndex == 1 ? @"Home_tabbar_button_VR" : @"Home_tabbar_button_videos")] forState:UIControlStateNormal];
 }
 
 - (void)fixPosition:(CGFloat)dx baseWidth:(CGFloat)width {
     CGFloat fdx = fabs(dx);
-    CGFloat scale = [self fixScale:fdx baseWidth:width];
     CGFloat alpha =  [self fixAlpha:fdx baseWidth:width];
+    
+    if (dx < 0) {
+        self.rightBtn.alpha = 1.0 - alpha;
+        self.rightBtn_active.alpha = alpha;
+        self.leftBtn_active.alpha = 0.0;
+        self.leftBtn.alpha = 1.0;
+    }else if(dx > 0) {
+        self.leftBtn.alpha = 1.0 - alpha;
+        self.leftBtn_active.alpha = alpha;
+        self.rightBtn_active.alpha = 0.0;
+        self.rightBtn.alpha = 1.0;
+    }
+    
+    if (!_animation) {
+        
+        return;
+    }
+    
+    self.centerBtn.alpha = [self fixAlpha:fdx baseWidth:width];
+    self.centerVR.alpha = 1.0 - [self fixAlpha:fdx baseWidth:width];
+    
+    CGFloat scale = [self fixScale:fdx baseWidth:width];
     //left
     CGFloat lx = leadingSpace + [self coordinate:fdx baseWidth:width];
     CGFloat lwidth = SmallItem * scale;
@@ -226,8 +250,8 @@ SPSingletonM(SPSwitchBar)
     lframe.origin.y = ly;
     lframe.size.width = lwidth;
     lframe.size.height = lheight;
-    self.leftBtn.frame = lframe;
     
+    self.leftBtn.frame = lframe;
     self.leftBtn_active.frame = lframe;
     
     //    self.leftBtn.backgroundColor = [UIColor yellowColor];
@@ -245,21 +269,11 @@ SPSingletonM(SPSwitchBar)
     rframe.origin.y = ry;
     rframe.size.width = rwidth;
     rframe.size.height = rheight;
-    self.rightBtn.frame = rframe;
     
+    self.rightBtn.frame = rframe;
     self.rightBtn_active.frame = rframe;
     
-    if (dx < 0) {
-        self.rightBtn.alpha = 1.0 - alpha;
-        self.rightBtn_active.alpha = alpha;
-        self.leftBtn_active.alpha = 0.0;
-        self.leftBtn.alpha = 1.0;
-    }else if(dx > 0) {
-        self.leftBtn.alpha = 1.0 - alpha;
-        self.leftBtn_active.alpha = alpha;
-        self.rightBtn_active.alpha = 0.0;
-        self.rightBtn.alpha = 1.0;
-    }
+    
     //    self.rightBtn.backgroundColor = [UIColor blueColor];
     //    self.rightBtn.layer.cornerRadius = rwidth / 2;
     //    self.rightBtn.layer.masksToBounds = YES;
@@ -278,8 +292,8 @@ SPSingletonM(SPSwitchBar)
     cframe.origin.y = cy;
     cframe.size.width = cw;
     cframe.size.height = ch;
+    
     self.centerBtn.frame = cframe;
-    self.centerBtn.alpha = [self fixAlpha:fdx baseWidth:width];
     //    NSLog(@"centerBtn.cnetr ========== == %f   CGFloat cw ==  %f   cx ====== %f", self.centerBtn.center.x, cw, cx);
     //    self.centerBtn.layer.cornerRadius = cw / 2;
     //    self.centerBtn.layer.shadowOpacity = 0.8;
@@ -298,8 +312,6 @@ SPSingletonM(SPSwitchBar)
     cvframe.size.width = cw;
     cvframe.size.height = ch;
     self.centerVR.frame = cvframe;
-    self.centerVR.alpha = 1.0 - [self fixAlpha:fdx baseWidth:width];
-    
     
     CGFloat cbw = CBGItem * cscale;
     CGFloat cbh = CBGItem * cscale;
@@ -348,11 +360,19 @@ SPSingletonM(SPSwitchBar)
 }
 
 #pragma -mark event
+- (void)resetAnimation {
+    _animation = YES;
+}
+
 - (void)leftBtnClick:(UIButton *)btn {
     if (self.selectIndex == 0) {
         [self scale:self.leftBtn];
         [self scale:self.leftBtn_active];
         return;
+    }else if(self.selectIndex == 2){
+        _animation = NO;
+    }else {
+        _animation = YES;
     }
     
     self.selectIndex = 0;
@@ -367,6 +387,8 @@ SPSingletonM(SPSwitchBar)
         //进入VR模式
         [self vrBtnClick:btn];
         return;
+    }else {
+        _animation = YES;
     }
     self.selectIndex = 1;
     if (self.delegate && [self.delegate respondsToSelector:@selector(switchBar: selectIndex:)]) {
@@ -379,7 +401,12 @@ SPSingletonM(SPSwitchBar)
         [self scale:self.rightBtn];
         [self scale:self.rightBtn_active];
         return ;
+    }else if(self.selectIndex == 0){
+        _animation = NO;
+    }else {
+        _animation = YES;
     }
+    
     self.selectIndex = 2;
     if (self.delegate && [self.delegate respondsToSelector:@selector(switchBar: selectIndex:)]) {
         [self.delegate switchBar:self selectIndex:2];

@@ -10,6 +10,7 @@
 #import "UIImage+Radius.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "UILabel+SPAttri.h"
+#import "UIImage+RoundedCorner.h"
 
 @interface SPVideoCollectionView()
 @property (weak, nonatomic) IBOutlet UIImageView *imgv;
@@ -60,15 +61,15 @@
 
 - (void)setVideo:(SPVideo *)video {
     _video = video;
-    self.imgvHeightConstraint.constant = 208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324;
+    self.imgvHeightConstraint.constant = 1.0 * 208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324;
     if (video.thumbnail_uri && ![video.thumbnail_uri hasPrefix:@"file://"] && ![video.thumbnail_uri hasPrefix:@"http://"] && ![video.thumbnail_uri hasPrefix:@"https://"]) {
         video.thumbnail_uri = [NSString stringWithFormat:@"file://%@", video.thumbnail_uri];
     }
-    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[Commons getPdfImageFromResource:@"Home_videos_album_none_small"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+    
+    self.imgv.contentMode = UIViewContentModeScaleAspectFill;
+    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[Commons getImageFromResource:@"Home_videos_album_default"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         if (image) {
-            self.imgv.image = [image drawRectWithRoundedCorner:10 bgColor:[SPColorUtil getHexColor:@"#585E69"] inRect:self.imgv.bounds];
-        }else{
-            self.imgv.image = [[Commons getImageFromResource:@"Home_videos_album_default"] drawRectWithRoundedCorner:10 bgColor:[SPColorUtil getHexColor:@"#585E69"] inRect:self.imgv.bounds];
+            self.imgv.image = [image roundedCornerImage:5 borderSize:0];
         }
     }];
     
