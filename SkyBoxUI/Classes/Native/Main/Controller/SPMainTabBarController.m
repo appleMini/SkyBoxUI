@@ -126,12 +126,13 @@
     NSInteger respType = (ResponderType)[[userInfo objectForKey:kEventType] unsignedIntegerValue];
     id target = (UIViewController *)[userInfo objectForKey:kTopViewController];
     NSUInteger selectedIndex = [[userInfo objectForKey:kSelectTabBarItem] unsignedIntegerValue];
-    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
     
     switch (respType) {
        case NativeToUnityType:
         {
-            [MBProgressHUD hideHUDForView:keyWindow animated:YES];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideHUDForView:KEYWINDOW animated:YES];
+            });
             if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity:selectedIndex:)]) {
                 [self.jumpDelegate nativeToUnity:target selectedIndex:selectedIndex];
             }
@@ -139,7 +140,6 @@
             break;
        case TestType:
         {
-//            [MBProgressHUD showHUDAddedTo:keyWindow animated:YES];
             NSString *mName = [userInfo objectForKey:kFunctionName];
             NSString *param =  [userInfo objectForKey:kParams];
             if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity: methodName: param:)]) {

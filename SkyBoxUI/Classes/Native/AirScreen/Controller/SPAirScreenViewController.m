@@ -117,8 +117,9 @@ typedef enum : NSUInteger {
     NSDictionary *dict = [notify userInfo];
     
     if ([dict[@"method"] isEqualToString:@"showResult"]) {
-        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-        [MBProgressHUD hideHUDForView:keyWindow animated:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:KEYWINDOW animated:YES];
+        });
         
         NSString *jsonStr = dict[@"mediaListResult"];
         if (!jsonStr) {
@@ -451,8 +452,9 @@ typedef enum : NSUInteger {
 
 - (void)connectServer:(SPAirscreen *)airscreen {
     if (_socketOpened && airscreen) {
-        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-        [MBProgressHUD showHUDAddedTo:keyWindow animated:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD showHUDAddedTo:KEYWINDOW animated:YES];
+        });
         [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"WebSocketConnect", @"airscreen" : airscreen}];
     }
     

@@ -324,13 +324,12 @@
 - (void)bubbleEventWithUserInfo:(NSDictionary *)userInfo {
     NSInteger respType = (ResponderType)[[userInfo objectForKey:kEventType] unsignedIntegerValue];
     id target = [userInfo objectForKey:kTopViewController];
-    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
     
     switch (respType) {
         case NativeToUnityType:
         {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [MBProgressHUD hideHUDForView:keyWindow animated:YES];
+                [MBProgressHUD hideHUDForView:KEYWINDOW animated:YES];
             });
             if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity: intoVRMode:)]) {
                 if (self.childViewControllers.count < 3) {
@@ -363,7 +362,6 @@
             break;
         case TestType:
         {
-            //            [MBProgressHUD showHUDAddedTo:keyWindow animated:YES];
             NSString *mName = [userInfo objectForKey:kFunctionName];
             NSString *param =  [userInfo objectForKey:kParams];
             if(self.jumpDelegate && [self.jumpDelegate respondsToSelector:@selector(nativeToUnity: methodName: param:)]) {
