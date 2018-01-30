@@ -188,17 +188,14 @@
     return vc;
 }
 
-- (void)showChildVCViewAtIndex:(NSInteger)index {
+- (void)showChildVCAtIndex:(NSInteger)index {
+    [self showChildVCViewAtIndex:index shouldRefresh:YES];
+}
+
+- (void)showChildVCViewAtIndex:(NSInteger)index shouldRefresh:(BOOL)refresh {
     if (self.childViewControllers.count == 0 || index < 0 || index > self.childViewControllers.count - 1) {
         return;
     }
-    
-    //    SPBaseViewController *middleVC = self.childViewControllers[1];
-    //    if (index != 1) {
-    //        [middleVC showOrHiddenTopView:NO];
-    //    }else {
-    //        [middleVC showOrHiddenTopView:YES];
-    //    }
     
     SPBaseViewController *vc = [self setupNaviItem:index];
     
@@ -207,7 +204,7 @@
     // 滑动到对应位置
     [self.contentView setContentOffset:CGPointMake(index * self.contentView.width, 0) animated:YES];
     
-    _canRefresh ? [vc refresh] : nil;
+    (_canRefresh && refresh) ? [vc refresh] : nil;
     [SPSwitchBar shareSPSwitchBar].selectIndex = index;
 }
 
@@ -216,7 +213,7 @@
     NSArray <UIViewController *>*childVCs = @[self.menuVC, vc, self.historyVC];
     [self setUpWithChildVCs:childVCs];
     
-    [self showChildVCViewAtIndex:1];
+    [self showChildVCAtIndex:1];
     [SPSwitchBar shareSPSwitchBar].selectIndex = 1;
 }
 
@@ -281,12 +278,12 @@
     }
     [SPSwitchBar shareSPSwitchBar].selectIndex = index;
     if (index == 2) {
-        [self showChildVCViewAtIndex:index];
+        [self showChildVCAtIndex:index];
     }
 }
 #pragma -mark SPSwitchBarDelegate
 - (void)switchBar:(SPSwitchBar *)bar selectIndex:(NSInteger)index {
-    [self showChildVCViewAtIndex:index];
+    [self showChildVCAtIndex:index];
 }
 
 #pragma -mark jumpToMiddleVC
@@ -304,7 +301,7 @@
 - (void)MenuViewController:(UIViewController *)menu jumpViewController:(NSString *)ctrS menuIndex:(NSInteger)index{
     self.navigationController.navigationBar.alpha = 0.0;
     if (_selectMenuIndex == index) {
-        [self showChildVCViewAtIndex:1];
+        [self showChildVCViewAtIndex:1 shouldRefresh:NO];
         return;
     }
     
