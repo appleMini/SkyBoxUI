@@ -35,12 +35,12 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mkc-iH-hfP" userLabel="favBtn">
-                    <rect key="frame" x="274" y="210" width="34" height="34"/>
+                    <rect key="frame" x="264" y="200" width="44" height="44"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="34" id="9Dc-kf-rtU"/>
-                        <constraint firstAttribute="height" constant="34" id="Ytl-Bd-CLK"/>
+                        <constraint firstAttribute="width" constant="44" id="9Dc-kf-rtU"/>
+                        <constraint firstAttribute="height" constant="44" id="Ytl-Bd-CLK"/>
                     </constraints>
-                    <inset key="contentEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
+                    <inset key="contentEdgeInsets" minX="18" minY="18" maxX="8" maxY="8"/>
                     <state key="normal" image="Channels_icon_favorites.png"/>
                     <connections>
                         <action selector="favAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="ydh-gO-Bqj"/>

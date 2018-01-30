@@ -8,6 +8,7 @@
 #import "SPVideoView.h"
 #import "SPVideo.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImage+Resize.h"
 
 @interface SPVideoView()
 
@@ -25,7 +26,7 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     
-    _imgvHeightConstraint.constant = 1.0 * 104 / (162 / (SCREEN_WIDTH - 34));
+    _imgvHeightConstraint.constant = 1.0 * 155 *kHSCALE;
 }
 
 - (void)setVideo:(SPVideo *)video {
@@ -34,7 +35,12 @@
         video.thumbnail_uri = [NSString stringWithFormat:@"file://%@", video.thumbnail_uri];
     }
     self.imgv.contentMode = UIViewContentModeScaleAspectFill;
-    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[Commons getImageFromResource:@"Home_videos_album_default"] options:SDWebImageRetryFailed];
+    UIImage *placeholderImage = [Commons getImageFromResource:@"Home_videos_album_list_default"];
+    
+    
+    CGSize newsize = CGSizeMake(SCREEN_WIDTH - 36 * kWSCALE, _imgvHeightConstraint.constant);
+    placeholderImage = [placeholderImage resizeImageWithModeCenter:newsize imageSize:CGSizeMake(43 , 48) bgFillColor:[UIColor clearColor]];
+    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:placeholderImage options:SDWebImageRetryFailed];
     
     self.imgv.userInteractionEnabled = YES;
     //为图片添加手势

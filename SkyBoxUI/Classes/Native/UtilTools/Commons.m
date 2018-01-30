@@ -16,7 +16,14 @@
 }
 
 + (UIImage *)getImageFromResource:(NSString *)name {
-    NSString *ext = [SPDeviceUtil isiPhoneX] ? @"@3x" : @"@2x";
+    NSString *ext = nil;
+    CGFloat scale = [UIScreen mainScreen].scale;
+    if (scale == 2) {
+        ext = @"@2x";
+    }else if(scale == 3){
+        ext = @"@3x";
+    }
+    
     UIImage *img =  [UIImage imageWithContentsOfFile:[[Commons resourceBundle] pathForResource:[NSString stringWithFormat:@"%@%@",name, ext] ofType:@"png"]];
     return img;
 }
@@ -33,8 +40,9 @@
 
 #pragma -mark duration text
 + (NSString *)durationText:(double)dur {
+    double duration = dur / 1000;
     NSString *hours = @"00";
-    int hour = dur / 60 / 60;
+    int hour = (duration / 60 / 60);
     if (hour < 10) {
         hours = [NSString stringWithFormat:@"0%d", hour];
     }else{
@@ -42,7 +50,7 @@
     }
     
     NSString *minutes = @"00";
-    int minute = (dur - hour * 3600) / 60;
+    int minute = (duration - hour * 3600) / 60;
     if (minute < 10) {
         minutes = [NSString stringWithFormat:@"0%d", minute];
     }else{
@@ -50,7 +58,7 @@
     }
     
     NSString *seconds = @"00";
-    int second = dur - hour * 3600 - minute * 60;
+    int second = duration - hour * 3600 - minute * 60;
     if (second < 10) {
         seconds = [NSString stringWithFormat:@"0%d", second];
     }else{

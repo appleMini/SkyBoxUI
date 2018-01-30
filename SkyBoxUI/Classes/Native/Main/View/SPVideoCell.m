@@ -48,7 +48,7 @@
     videoView.layer.masksToBounds = YES;
     
     [videoView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(UIEdgeInsetsMake(20, 18, 20, 18));
+        make.edges.mas_equalTo(UIEdgeInsetsMake(20, 18*kWSCALE, 20, 18*kWSCALE));
     }];
     self.videoView = videoView;
 }

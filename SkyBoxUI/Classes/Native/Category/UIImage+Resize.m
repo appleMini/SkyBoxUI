@@ -74,7 +74,7 @@
                     interpolationQuality:(CGInterpolationQuality)quality {
     CGFloat horizontalRatio = bounds.width / self.size.width;
     CGFloat verticalRatio = bounds.height / self.size.height;
-    CGFloat ratio;
+    CGFloat ratio = 0;
     
     switch (contentMode) {
         case UIViewContentModeScaleAspectFill:
@@ -84,7 +84,6 @@
         case UIViewContentModeScaleAspectFit:
             ratio = MIN(horizontalRatio, verticalRatio);
             break;
-            
         default:
             [NSException raise:NSInvalidArgumentException format:@"Unsupported content mode: %@", @(contentMode)];
     }
@@ -92,6 +91,37 @@
     CGSize newSize = CGSizeMake(self.size.width * ratio, self.size.height * ratio);
     
     return [self resizedImage:newSize interpolationQuality:quality];
+}
+
+- (UIImage *)resizeImageWithModeCenter:(CGSize)size  imageSize:(CGSize)imgsize  bgFillColor:(UIColor *)bgcolor {
+    NSLog(@"size =====width === %f =======height === %f", size.width, size.height);
+    CGFloat width = imgsize.width;
+    CGFloat height = imgsize.height;
+    
+    NSLog(@"resizeImage =====width === %f =======height === %f", width, height);
+    CGFloat targetWidth = size.width;
+    CGFloat targetHeight = size.height;
+    
+    CGFloat cx = 1.0*(targetWidth - width)/2;
+    CGFloat cy = 1.0*(targetHeight - height)/2;
+    CGRect centerRect = CGRectMake(cx, cy, width, height);
+    
+    UIGraphicsBeginImageContextWithOptions(size, false, [UIScreen mainScreen].scale);
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
+    CGContextSetFillColorWithColor(ctx, bgcolor.CGColor);
+    //    CGContextSetLineWidth(ctx, 3.0);//线的宽度
+    //    CGContextSetStrokeColorWithColor(ctx, bgColor.CGColor);
+    CGContextFillRect(ctx, CGRectMake(0, 0, targetWidth, targetHeight));//绘制
+    
+    [self drawInRect:centerRect];
+    CGContextDrawPath(ctx, kCGPathFillStroke);
+    
+    UIImage *output = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return output;
 }
 
 #pragma mark -

@@ -9,7 +9,6 @@
 
 @interface SPHistoryViewController()
 
-@property (nonatomic, strong) UIBarButtonItem *deleteItem;
 @end
 
 @implementation SPHistoryViewController
@@ -34,26 +33,5 @@
     [super viewDidLoad];
     
 }
-
-- (NSArray *)rightNaviItem {
-    return @[self.deleteItem];
-}
-
-- (UIBarButtonItem *)deleteItem {
-    if (!_deleteItem) {
-        UIButton *deleteItem = [UIButton buttonWithType:UIButtonTypeCustom];
-        [deleteItem setImage:[Commons getPdfImageFromResource:@"History_titlebar_button_delete"] forState:UIControlStateNormal];
-        deleteItem.backgroundColor = [UIColor clearColor];
-//        deleteItem.frame = CGRectMake(0, 0, 20, 20);
-        [deleteItem addTarget:self action:@selector(deleteItem:) forControlEvents:UIControlEventTouchUpInside];
-        
-        _deleteItem = [[UIBarButtonItem alloc] initWithCustomView:deleteItem];
-    }
-    
-    return _deleteItem;
-}
-
-- (void)deleteItem:(UIButton *)item {
-    
-}
 @end
+

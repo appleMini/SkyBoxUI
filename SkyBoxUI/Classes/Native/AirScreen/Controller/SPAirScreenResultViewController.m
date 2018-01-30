@@ -74,17 +74,17 @@
 //    }
 //}
 - (void)topViewAddToKeyWindow {
-    CGFloat height = 32;
+    CGFloat height = 27;
     CGFloat x = (SCREEN_WIDTH - 334/2)/2;
-    CGFloat y = [SPDeviceUtil isiPhoneX] ? 34 + (44 - 32)/2 : 20 + (44 - 32)/2;
+    CGFloat y = [SPDeviceUtil isiPhoneX] ? 34 + (44 - 27)/2 : 20 + (44 - 27)/2;
     CGFloat width = 334/2;
     self.topView.frame = CGRectMake(x, y, width, height);
     [KEYWINDOW addSubview:self.topView];
     
     //    [self.topView mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        CGFloat height = 32;
+    //        CGFloat height = 27;
     //        CGFloat x = 80*kWSCALE;
-    //        CGFloat y = [SPDeviceUtil isiPhoneX] ? 34 + (44 - 32)/2 : 20 + (44 - 32)/2;
+    //        CGFloat y = [SPDeviceUtil isiPhoneX] ? 34 + (44 - 27)/2 : 20 + (44 - 27)/2;
     //        make.top.mas_equalTo(y);
     //        make.leading.mas_equalTo(x);
     //        make.trailing.mas_equalTo(-x);
@@ -96,7 +96,7 @@
     if (!_topView) {
         _topView = [[UIView alloc] initWithFrame:CGRectZero];
         _topView.backgroundColor = [UIColor whiteColor];
-        _topView.layer.cornerRadius = 16;
+        _topView.layer.cornerRadius = 13.5;
         _topView.clipsToBounds = YES;
         
         SPButton *btn = [[SPButton alloc] initWithFrame:CGRectZero];
@@ -110,21 +110,21 @@
         //        btn.imageEdgeInsets = UIEdgeInsetsMake(0, btn.titleLabel.bounds.size.width, 0, -btn.titleLabel.bounds.size.width);
         [btn addTarget:self action:@selector(showOrHiddenOtherView) forControlEvents:UIControlEventTouchUpInside];
         btn.backgroundColor = [UIColor clearColor];
-        CGFloat x = 16;
+        CGFloat x = 8;
         CGFloat y = 0;
-        CGFloat width = 334/2 - 16 * 2;
-        CGFloat height = 32;
+        CGFloat width = 334/2 - 8 * 2;
+        CGFloat height = 27;
         btn.frame = CGRectMake(x, y, width, height);
         [_topView addSubview:btn];
         //        [btn mas_makeConstraints:^(MASConstraintMaker *make) {
         //            make.top.mas_equalTo(0);
         //            make.leading.mas_equalTo(16);
         //            make.trailing.mas_equalTo(-16);
-        //            make.height.mas_equalTo(32);
+        //            make.height.mas_equalTo(27);
         //        }];
         self.serverBtn = btn;
         
-        x = 16;
+        x = 8;
         //        y = self.serverBtn.frame.origin.y + self.serverBtn.frame.size.height;
         width = self.serverBtn.frame.size.width;
         height = self.serverBtn.frame.size.height;
@@ -198,40 +198,41 @@
         
         [KEYWINDOW bringSubviewToFront:self.topView];
         
-        [UIView animateWithDuration:0.6 animations:^{
+        [UIView animateWithDuration:0.3 animations:^{
             
             CGRect frame = self.topView.frame;
-            CGFloat height = 32;
+            CGFloat height = 27;
+            CGFloat disheight = 31;
             CGFloat width = 376/2;
             CGFloat x = (SCREEN_WIDTH - width)/2;
             
-            frame.size.height = height * 2 + 20;
+            frame.size.height = height + disheight + 5 + 8;
             frame.origin.x = x;
             frame.size.width = width;
             self.topView.frame = frame;
             
             //        [self.topView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            //            CGFloat height = 32;
+            //            CGFloat height = 27;
             //            CGFloat x = 80*kWSCALE;
-            //            CGFloat y = [SPDeviceUtil isiPhoneX] ? 34 + (44 - 32)/2 : 20 + (44 - 32)/2;
+            //            CGFloat y = [SPDeviceUtil isiPhoneX] ? 34 + (44 - 27)/2 : 20 + (44 - 27)/2;
             //            make.top.mas_equalTo(y);
             //            make.leading.mas_equalTo(x);
             //            make.trailing.mas_equalTo(-x);
             //            make.height.mas_equalTo(height * 2 + 20);
             //        }];
             frame = self.serverBtn.frame;
-            frame.origin.y = 10;
-            frame.origin.x = 16;
-            frame.size.width = self.topView.bounds.size.width - 2 * 16;
+            frame.origin.y = 5;
+            frame.origin.x = 8;
+            frame.size.width = self.topView.bounds.size.width - 2 * 8;
             self.serverBtn.frame = frame;
             
             //        [self.serverBtn mas_updateConstraints:^(MASConstraintMaker *make) {
             //            make.top.mas_equalTo(10);
             //        }];
-            x = 16;
+            x = 8;
             CGFloat y = self.serverBtn.frame.origin.y + self.serverBtn.frame.size.height;
             width = self.serverBtn.frame.size.width;
-            height = self.serverBtn.frame.size.height;
+            height = disheight;
             
             self.disconnBtn.frame = CGRectMake(x, y, width, height);
             
@@ -239,10 +240,10 @@
             //        [self.disconnBtn mas_makeConstraints:^(MASConstraintMaker *make) {
             //            make.leading.mas_equalTo(16);
             //            make.trailing.mas_equalTo(-16);
-            //            make.height.mas_equalTo(32);
+            //            make.height.mas_equalTo(27);
             //            make.bottom.mas_equalTo(-10);
             //        }];
-            self.disconnBtn.layer.cornerRadius = 16;
+            self.disconnBtn.layer.cornerRadius = 15.5;
             self.disconnBtn.layer.masksToBounds = YES;
             
             self.topView.layer.cornerRadius = 20;
@@ -250,16 +251,16 @@
             
             self.maskView.alpha = 0.4;
         }];
-        [UIView animateWithDuration:0.3 delay:0.3 options:0 animations:^{
+        [UIView animateWithDuration:0.15 delay:0.15 options:0 animations:^{
             self.disconnBtn.alpha = 1.0;
         } completion:nil];
     }else{
         _showDisconnect = NO;
         //            [self.disconnBtn removeFromSuperview];
         
-        [UIView animateWithDuration:0.6 animations:^{
+        [UIView animateWithDuration:0.3 animations:^{
             CGRect frame = self.topView.frame;
-            CGFloat height = 32;
+            CGFloat height = 27;
             CGFloat width = 334/2;
             CGFloat x = (SCREEN_WIDTH - width)/2;
             frame.origin.x = x;
@@ -268,9 +269,9 @@
             self.topView.frame = frame;
             
             //        [self.topView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            //            CGFloat height = 32;
+            //            CGFloat height = 27;
             //            CGFloat x = 80*kWSCALE;
-            //            CGFloat y = [SPDeviceUtil isiPhoneX] ? 34 + (44 - 32)/2 : 20 + (44 - 32)/2;
+            //            CGFloat y = [SPDeviceUtil isiPhoneX] ? 34 + (44 - 27)/2 : 20 + (44 - 27)/2;
             //            make.top.mas_equalTo(y);
             //            make.leading.mas_equalTo(x);
             //            make.trailing.mas_equalTo(-x);
@@ -278,7 +279,7 @@
             //        }];
             frame = self.serverBtn.frame;
             frame.origin.y = 0;
-            frame.size.width = self.topView.bounds.size.width - 2 * 16;
+            frame.size.width = self.topView.bounds.size.width - 2 * 8;
             self.serverBtn.frame = frame;
             //        [self.serverBtn mas_updateConstraints:^(MASConstraintMaker *make) {
             //            make.top.mas_equalTo(0);
@@ -289,7 +290,7 @@
             frame.size.width = self.serverBtn.frame.size.width;
             self.disconnBtn.frame = frame;
             
-            self.topView.layer.cornerRadius = 16;
+            self.topView.layer.cornerRadius = 13.5;
             self.topView.layer.masksToBounds = YES;
             
             self.maskView.alpha = 0.0;
@@ -297,7 +298,7 @@
             [self.maskView removeFromSuperview];
         }];
         
-        [UIView animateWithDuration:0.3 animations:^{
+        [UIView animateWithDuration:0.15 animations:^{
             self.disconnBtn.alpha = 0.0;
         }];
     }

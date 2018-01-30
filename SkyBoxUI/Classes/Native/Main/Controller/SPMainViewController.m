@@ -280,8 +280,9 @@
         return;
     }
     [SPSwitchBar shareSPSwitchBar].selectIndex = index;
-    
-    [self showChildVCViewAtIndex:index];
+    if (index == 2) {
+        [self showChildVCViewAtIndex:index];
+    }
 }
 #pragma -mark SPSwitchBarDelegate
 - (void)switchBar:(SPSwitchBar *)bar selectIndex:(NSInteger)index {
