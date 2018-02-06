@@ -1,0 +1,174 @@
+//
+//  SPAirScreenManager.m
+//  SkyBoxUI
+//
+//  Created by Shao shuqiang on 2018/2/5.
+//
+
+#import "SPAirScreenManager.h"
+#import "SPVideo.h"
+
+@interface SPAirScreenManager() {
+    BOOL _socketOpened;
+}
+
+@property (nonatomic, strong) CADisplayLink *displink;
+@property (nonatomic, strong) NSTimer *sendTimer;
+@property (nonatomic, copy) ResultBlock completeBlock;
+
+@end
+
+@implementation SPAirScreenManager
+
+static SPAirScreenManager *_manager = nil;
+
++ (instancetype)shareAirScreenManager {
+    if (!_manager) {
+        _manager = [[SPAirScreenManager alloc] init];
+    }
+    
+    return _manager;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        CADisplayLink *displink = [CADisplayLink displayLinkWithTarget:self selector:@selector(tickSocketIO_MainThread)];
+        [displink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+        self.displink = displink;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveMessage:) name:UNITYTOUINOTIFICATIONNAME object:nil];
+    }
+    return self;
+}
+
+- (void)tickSocketIO_MainThread {
+    if (_socketOpened) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"TickSocketIO"}];
+    }
+}
+
+- (void)stopSearch {
+    if (_socketOpened) {
+        [self.sendTimer invalidate];
+    }
+}
+- (void)closeAirscreen {
+    [self.sendTimer invalidate];
+    
+    if (_socketOpened) {
+        _socketOpened = NO;
+        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"DestroySKYBOX"}];
+    }
+}
+
+- (void)releaseAction {
+    [self closeAirscreen];
+    
+    [self.displink invalidate];
+    self.displink = nil;
+    
+    [self.sendTimer invalidate];
+    self.sendTimer = nil;
+    
+    _manager = nil;
+}
+
+- (void)startupAirscreen {
+    if (!_socketOpened) {
+        _socketOpened = YES;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"StartSKYBOX"}];
+    }
+}
+
+- (void)startupAndSendPackage {
+    if (!_socketOpened) {
+        [self startupAirscreen];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.sendTimer fire];
+        });
+    }
+}
+
+- (NSTimer *)sendTimer {
+    if (!_sendTimer) {
+        if (@available(iOS 10.0, *)) {
+            _sendTimer = [NSTimer timerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+                if (_socketOpened) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"UdpSendTo"}];
+                }
+            }];
+        } else {
+            // Fallback on earlier versions
+            _sendTimer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(sendUdpPackage) userInfo:nil repeats:YES];
+        }
+        
+        [[NSRunLoop currentRunLoop] addTimer:_sendTimer forMode:NSRunLoopCommonModes];
+    }
+    
+    return _sendTimer;
+}
+
+- (void)sendUdpPackage {
+    if (_socketOpened) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"UdpSendTo"}];
+    }
+}
+
+- (void)connectServer:(SPAirscreen *)airscreen  complete:(ResultBlock)block {
+    if (_socketOpened && airscreen) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD showHUDAddedTo:KEYWINDOW animated:YES];
+        });
+        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"WebSocketConnect", @"airscreen" : airscreen}];
+        
+        if (block) {
+            _completeBlock = [block copy];
+        }
+    }
+    
+}
+
+- (void)receiveMessage:(NSNotification *)notify {
+    NSDictionary *dict = [notify userInfo];
+    
+    if ([dict[@"method"] isEqualToString:@"showResult"]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:KEYWINDOW animated:YES];
+        });
+        
+        NSString *jsonStr = dict[@"mediaListResult"];
+        if (!jsonStr) {
+            NSLog(@"mediaListResult is none....");
+            return;
+        }
+        
+        SPMediaListResult *listResult = [[SPMediaListResult alloc] mj_setKeyValues:jsonStr];
+        
+        NSMutableArray *mediaListResult = [[NSMutableArray alloc] initWithCapacity:listResult.list.count];
+        for (NSDictionary *info in listResult.list) {
+            SPCmdMediaInfo *media = [[SPCmdMediaInfo alloc] mj_setKeyValues:info];
+            SPVideo *video = [[SPVideo alloc] init];
+            video.path = media.url;
+            video.title = media.name;
+            video.videoWidth = [NSString stringWithFormat:@"%d", media.width];
+            video.videoHeight = [NSString stringWithFormat:@"%d", media.height];
+            video.thumbnail_uri = media.thumbnail;
+            video.duration = [NSString stringWithFormat:@"%f", media.duration];
+            [mediaListResult addObject:video];
+        }
+        
+        if (_completeBlock) {
+            self.completeBlock([mediaListResult copy]);
+        }
+    }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UNITYTOUINOTIFICATIONNAME object:nil];
+}
+@end
+

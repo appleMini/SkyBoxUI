@@ -13,6 +13,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SPOnlineViewController">
             <connections>
                 <outlet property="addUrlBtn" destination="GCR-J6-FTi" id="T2G-s0-aND"/>
+                <outlet property="emptyVCenterYConstraint" destination="h5u-Sp-W77" id="bHa-fG-cVm"/>
                 <outlet property="noticLabel" destination="Dfv-hz-GEn" id="rfY-mu-4LR"/>
                 <outlet property="view" destination="iN0-l3-epB" id="qLk-VO-oWY"/>
             </connections>

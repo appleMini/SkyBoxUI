@@ -12,13 +12,13 @@
 #import "TGRefresh.h"
 #import "SPDLANManager.h"
 #import "SPWaterFallLayout.h"
+#import "SPDataManager.h"
 
 @interface SPNetworkViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, SPDLANManagerDelegate, SPWaterFallLayoutDelegate> {
     NSMutableArray *_dataArr;
     NSInteger _level;
 }
 
-@property (nonatomic, assign) BOOL isAutoConnect;
 @property (nonatomic, assign) DisplayType showType;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) SPHeaderView *headerView;
@@ -33,15 +33,6 @@
 
 @implementation SPNetworkViewController
 @synthesize emptyView = _emptyView;
-
-- (instancetype)initWithHeadView:(NSArray <SPCmdAddDevice *> *)devices {
-    self = [self initWithSomething];
-    if (self) {
-        _isAutoConnect = YES;
-        _devices = [devices mutableCopy];
-    }
-    return self;
-}
 
 - (instancetype)initWithSomething {
     self = [self initWithDisplayType:CollectionViewType];
@@ -103,14 +94,11 @@
             ws.dlanManager = [SPDLANManager shareDLANManager];
             ws.dlanManager.delegate = ws;
             
-            if (_isAutoConnect && _devices) {
-                [ws.dlanManager openDLAN];
-                [ws.headerView setDevices:ws.devices];
-                SPCmdAddDevice *device = [ws.devices lastObject];
-                [ws.dlanManager browseDLNAFolder:device];
-            }else {
-                [ws.dlanManager startupDLAN];
+            NSArray *devices = [SPDataManager shareDataManager].devices;
+            if (devices) {
+                [ws.headerView setDevices:[devices mutableCopy]];
             }
+            [ws.dlanManager showDLANDevices];
         }
     };
     
@@ -162,7 +150,7 @@
         CGFloat left = 10;
         CGFloat top = 0;
         CGFloat right = -10;
-        CGFloat height = 28;
+        CGFloat height = 28 * kWSCALE;
         if (@available(iOS 11.0, *)) {
             left = left + self.view.safeAreaInsets.left;
             top = top + self.view.safeAreaInsets.top;
@@ -278,7 +266,8 @@ static CGFloat height = 0;
     if(device.deviceType && [device.deviceType isEqualToString:@"object.item.videoItem"]){
         NSUInteger selectedIndex = -1;
         NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:NativeToUnityType],
-                                 kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+                                 kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+                                 @"path" : ((SPCmdVideoDevice *)device).videoUrl
                                  };
         
         [self bubbleEventWithUserInfo:notify];
@@ -296,7 +285,7 @@ static CGFloat height = 0;
         return;
     }
     
-    if ([[SPDLANManager shareDLANManager] status] != AddDeviceStatus) {
+    if ([[SPDLANManager shareDLANManager] status] != DLANAddDeviceStatus) {
         return;
     }
     if (_level != [pid integerValue]) {
@@ -316,7 +305,7 @@ static CGFloat height = 0;
 }
 
 - (void)browseDLNAFolder:(NSArray<SPCmdAddDevice *> *)folders parentID:(NSString *)pid {
-    if ([[SPDLANManager shareDLANManager] status] != BrowseFolderStatus) {
+    if ([[SPDLANManager shareDLANManager] status] != DLANBrowseFolderStatus) {
         return;
     }
     

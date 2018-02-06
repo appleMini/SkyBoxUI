@@ -17,14 +17,14 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="0Wm-1a-hN5">
-                    <rect key="frame" x="108" y="244.5" width="158" height="118"/>
+                    <rect key="frame" x="108" y="230" width="158" height="118"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="118" id="Ks3-Ox-A1u"/>
                         <constraint firstAttribute="width" constant="158" id="sPD-7Y-aie"/>
                     </constraints>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QdT-jK-q9L">
-                    <rect key="frame" x="166" y="382.5" width="42" height="21"/>
+                    <rect key="frame" x="166" y="368" width="42" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -34,16 +34,18 @@
             <constraints>
                 <constraint firstItem="QdT-jK-q9L" firstAttribute="top" secondItem="0Wm-1a-hN5" secondAttribute="bottom" constant="20" id="DWs-iv-xVd"/>
                 <constraint firstItem="QdT-jK-q9L" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Rbc-zh-92o"/>
-                <constraint firstItem="0Wm-1a-hN5" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="-30" id="Ryu-zc-pKj"/>
+                <constraint firstItem="0Wm-1a-hN5" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="-44.5" id="Ryu-zc-pKj"/>
                 <constraint firstItem="0Wm-1a-hN5" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="dEs-MZ-PMw"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
                 <outlet property="iconV" destination="0Wm-1a-hN5" id="Q26-F0-Qwq"/>
+                <outlet property="iconVCenterYConstraint" destination="Ryu-zc-pKj" id="aTw-ag-xhh"/>
                 <outlet property="iconVHeightConstraint" destination="Ks3-Ox-A1u" id="MyZ-ql-UfK"/>
                 <outlet property="iconVWidthConstraint" destination="sPD-7Y-aie" id="CJM-RA-Xkf"/>
                 <outlet property="noticeLabel" destination="QdT-jK-q9L" id="9mQ-mp-grO"/>
             </connections>
+            <point key="canvasLocation" x="-543" y="38"/>
         </view>
     </objects>
 </document>

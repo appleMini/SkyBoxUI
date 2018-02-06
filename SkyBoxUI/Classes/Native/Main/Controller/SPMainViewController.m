@@ -71,9 +71,32 @@
     }];
 }
 
+- (NSDictionary *)params {
+    NSMutableDictionary *mutableDict = [[NSMutableDictionary alloc] init];
+    SPAirscreen *airscreen = [SPDataManager shareDataManager].airscreen;
+    if (airscreen) {
+        [mutableDict addEntriesFromDictionary:@{@"airscreen" : [airscreen mj_JSONString]}];
+    }
+    
+    NSArray *devices = [SPDataManager shareDataManager].devices;
+    if (devices) {
+        NSMutableArray *arr = [NSMutableArray arrayWithCapacity:devices.count];
+        for (SPCmdAddDevice *device in devices) {
+            [arr addObject:[device mj_JSONString]];
+        }
+        
+        [mutableDict addEntriesFromDictionary:@{@"devices" : arr}];
+    }
+
+    return [mutableDict copy];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    //注册DLAN回调
+    [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"RegisterDLANCallBack"}];
+    
     
     SPMenuViewController *menuVC = [[SPMenuViewController alloc] init];
     menuVC.delegate = self;
@@ -111,19 +134,16 @@
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
-    CGFloat top = 0;
-    if (@available(iOS 11.0, *)) {
-        top = self.view.safeAreaInsets.top;
-    } else {
-        top = 64;
-    }
+    CGFloat top = [SPDeviceUtil isiPhoneX] ? 34  : 20;
+    
     CGRect contentFrame = CGRectMake(0, top, self.view.width, self.view.height - top);
     self.contentView.frame = contentFrame;
     self.contentView.contentSize = CGSizeMake(self.childViewControllers.count * self.view.width, 0);
     
     for (int i=0; i<self.childViewControllers.count; i++) {
+        CGFloat vtop =  (i == 0) ? 0 : 64;
         UIViewController *vc = self.childViewControllers[i];
-        vc.view.frame = CGRectMake(i * self.contentView.width, 0, self.contentView.width, self.contentView.height);
+        vc.view.frame = CGRectMake(i * self.contentView.width, vtop, self.contentView.width, self.contentView.height-vtop);
     }
 }
 
@@ -138,7 +158,7 @@
         contentView.showsHorizontalScrollIndicator = YES;
         contentView.bounces = NO;
         [self.view addSubview:contentView];
-        contentView.backgroundColor = [UIColor blueColor];
+        contentView.backgroundColor = [UIColor clearColor];
         _contentView = contentView;
     }
     return _contentView;
@@ -155,9 +175,10 @@
     self.contentView.contentSize = CGSizeMake(childVCs.count * self.view.width, 0);
     
     for (int i=0; i<childVCs.count; i++) {
+        CGFloat top =  (i == 0) ? 0 : 64;
         UIViewController *vc = childVCs[i];
         [self addChildViewController:vc];
-        vc.view.frame = CGRectMake(i * self.contentView.width, 0, self.contentView.width, self.contentView.height);
+        vc.view.frame = CGRectMake(i * self.contentView.width, top, self.contentView.width, self.contentView.height-top);
         [self.contentView addSubview:vc.view];
     }
 }
@@ -167,6 +188,8 @@
         return nil;
     }
     SPBaseViewController *vc = self.childViewControllers[index];
+    
+    BOOL isShow = [vc showNavigatinBar];
     
     self.navigationItem.leftBarButtonItems = [vc leftNaviItem];
     self.navigationItem.rightBarButtonItems = [vc rightNaviItem];
@@ -185,7 +208,16 @@
     if (!titleView && !til) {
         self.navigationItem.titleView = nil;
     }
+    
+    self.navigationController.navigationBar.hidden = !isShow;
     return vc;
+}
+
+- (void)showLastChildVC {
+    if (self.childViewControllers.count == 3) {
+        SPBaseViewController *vc = self.childViewControllers[2];
+        (_canRefresh) ? [vc refresh] : nil;
+    }
 }
 
 - (void)showChildVCAtIndex:(NSInteger)index {
@@ -199,7 +231,8 @@
     
     SPBaseViewController *vc = [self setupNaviItem:index];
     
-    vc.view.frame = CGRectMake(index * self.contentView.width, 0, self.contentView.width, self.contentView.height);
+    CGFloat top =  (index == 0) ? 0 : 64;
+    vc.view.frame = CGRectMake(index * self.contentView.width, top, self.contentView.width, self.contentView.height-top);
     
     // 滑动到对应位置
     [self.contentView setContentOffset:CGPointMake(index * self.contentView.width, 0) animated:YES];
@@ -278,7 +311,7 @@
     }
     [SPSwitchBar shareSPSwitchBar].selectIndex = index;
     if (index == 2) {
-        [self showChildVCAtIndex:index];
+        [self showLastChildVC];
     }
 }
 #pragma -mark SPSwitchBarDelegate
@@ -321,8 +354,8 @@
 #pragma mark UIResponder bubble
 - (void)bubbleEventWithUserInfo:(NSDictionary *)userInfo {
     NSInteger respType = (ResponderType)[[userInfo objectForKey:kEventType] unsignedIntegerValue];
-    id target = [userInfo objectForKey:kTopViewController];
-    
+    //    id target = [userInfo objectForKey:kTopViewController];
+    NSString *path = [userInfo objectForKey:@"path"];
     switch (respType) {
         case NativeToUnityType:
         {
@@ -336,7 +369,13 @@
                 SPBaseViewController *vc = self.childViewControllers[1];
                 [vc releaseAction];
                 
-                [self.jumpDelegate nativeToUnity:target intoVRMode:nil];
+                NSMutableDictionary *params = [self NativeToUnityWithParams];
+                if (path) {
+                    [params addEntriesFromDictionary:@{@"path" : path}];
+                }else {
+                    [params addEntriesFromDictionary:@{@"path" : @"no_media_location"}];
+                }
+                [self.jumpDelegate nativeToUnity:[params copy] intoVRMode:nil];
             }
         }
             break;
@@ -372,5 +411,34 @@
             break;
     }
 }
+
+- (NSMutableDictionary *)NativeToUnityWithParams {
+    NSString *mediaTab = nil;
+    if (_selectMenuIndex == 0) {
+        mediaTab = @"gallery";
+    }else if(_selectMenuIndex == 1) {
+        mediaTab = @"my_videos";
+    }else if(_selectMenuIndex == 2) {
+        mediaTab = @"localNetwork";
+    }else if(_selectMenuIndex == 3) {
+        mediaTab = @"airscreen";
+    }else if(_selectMenuIndex == 4) {
+        mediaTab = @"onlineStream";
+    }else if(_selectMenuIndex == 5) {
+        mediaTab = @"favourite";
+    }
+    
+    if (self.childViewControllers.count < 3) {
+        return nil;
+    }
+    SPBaseViewController *vc = self.childViewControllers[1];
+    NSMutableDictionary *vcDict = [[NSMutableDictionary alloc] init];
+    [vcDict addEntriesFromDictionary:[vc params]];
+    [vcDict addEntriesFromDictionary:@{@"mediaTab" : mediaTab}];
+    [vcDict addEntriesFromDictionary:[self params]];
+    
+    return vcDict;
+}
+
 @end
 

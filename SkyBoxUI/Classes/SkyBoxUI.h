@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "SPDataManager.h"
+#import "SPNavigationBar.h"
 #import "SPMainTabBarController.h"
 #import "SPNavigationController.h"
 #import "SPMenuViewController.h"

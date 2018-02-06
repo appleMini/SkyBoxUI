@@ -63,6 +63,16 @@
     }
 }
 
+- (void)setHighlighted:(BOOL)highlighted {
+    if(highlighted)
+    {
+        self.imgv.alpha = 0.75;
+    }
+    else{
+        self.imgv.alpha = 1.0;
+    }
+}
+
 -(UIGestureRecognizer *)singleTap {
     if (!_singleTap) {
         _singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapAction:)];
@@ -79,13 +89,18 @@
     }
     
     self.video.isFavourite = sender.selected;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoView:favStateChanged:)]) {
+        [self.delegate SPVideoView:self.video favStateChanged:sender.selected];
+    }
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"SetFavAction", @"video" : [self.video mj_JSONString]}];
 }
 
 - (void)singleTapAction:(UIGestureRecognizer *)recognizer {
     NSUInteger selectedIndex = -1;
     NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:NativeToUnityType],
-                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+                             @"path" : self.video.path
                              };
     
     [self.imgv bubbleEventWithUserInfo:notify];

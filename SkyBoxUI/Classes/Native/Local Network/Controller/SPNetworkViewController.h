@@ -10,7 +10,6 @@
 
 @interface SPNetworkViewController : SPBaseViewController
 
-- (instancetype)initWithHeadView:(NSArray <SPCmdAddDevice *> *)devices;
 - (instancetype)initWithDataSource:(NSArray *)data  displayType:(DisplayType)show;
 @end
 

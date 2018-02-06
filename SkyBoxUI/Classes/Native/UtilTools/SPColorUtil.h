@@ -11,5 +11,6 @@
 
 + (UIColor *)getHexColor:(NSString *)hexColor;
 + (UIColor *)getColor:(NSString *)hexColor alpha:(CGFloat)alpha;
-    
+
++ (UIImage *)getGradientLayerIMG:(CGFloat)height width:(CGFloat)width fromColor:(UIColor *)fromC toColor:(UIColor *)toC;
 @end

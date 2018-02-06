@@ -12,7 +12,9 @@
 
 @property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *homeBtnWidthConstraint;
 @property (weak, nonatomic) IBOutlet UIButton *refreshBtn;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *refreshBtnWidthConstraint;
 
 @property (nonatomic, strong) NSMutableArray <SPCmdAddDevice *>*devices;
 
@@ -47,10 +49,12 @@
     [self.homeBtn setBackgroundImage:[Commons getPdfImageFromResource:@"Network_navigator_home_bg"] forState:UIControlStateNormal];
     [self.homeBtn setImage:[Commons getPdfImageFromResource:@"Network_navigator_home"] forState:UIControlStateNormal];
     self.homeBtn.backgroundColor = [UIColor clearColor];
+    self.homeBtnWidthConstraint.constant = 50 * kWSCALE;
     
+    [self.refreshBtn setTitle:@"" forState:UIControlStateNormal];
     [self.refreshBtn setImage:[Commons getPdfImageFromResource:@"Network_navigator_refresh"] forState:UIControlStateNormal];
     self.refreshBtn.backgroundColor = [UIColor clearColor];
-    
+    self.refreshBtnWidthConstraint.constant = 28 * kWSCALE;
     self.layer.cornerRadius = 14;
     self.layer.masksToBounds = YES;
 }
@@ -67,13 +71,15 @@
     _device = nil;
     [self.devices removeAllObjects];
     [self setupContentViews];
-    [[SPDLANManager shareDLANManager] startupDLAN];
+    
+    SPDataManager *dataManger = [SPDataManager shareDataManager];
+    dataManger.devices = nil;
+    [[SPDLANManager shareDLANManager] showDLANDevices];
 }
 - (IBAction)refreshAction:(id)sender {
     NSLog(@"refresh...");
-    if (_device) {
-        [[SPDLANManager shareDLANManager] refreshAction:_device];
-    }
+    
+    [[SPDLANManager shareDLANManager] refreshAction:_device];
 }
 
 - (void)setupContentViews {
@@ -98,9 +104,9 @@
 }
 
 - (void)addDeviceLabelBtn:(SPCmdAddDevice *)device index:(NSInteger)index tag:(NSInteger)tag userInteractionEnabled:(BOOL)userInteractionEnabled isLast:(BOOL)islast {
-    CGFloat width = (SCREEN_WIDTH - 20 - 28 - 50)/4;
+    CGFloat width = (SCREEN_WIDTH - 20 - 28*kWSCALE - 50*kWSCALE)/4;
     CGFloat x = -7 + width * index;
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(x, 0, width+7, 28)];
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(x, 0, width+7, 28*kWSCALE)];
     UIImage *bgImg = [Commons getPdfImageFromResource:@"Network_navigator_path_bg"];
     
     //    button.backgroundColor  = randomColor;
@@ -136,6 +142,9 @@
     [self setupContentViews];
     
     SPCmdAddDevice *device = self.devices[btn.tag];
+    
+    SPDataManager *dataManger = [SPDataManager shareDataManager];
+    dataManger.devices = [_devices copy];
     [[SPDLANManager shareDLANManager] browseDLNAFolder:device];
 }
 
@@ -155,13 +164,25 @@
     }
     
     [self.devices addObject:device];
+    SPDataManager *dataManager = [SPDataManager shareDataManager];
+    dataManager.devices = [self.devices copy];
     [self setupContentViews];
 }
 
 - (void)setDevices:(NSMutableArray<SPCmdAddDevice *> *)devices {
     _devices = devices;
     [self setupContentViews];
+    
+    _device = [devices lastObject];
 }
 
+- (NSArray <NSString *>*)getDevices {
+    NSMutableArray *arr = [NSMutableArray arrayWithCapacity:self.devices.count];
+    for (SPCmdAddDevice *device in self.devices) {
+        [arr addObject:[device mj_JSONString]];
+    }
+    
+    return [arr copy];
+}
 @end
 

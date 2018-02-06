@@ -9,6 +9,31 @@
 
 @implementation SPColorUtil
 
+//MARK: 获得渐变背景颜色
++ (UIImage *)getGradientLayerIMG:(CGFloat)height width:(CGFloat)width fromColor:(UIColor *)fromC toColor:(UIColor *)toC  {
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+    [view.layer insertSublayer:[self getGradientLayer:height width:width fromColor:fromC toColor:toC] atIndex:0];
+    
+    UIGraphicsBeginImageContext(view.frame.size);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
+//MARK: 获得渐变背景颜色
++ (CAGradientLayer *)getGradientLayer:(CGFloat)height width:(CGFloat)width fromColor:(UIColor *)fromC toColor:(UIColor *)toC {
+    CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
+    gradient.frame = CGRectMake(0, 0, width, height);
+    gradient.colors = @[(__bridge id)fromC.CGColor, (__bridge id)toC.CGColor];
+    gradient.startPoint = CGPointMake(0.0, 0.0);
+    gradient.endPoint = CGPointMake(0.0, 1.0);
+    
+    return gradient;
+}
+
 + (UIColor *)getHexColor:(NSString *)hexColor {
     return [self getColor:hexColor alpha:1.0];
 }

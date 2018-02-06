@@ -43,5 +43,25 @@
     }];
     
     self.videoView = itemView;
+    
+    UIImageView *shadowImgV = [[UIImageView alloc] initWithFrame:CGRectZero];
+    shadowImgV.contentMode = UIViewContentModeScaleAspectFill;
+    shadowImgV.image = [Commons getImageFromResource:@"Home_videos_album_shadow_small@2x"];
+    
+//    shadowImgV.backgroundColor = [UIColor redColor];
+    [self.contentView insertSubview:shadowImgV belowSubview:self.videoView];
+    
+    [shadowImgV mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.mas_equalTo(-12);
+        make.trailing.mas_equalTo(12);
+        make.top.mas_equalTo(0);
+        make.height.mas_equalTo(208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324 + 14);
+    }];
+}
+
+- (void)setHighlighted:(BOOL)highlighted {
+    [super setHighlighted:highlighted];
+    //动画高亮变色效果
+    [self.videoView setHighlighted:highlighted];
 }
 @end

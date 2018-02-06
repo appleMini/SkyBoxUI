@@ -10,18 +10,19 @@
 #import "ServiceCall.h"
 #import "SPVideo.h"
 #import "UILabel+SPAttri.h"
+#import "SPAirScreenManager.h"
 
 typedef enum : NSUInteger {
-    StartupStatus,
-    SearchStatus,
-    ResultStatus,
-    ResultEmptyStatus
+    AirScreenStartupStatus = 0,
+    AirScreenSearchStatus,
+    AirScreenResultStatus,
+    AirScreenResultEmptyStatus
 } AirScreenStatus;
 
 @interface SPAirScreenViewController () <UITableViewDelegate, UITableViewDataSource> {
     NSArray<SPAirscreen *> *_dataArr;
-    BOOL _socketOpened;
 }
+@property (nonatomic, strong)  SPAirScreenManager *airScreenManager;
 
 @property (nonatomic, assign)  BOOL isAutoLogin;
 
@@ -55,8 +56,6 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UILabel *devicesLabel;
 @property (nonatomic, strong) UIView *topView;
-@property (nonatomic, strong) CADisplayLink *displink;
-@property (nonatomic, strong) NSTimer *sendTimer;
 
 @end
 
@@ -75,13 +74,15 @@ typedef enum : NSUInteger {
 - (instancetype)initWithSomething {
     self = [super initWithNibName:@"SPAirScreenViewController" bundle:[Commons resourceBundle]];
     if (self) {
-        self.status = StartupStatus;
+        self.status = AirScreenStartupStatus;
         [self.searchButton setTitle:@"SEARCH DEVICE" forState:UIControlStateNormal];
-        CADisplayLink *displink = [CADisplayLink displayLinkWithTarget:self selector:@selector(tickSocketIO_MainThread)];
-        [displink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-        self.displink = displink;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveMessage:) name:UNITYTOUINOTIFICATIONNAME object:nil];
+        SPDataManager *dataManager = [SPDataManager shareDataManager];
+        if (dataManager && dataManager.airscreen) {
+            _isAutoLogin = YES;
+            _airscreen = dataManager.airscreen;
+        }
+        _airScreenManager = [SPAirScreenManager shareAirScreenManager];
     }
     return self;
 }
@@ -93,7 +94,7 @@ typedef enum : NSUInteger {
     __weak typeof(self) ws = self;
     self.netStateBlock = ^(AFNetworkReachabilityStatus status) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            ws.status = StartupStatus;
+            ws.status = AirScreenStartupStatus;
             
             [ws updateViewConstraints];
             if (status == -1 || status == 0 || status == 1) {
@@ -113,47 +114,6 @@ typedef enum : NSUInteger {
     self.netStateBlock(status);
 }
 
-- (void)receiveMessage:(NSNotification *)notify {
-    NSDictionary *dict = [notify userInfo];
-    
-    if ([dict[@"method"] isEqualToString:@"showResult"]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [MBProgressHUD hideHUDForView:KEYWINDOW animated:YES];
-        });
-        
-        NSString *jsonStr = dict[@"mediaListResult"];
-        if (!jsonStr) {
-            NSLog(@"mediaListResult is none....");
-            return;
-        }
-        
-        SPMediaListResult *listResult = [[SPMediaListResult alloc] mj_setKeyValues:jsonStr];
-        
-        NSMutableArray *mediaListResult = [[NSMutableArray alloc] initWithCapacity:listResult.list.count];
-        for (NSDictionary *info in listResult.list) {
-            SPCmdMediaInfo *media = [[SPCmdMediaInfo alloc] mj_setKeyValues:info];
-            SPVideo *video = [[SPVideo alloc] init];
-            video.path = media.url;
-            video.title = media.name;
-            video.videoWidth = [NSString stringWithFormat:@"%d", media.width];
-            video.videoHeight = [NSString stringWithFormat:@"%d", media.height];
-            video.thumbnail_uri = media.thumbnail;
-            video.duration = [NSString stringWithFormat:@"%f", media.duration];
-            [mediaListResult addObject:video];
-        }
-        
-        //
-//        [mediaListResult removeAllObjects];
-        NSUInteger selectedIndex = -1;
-        NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenResultMiddleVCType],
-                                 kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
-                                 kParams : @{@"dataSource": mediaListResult, @"airscreen" :_airscreen}
-                                 };
-        
-        [self.view bubbleEventWithUserInfo:notify];
-    }
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
@@ -166,8 +126,17 @@ typedef enum : NSUInteger {
     AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
     AFNetworkReachabilityStatus status = [manager networkReachabilityStatus];
     if (_isAutoLogin && (status == AFNetworkReachabilityStatusReachableViaWiFi)) {
-        [self startupAirscreen];
-        [self connectServer:_airscreen];
+        [self.airScreenManager startupAirscreen];
+        [self.airScreenManager connectServer:_airscreen complete:^(NSArray *listResult) {
+            //                [listResult removeAllObjects];
+            NSUInteger selectedIndex = -1;
+            NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenResultMiddleVCType],
+                                     kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+                                     kParams : @{@"dataSource": listResult, @"airscreen" :_airscreen}
+                                     };
+            
+            [self.view bubbleEventWithUserInfo:notify];
+        }];
     }
 }
 
@@ -201,11 +170,14 @@ typedef enum : NSUInteger {
     
     self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
     [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateNormal];
+    [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateHighlighted];
     self.searchButton.backgroundColor = [SPColorUtil getHexColor:@"#ffde9e"];
     [self.searchButton setTitle:@"SEARCH DEVICE" forState:UIControlStateNormal];
     self.searchButton.layer.cornerRadius = 21.0;//
     self.searchButton.layer.borderWidth = 0.0f;//设置边框颜色
     self.searchButton.layer.masksToBounds = YES;
+    [self.searchButton setBackgroundImage:[[SPColorUtil getHexColor:@"#ffde9e"] createImageWithColor:self.searchButton.bounds] forState:UIControlStateNormal];
+    [self.searchButton setBackgroundImage:[[SPColorUtil getHexColor:@"#d9b97a"] createImageWithColor:self.searchButton.bounds] forState:UIControlStateHighlighted];
     
     self.contentView.backgroundColor = [UIColor clearColor];
     
@@ -245,28 +217,34 @@ typedef enum : NSUInteger {
     _instruction2Label.hidden = hidden;
 }
 - (void)resetViewsAndConstraints {
-    if (_status == StartupStatus) {
+    if (_status == AirScreenStartupStatus) {
         self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
         [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateNormal];
+        [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateHighlighted];
         self.searchButton.backgroundColor = [SPColorUtil getHexColor:@"#ffde9e"];
         [self.searchButton setTitle:@"SEARCH DEVICE" forState:UIControlStateNormal];
         self.searchButton.layer.cornerRadius = 21.0;//
         self.searchButton.layer.borderWidth = 0.0f;//设置边框颜色
         self.searchButton.layer.masksToBounds = YES;
+        [self.searchButton setBackgroundImage:[[SPColorUtil getHexColor:@"#ffde9e"] createImageWithColor:self.searchButton.bounds] forState:UIControlStateNormal];
+        [self.searchButton setBackgroundImage:[[SPColorUtil getHexColor:@"#d9b97a"] createImageWithColor:self.searchButton.bounds] forState:UIControlStateHighlighted];
     }else{
         self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
         [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
+        [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateHighlighted];
         self.searchButton.backgroundColor = [UIColor clearColor];
         [self.searchButton setTitle:@"CANCEL" forState:UIControlStateNormal];
         self.searchButton.layer.cornerRadius = 21.0;//
         self.searchButton.layer.borderColor = [UIColor whiteColor].CGColor;//设置边框颜色
         self.searchButton.layer.borderWidth = 2.0f;//设置边框颜色
         self.searchButton.layer.masksToBounds = YES;
+        [self.searchButton setBackgroundImage:[[UIColor clearColor] createImageWithColor:self.searchButton.bounds] forState:UIControlStateNormal];
+        [self.searchButton setBackgroundImage:[[SPColorUtil getHexColor:@"#e5e5e5"] createImageWithColor:self.searchButton.bounds] forState:UIControlStateHighlighted];
     }
     
     self.pcImgVHeightConstraint.constant = 270 * kHSCALE;
     switch (_status) {
-        case StartupStatus:
+        case AirScreenStartupStatus:
         {
             [self.resultView removeFromSuperview];
             _pcImgVTopConstraint.constant = [SPDeviceUtil isiPhoneX] ? (160 - 34 - 44) : (160 - 64);
@@ -280,7 +258,7 @@ typedef enum : NSUInteger {
             [self showOrHiddenInstructionViews:NO];
         }
             break;
-        case SearchStatus:
+        case AirScreenSearchStatus:
         {
             self.searchLabel.text = @"SEARCHING...";
             self.searchLabel.font = [UIFont fontWithName:@"Calibri-Light" size:14.0];
@@ -297,7 +275,7 @@ typedef enum : NSUInteger {
             [self configRefreshImageView];
         }
             break;
-        case ResultStatus:
+        case AirScreenResultStatus:
         {
             _contentViewTopConstraint.constant = -60;
             CGFloat topH = [SPDeviceUtil isiPhoneX] ? (160 - 34 - 44) : (160 - 64);
@@ -323,7 +301,7 @@ typedef enum : NSUInteger {
             }];
         }
             break;
-        case ResultEmptyStatus:
+        case AirScreenResultEmptyStatus:
         {
             [self.resultView removeFromSuperview];
             [self.refreshImgv stopAnimating];
@@ -372,128 +350,50 @@ typedef enum : NSUInteger {
     [self.refreshImgv startAnimating];//开始动画
 }
 
-- (void)tickSocketIO_MainThread {
-    if (_socketOpened) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"TickSocketIO"}];
-    }
-}
-
-- (void)stopSearch {
-    if (_socketOpened) {
-        [self.sendTimer invalidate];
-    }
-}
-- (void)closeAirscreen {
-    [self.sendTimer invalidate];
-    
-    if (_socketOpened) {
-        _socketOpened = NO;
-        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"DestroySKYBOX"}];
-    }
-}
 
 - (void)releaseAction {
-    [self closeAirscreen];
-    
-    [self.displink invalidate];
-    self.displink = nil;
-    
-    [self.sendTimer invalidate];
-    self.sendTimer = nil;
+    [self.airScreenManager releaseAction];
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UNITYTOUINOTIFICATIONNAME object:nil];
+    _airScreenManager = nil;
     NSLog(@"airscreen 销毁。。。。。。。");
-}
-
-- (void)startupAirscreen {
-    if (!_socketOpened) {
-        _socketOpened = YES;
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"StartSKYBOX"}];
-    }
-}
-
-- (void)startupAndSendPackage {
-    if (!_socketOpened) {
-        [self startupAirscreen];
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.sendTimer fire];
-        });
-    }
-}
-
-- (NSTimer *)sendTimer {
-    if (!_sendTimer) {
-        if (@available(iOS 10.0, *)) {
-            _sendTimer = [NSTimer timerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
-                if (_socketOpened) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"UdpSendTo"}];
-                }
-            }];
-        } else {
-            // Fallback on earlier versions
-            _sendTimer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(sendUdpPackage) userInfo:nil repeats:YES];
-        }
-        
-        [[NSRunLoop currentRunLoop] addTimer:_sendTimer forMode:NSRunLoopCommonModes];
-    }
-    
-    return _sendTimer;
-}
-
-- (void)sendUdpPackage {
-    if (_socketOpened) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"UdpSendTo"}];
-    }
-}
-
-- (void)connectServer:(SPAirscreen *)airscreen {
-    if (_socketOpened && airscreen) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [MBProgressHUD showHUDAddedTo:KEYWINDOW animated:YES];
-        });
-        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"WebSocketConnect", @"airscreen" : airscreen}];
-    }
-    
 }
 
 - (IBAction)searchClick:(id)sender {
     switch (_status) {
-        case StartupStatus:
+        case AirScreenStartupStatus:
         {
-            _status = SearchStatus;
+            _status = AirScreenSearchStatus;
             
-            [self startupAndSendPackage];
+            [self.airScreenManager startupAndSendPackage];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (_status == StartupStatus) {
+                if (_status == AirScreenStartupStatus) {
                     return;
                 }
                 
-                [self stopSearch];
-                _status = ResultStatus;
+                [self.airScreenManager stopSearch];
+                _status = AirScreenResultStatus;
                 [self showResultView];
             });
         }
             break;
-        case SearchStatus:
+        case AirScreenSearchStatus:
         {
-            _status = StartupStatus;
+            _status = AirScreenStartupStatus;
             
-            [self stopSearch];
+            [self.airScreenManager stopSearch];
         }
             break;
-        case ResultStatus:
+        case AirScreenResultStatus:
         {
-            _status = StartupStatus;
+            _status = AirScreenStartupStatus;
         }
             break;
-        case ResultEmptyStatus:
+        case AirScreenResultEmptyStatus:
         {
-            _status = StartupStatus;
+            _status = AirScreenStartupStatus;
         }
             break;
         default:
@@ -522,7 +422,7 @@ typedef enum : NSUInteger {
         
         strongfy.devicesLabel.text = [NSString stringWithFormat:@"%lu DEVICES FOUND", (unsigned long)[strongfy.dataArr count]];
         if (strongfy.dataArr.count == 0) {
-            _status = ResultEmptyStatus;
+            _status = AirScreenResultEmptyStatus;
         }
         
         [strongfy updateViewConstraints];
@@ -646,7 +546,16 @@ static NSString *cellID = @"AIRSCREEN_CELLID";
     }
     
     _airscreen = air;
-    [self connectServer:air];
+    [self.airScreenManager connectServer:air complete:^(NSArray *listResult) {
+        //                [listResult removeAllObjects];
+        NSUInteger selectedIndex = -1;
+        NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenResultMiddleVCType],
+                                 kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+                                 kParams : @{@"dataSource": listResult, @"airscreen" :_airscreen}
+                                 };
+        
+        [self.view bubbleEventWithUserInfo:notify];
+    }];
 }
 @end
 

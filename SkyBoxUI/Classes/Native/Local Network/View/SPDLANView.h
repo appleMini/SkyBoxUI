@@ -10,6 +10,8 @@
 @interface SPDLANView : UIView
 @property (nonatomic, strong) SPCmdAddDevice *device;
 
+- (void)setHighlighted:(BOOL)highlighted;
+
 - (void)prepareForReuse;
 @end
 

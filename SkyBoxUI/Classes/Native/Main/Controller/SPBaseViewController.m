@@ -7,6 +7,7 @@
 //
 
 #import "SPBaseViewController.h"
+#import "SPNavigationBar.h"
 
 @interface SPBaseViewController ()
 
@@ -65,6 +66,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     if (@available(iOS 11.0, *)) {
         
     } else {
@@ -121,6 +123,8 @@
 - (NSArray *)rightNaviItem {
     return nil;
 }
+- (BOOL)showNavigatinBar {return YES;}
+- (NSDictionary *)params {return nil;}
 - (void)refresh {
     
 }

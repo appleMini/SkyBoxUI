@@ -1,13 +1,13 @@
 //
-//  UIWindow+SPLoading.h
+//  UIView+SPLoading.h
 //  SkyBoxUI
 //
 //  Created by Shao shuqiang on 2018/1/24.
 //
 #import <UIKit/UIKit.h>
 
-@interface UIWindow(SPLoading)
+@interface UIView(SPLoading)
 
-- (void)showLoading;
+- (void)showLoadingAndUserInteractionEnabled:(BOOL)enabled;
 - (void)hideLoading;
 @end

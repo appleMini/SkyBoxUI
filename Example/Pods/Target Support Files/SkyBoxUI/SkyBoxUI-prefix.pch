@@ -11,6 +11,11 @@
 #endif
 
 #ifdef __OBJC__
+    #import "SPDLANManager.h"
+    #import "SPAirScreenManager.h"
+    #import "SPDataManager.h"
+    #import "UIColor+SPImage.h"
+    #import "SPNavigationBar.h"
     #import "SPSwitchBar.h"
     #import "SPDeviceUtil.h"
     #import "UIResponder+SPCategory.h"

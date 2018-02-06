@@ -48,8 +48,25 @@
     videoView.layer.masksToBounds = YES;
     
     [videoView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(UIEdgeInsetsMake(20, 18*kWSCALE, 20, 18*kWSCALE));
+        make.edges.mas_equalTo(UIEdgeInsetsMake(0, 18*kWSCALE, 29, 18*kWSCALE));
     }];
     self.videoView = videoView;
+    
+    UIImageView *shadowImgV = [[UIImageView alloc] initWithFrame:CGRectZero];
+    shadowImgV.contentMode = UIViewContentModeScaleAspectFill;
+    shadowImgV.image = [Commons getImageFromResource:@"Home_videos_album_shadow@2x"];
+    
+    [self.contentView insertSubview:shadowImgV belowSubview:self.videoView];
+    
+    [shadowImgV mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(UIEdgeInsetsMake(0, 16, 25, 16));
+    }];
 }
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+    [super setHighlighted:highlighted animated:animated];
+    //动画高亮变色效果
+    [self.videoView setHighlighted:highlighted];
+}
+
 @end

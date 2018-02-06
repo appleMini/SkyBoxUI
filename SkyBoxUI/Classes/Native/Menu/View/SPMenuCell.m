@@ -13,6 +13,8 @@
 @property (nonatomic, strong)    UIImageView *iconV;
 @property (nonatomic, strong)    UILabel     *label;
 @property (nonatomic, strong)    UIImageView *accessV;
+
+@property (nonatomic, strong)    UIView *highlightedView;
 @end
 
 @implementation SPMenuCell
@@ -50,6 +52,14 @@
 
 - (void)setupView {
 //    [self getFontNames];
+    UIView *view = [[SPCellSelectedView alloc] initWithFrame:CGRectZero];
+    view.hidden = YES;
+    [self.contentView addSubview:view];
+    [view mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(0);
+    }];
+    _highlightedView = view;
+    
     UIImageView *iconV = [[UIImageView alloc] initWithFrame:CGRectZero];
     [self.contentView addSubview:iconV];
     [iconV mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -59,9 +69,9 @@
         make.centerY.mas_equalTo(0);
     }];
     self.iconV = iconV;
-    
+
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-    
+
     label.textAlignment = NSTextAlignmentLeft;
     label.font = [UIFont fontWithName:@"Calibri-Bold" size:18];
 //    label.font = [UIFont boldSystemFontOfSize:30];
@@ -74,7 +84,7 @@
         make.trailing.mas_equalTo(-50);
     }];
     self.label = label;
-    
+
     UIImageView *accessV = [[UIImageView alloc] initWithFrame:CGRectZero];
     accessV.image = [Commons getPdfImageFromResource:@"Channels_item_arrow"];
     [self.contentView addSubview:accessV];
@@ -92,6 +102,20 @@
     
     CGRect frame = CGRectMake(40, (self.frame.size.height-60) / 2, self.frame.size.width-80, 60);
     self.selectedBackgroundView = [[SPCellSelectedView alloc] initWithFrame:frame];
+    
+    self.highlightedView.frame = frame;
+}
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+    [super setHighlighted:highlighted animated:animated];
+    //动画高亮变色效果
+    if(highlighted) {
+        self.highlightedView.hidden = NO;
+        self.highlightedView.backgroundColor = RGBCOLOR(47, 51, 59);
+    }else {
+        self.highlightedView.hidden = YES;
+        self.highlightedView.backgroundColor = [UIColor clearColor];
+    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

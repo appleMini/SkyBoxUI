@@ -257,6 +257,9 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
 }
 
 -(void)endRefreshing{
+    if (self.refreshState == RefreshStateNormal) {
+        return;
+    }
     self.tipIcon.transform =  CGAffineTransformIdentity;
     _refreshing = NO;
     _animating = NO;

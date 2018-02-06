@@ -6,11 +6,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SPBaseViewController.h"
+
 typedef enum : NSUInteger {
-    StartupStatus = 0,
-    AddDeviceStatus,
-    BrowseFolderStatus,
-    ShutdownStatus
+    DLANStartupStatus = 0,
+    DLANAddDeviceStatus,
+    DLANBrowseFolderStatus,
+    DLANShutdownStatus
 } DLANManagerStatus;
 
 @protocol SPDLANManagerDelegate;
@@ -20,10 +22,16 @@ typedef enum : NSUInteger {
 
 + (instancetype)shareDLANManager;
 
+- (void)startupDLANWithOutUI;
+- (void)closeDLAN;
 - (void)openDLAN;
 - (void)startupDLAN;
-- (void)refreshAction:(SPCmdAddDevice *)device;
+- (void)showDLANDevices;
+- (void)addDLNADevice:(SPCmdAddDevice *)device;
+- (void)removeDLNADevice:(SPCmdAddDevice *)device;
 - (void)browseDLNAFolder:(SPCmdAddDevice *)device;
+- (void)refreshAction:(SPCmdAddDevice *)device;
+- (void)browseDLNAFolderCall:(SPCmdAddDevice *)folderDevice browseFolderXML:(NSData *)xmldata;
 - (void)releaseAction;
 @end
 

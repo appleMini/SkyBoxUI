@@ -7,6 +7,7 @@
 
 #import "SPBackgrondView.h"
 #import <AVFoundation/AVFoundation.h>
+#import "UILabel+SPAttri.h"
 
 @interface SPBackgrondView()
 
@@ -17,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *iconV;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconVHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconVWidthConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconVCenterYConstraint;
 
 @property (weak, nonatomic) IBOutlet UILabel *noticeLabel;
 @end
@@ -35,6 +37,8 @@
 }
 
 - (void)setupViews {
+    self.iconVCenterYConstraint.constant = [SPDeviceUtil isiPhoneX] ? -(34 + 88 + 15 + 20)/2.0 : -(84 + 15 + 20) / 2.0;
+    
     self.noticeLabel.font = [UIFont fontWithName:@"Calibri" size:15];
     self.noticeLabel.textColor = [SPColorUtil getHexColor:@"#6a6c75"];
     switch (_type) {
@@ -132,10 +136,16 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    CGFloat y = self.noticeLabel.frame.origin.y;
-    CGRect frame = self.playerLayer.frame;
-    frame.origin.y = y - 20 - frame.size.height;
-    self.playerLayer.frame = frame;
+    if (_player) {
+        CGFloat y = (self.frame.size.height - (20 + 15)) / 2 + 84/2 - SCREEN_WIDTH * (1.0 * 360 / 750);
+        CGRect frame = self.playerLayer.frame;
+        frame.origin.y = y;
+        self.playerLayer.frame = frame;
+        
+        frame = self.noticeLabel.frame;
+        frame.origin.y = self.playerLayer.frame.origin.y + self.playerLayer.frame.size.height + 20;
+        self.noticeLabel.frame = frame;
+    }
 }
 
 - (void)setMediaPlayer{

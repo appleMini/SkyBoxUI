@@ -60,7 +60,9 @@
             <connections>
                 <outlet property="contentView" destination="aGI-ZV-2PO" id="afA-u4-B0W"/>
                 <outlet property="homeBtn" destination="jQ5-Ix-lT4" id="fJw-n6-fft"/>
+                <outlet property="homeBtnWidthConstraint" destination="Hle-gc-n1A" id="cgP-rs-tUN"/>
                 <outlet property="refreshBtn" destination="Ul3-Ir-TJs" id="7wY-Jr-3b6"/>
+                <outlet property="refreshBtnWidthConstraint" destination="HCa-mI-w0L" id="XoY-Jo-zW0"/>
             </connections>
             <point key="canvasLocation" x="-823.5" y="-259.5"/>
         </view>

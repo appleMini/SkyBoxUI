@@ -94,6 +94,15 @@
     }
 }
 
+- (void)setHighlighted:(BOOL)highlighted {
+    if(highlighted)
+    {
+        self.iconV.alpha = 0.75;
+    }
+    else{
+        self.iconV.alpha = 1.0;
+    }
+}
 @end
 
 @interface SPDLANCell()
@@ -114,6 +123,17 @@
     [super setSelected:selected animated:animated];
     
     // Configure the view for the selected state
+}
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+    [super setHighlighted:highlighted animated:animated];
+    //动画高亮变色效果
+    //    [UIView animateWithDuration:0.3 animations:^{
+    if(highlighted)
+        self.contentView.backgroundColor = [UIColor colorWithWhite:0.85 alpha:1];
+    else
+        self.contentView.backgroundColor = [UIColor clearColor];
+    //    }];
 }
 
 - (void)prepareForReuse {
@@ -170,6 +190,12 @@
     [dlanView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(self);
     }];
+}
+
+- (void)setHighlighted:(BOOL)highlighted {
+    [super setHighlighted:highlighted];
+    //动画高亮变色效果
+    [self.dlanView setHighlighted:highlighted];
 }
 @end
 

@@ -49,6 +49,8 @@
 
 - (void)setAirscreen:(SPAirscreen *)airscreen {
     _airscreen = airscreen;
+    [SPDataManager shareDataManager].airscreen = _airscreen;
+    
     self.topView.hidden = NO;
     [self.serverBtn setTitle:[_airscreen computerName] forState:UIControlStateNormal];
 }
@@ -76,7 +78,7 @@
 - (void)topViewAddToKeyWindow {
     CGFloat height = 27;
     CGFloat x = (SCREEN_WIDTH - 334/2)/2;
-    CGFloat y = [SPDeviceUtil isiPhoneX] ? 34 + (44 - 27)/2 : 20 + (44 - 27)/2;
+    CGFloat y = [SPDeviceUtil isiPhoneX] ? 34 + (44 - 27)/2 + 10 : 20 + (44 - 27)/2 + 10;
     CGFloat width = 334/2;
     self.topView.frame = CGRectMake(x, y, width, height);
     [KEYWINDOW addSubview:self.topView];
@@ -102,6 +104,7 @@
         SPButton *btn = [[SPButton alloc] initWithFrame:CGRectZero];
         btn.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
         [btn setTitleColor:[SPColorUtil getHexColor:@"#4a4d55"] forState:UIControlStateNormal];
+        [btn setTitleColor:[SPColorUtil getHexColor:@"#4a4d55"] forState:UIControlStateHighlighted];
         [btn setTitle:@"xiaoxiao" forState:UIControlStateNormal];
         [btn setImage:[Commons getPdfImageFromResource:@"AirScreen_titlebar_arrow"] forState:UIControlStateNormal];
         // button标题的偏移量
@@ -160,6 +163,7 @@
 }
 
 - (void)disconnection:(id)sender {
+    [SPDataManager shareDataManager].airscreen = nil;
     NSUInteger selectedIndex = -1;
     NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenMiddleVCType],
                              kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],

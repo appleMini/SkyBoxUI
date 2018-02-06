@@ -40,6 +40,7 @@ static NSString *cellID = @"MenuCell";
         adjustsScrollViewInsets(_tableView);
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.backgroundColor = [UIColor clearColor];
+//        _tableView.backgroundColor = [UIColor blueColor];
         _tableView.delegate = self;
         _tableView.dataSource = self;
         [_tableView registerClass:[SPMenuCell class] forCellReuseIdentifier:cellID];
@@ -47,15 +48,10 @@ static NSString *cellID = @"MenuCell";
         [self.view addSubview:_tableView];
         [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
             CGFloat top = 0;
-            if (@available(iOS 11.0, *)) {
-                top = self.view.safeAreaInsets.top;
-            } else {
-                top = 0;
-            }
             make.leading.mas_equalTo(0);
             make.trailing.mas_equalTo(0);
             make.top.mas_equalTo(top);
-            make.bottom.mas_equalTo(-(kHSCALE*94));
+            make.bottom.mas_equalTo(0);
         }];
     }
 }
@@ -67,6 +63,8 @@ static NSString *cellID = @"MenuCell";
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
 }
+
+- (BOOL)showNavigatinBar {return NO;}
 #pragma -mark tableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return _dataArr.count;
@@ -94,6 +92,15 @@ static NSString *cellID = @"MenuCell";
     if (self.delegate && [self.delegate respondsToSelector:@selector(MenuViewController: jumpViewController:menuIndex:)]) {
         [self.delegate MenuViewController:self jumpViewController:_dataArr[indexPath.row][@"VC"] menuIndex:indexPath.row];
     }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectZero];
+    headerView.backgroundColor = [UIColor clearColor];
+    return headerView;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 44.0;
 }
 
 @end

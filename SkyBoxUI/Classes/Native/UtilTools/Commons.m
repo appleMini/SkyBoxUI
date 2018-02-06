@@ -16,12 +16,17 @@
 }
 
 + (UIImage *)getImageFromResource:(NSString *)name {
-    NSString *ext = nil;
-    CGFloat scale = [UIScreen mainScreen].scale;
-    if (scale == 2) {
-        ext = @"@2x";
-    }else if(scale == 3){
-        ext = @"@3x";
+    NSString *ext = @"";
+    if ([name containsString:@"@2x"] || [name containsString:@"@3x"]) {
+        
+    }else {
+        CGFloat scale = [UIScreen mainScreen].scale;
+        if (scale == 2) {
+            ext = @"@2x";
+        }else if(scale == 3){
+            ext = @"@3x";
+        }
+        
     }
     
     UIImage *img =  [UIImage imageWithContentsOfFile:[[Commons resourceBundle] pathForResource:[NSString stringWithFormat:@"%@%@",name, ext] ofType:@"png"]];

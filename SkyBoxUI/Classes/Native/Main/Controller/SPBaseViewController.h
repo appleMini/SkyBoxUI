@@ -52,6 +52,8 @@ typedef void (^NetStateBlock) (AFNetworkReachabilityStatus status);
 - (NSString *)titleOfLabelView;
 - (NSArray *)leftNaviItem;
 - (NSArray *)rightNaviItem;
+- (NSDictionary *)params;
+- (BOOL)showNavigatinBar;
 - (void)setupNaviView;
 - (void)refresh;
 - (void)releaseAction;

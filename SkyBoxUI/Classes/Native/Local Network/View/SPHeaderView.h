@@ -12,5 +12,6 @@
 
 - (void)cleanHeadViews;
 - (void)setDevices:(NSMutableArray<SPCmdAddDevice *> *)devices;
+- (NSArray <NSString *>*)getDevices;
 @end
 
