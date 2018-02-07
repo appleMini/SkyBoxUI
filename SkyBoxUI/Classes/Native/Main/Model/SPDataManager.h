@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SPBaseViewController.h"
 
 @interface SPDataManager : NSObject
 
