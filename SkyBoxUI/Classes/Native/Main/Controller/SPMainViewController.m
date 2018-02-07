@@ -392,7 +392,14 @@
             break;
         case HomeHelpMiddleVCType:
         {
-            SPBaseViewController *vc = [[SPHelpRootViewController alloc] initWithSomething];
+            BOOL done = [[userInfo objectForKey:@"Done"] boolValue];
+            SPBaseViewController *vc = done ? [[SPHelpRootViewController alloc] initWithDoneAction] : [[SPHelpRootViewController alloc] initWithSomething];
+            [self changeMiddleContentView:vc];
+        }
+            break;
+        case LocalFileMiddleVCType:
+        {
+            SPBaseViewController *vc = [[SPHomeViewController alloc] initWithSomething];
             [self changeMiddleContentView:vc];
         }
             break;

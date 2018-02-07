@@ -128,19 +128,23 @@
     [super viewDidLoad];
     
     [self setupScrollView];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     
-    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
-    gradient.frame = rect;
-    
-    UIColor *bgColor = SPBgColor;
-    
-    gradient.colors = @[(__bridge id)[bgColor colorWithAlphaComponent:0.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor];
-    gradient.locations = @[@0, @(1.0 * 22 / self.view.frame.size.height), @1.0];
-    gradient.startPoint = CGPointMake(0.5, 0);
-    gradient.endPoint = CGPointMake(0.5, 1.0);
-    
-    self.view.layer.mask = gradient;
+//    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+//    CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
+//    gradient.frame = rect;
+//
+//    UIColor *bgColor = SPBgColor;
+//
+//    gradient.colors = @[(__bridge id)[bgColor colorWithAlphaComponent:0.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor];
+//    gradient.locations = @[@0, @(1.0 * 22 / self.view.frame.size.height), @1.0];
+//    gradient.startPoint = CGPointMake(0.5, 0);
+//    gradient.endPoint = CGPointMake(0.5, 1.0);
+//
+//    self.view.layer.mask = gradient;
 }
 
 - (void)setupScrollView {
@@ -260,7 +264,8 @@
                 {
                     NSUInteger selectedIndex = -1;
                     NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:HomeHelpMiddleVCType],
-                                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+                                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+                                             @"Done": @NO
                                              };
                     
                     [self.view bubbleEventWithUserInfo:notify];
@@ -504,34 +509,34 @@ static CGFloat height = 0;
     }
 }
 
-//#pragma -mark scrollView delegate
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    if (!_dataArr || _dataArr.count <= 0) {
-//        return;
-//    }
-//
-//    CGFloat offsetY =  scrollView.contentOffset.y;
-//
-//    //    NSLog(@"scrollViewDidScroll  ==  %f" , offsetY);
-//
-//    _gradientV.hidden = (offsetY <= 0);
-//
-//    CGFloat Height = 2 * offsetY;
-//    if (offsetY >= 32.0) {
-//        Height = 64;
-//    }else if(offsetY <= 0){
-//        Height = 0.0;
-//    }
-//
-//    CGRect frame = _gradientV.frame;
-//    frame.origin.y = -128 + Height;
-//
-//    _gradientV.frame = frame;
-////        _gradientV.backgroundColor = [UIColor purpleColor];
-//    _gradientV.image = [SPColorUtil getGradientLayerIMG:128 width:self.view.frame.size.width fromColor:RGBACOLOR(59, 63, 72, 1.0) toColor:RGBACOLOR(59, 63, 72, 0.0) startPoint:CGPointMake(0.0, 0.5) endPoint:CGPointMake(0.0, 1.0)];
-//
-//    [self.view bringSubviewToFront:_gradientV];
-//}
+#pragma -mark scrollView delegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (!_dataArr || _dataArr.count <= 0) {
+        return;
+    }
+
+    CGFloat offsetY =  scrollView.contentOffset.y;
+
+    CGFloat Height = 2 * offsetY;
+    if (offsetY >= 27.0) {
+        Height = 54;
+    }else if(offsetY <= 0){
+        Height = 0.0;
+    }
+
+    CGRect rect = CGRectMake(0, -64, self.view.frame.size.width, self.view.frame.size.height + 64);
+    CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
+    gradient.frame = rect;
+    
+    UIColor *bgColor = SPBgColor;
+
+    gradient.colors = @[(__bridge id)[bgColor colorWithAlphaComponent:0.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor];
+    gradient.locations = @[@(1.0 * Height / rect.size.height), @(1.0 * (Height + 64) / rect.size.height), @1.0];
+    gradient.startPoint = CGPointMake(0.5, 0);
+    gradient.endPoint = CGPointMake(0.5, 1.0);
+    
+    self.view.layer.mask = gradient;
+}
 
 //- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 //

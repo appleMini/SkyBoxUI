@@ -9,16 +9,28 @@
 #import "SPHomeHelpViewController.h"
 #import "UIView+SPSwitchBar.h"
 
-@interface SPHelpRootViewController () <UIScrollViewDelegate>
+@interface SPHelpRootViewController () <UIScrollViewDelegate> {
+    BOOL _canDone;
+}
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIPageControl *pageControl;
 
 
 @property (strong, nonatomic) SPHomeHelpViewController *page1VC;
 @property (strong, nonatomic) SPHomeHelpViewController *page2VC;
+
+@property (nonatomic, strong) UIBarButtonItem *doneItem;
 @end
 
 @implementation SPHelpRootViewController
+
+- (instancetype)initWithDoneAction {
+    self = [self initWithSomething];
+    if (self) {
+        _canDone = YES;
+    }
+    return self;
+}
 
 - (instancetype)initWithSomething {
     self = [super initWithNibName:@"SPHelpRootViewController" bundle:[Commons resourceBundle]];
@@ -30,6 +42,35 @@
 
 - (NSString *)titleOfLabelView {
     return @"ALL FILES";
+}
+
+- (NSArray *)rightNaviItem {
+    return _canDone ? @[self.doneItem] : nil;
+}
+
+- (UIBarButtonItem *)doneItem {
+    if (!_doneItem) {
+        UIButton *doneItem = [UIButton buttonWithType:UIButtonTypeCustom];
+        [doneItem setTitle:@"Done" forState:UIControlStateNormal];
+        doneItem.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:19];
+        doneItem.titleLabel.textColor = [SPColorUtil getHexColor:@"#ffffff"];
+        doneItem.backgroundColor = [UIColor clearColor];
+        doneItem.frame = CGRectMake(0, 0, 20, 20);
+        [doneItem addTarget:self action:@selector(doneClick:) forControlEvents:UIControlEventTouchUpInside];
+        
+        _doneItem = [[UIBarButtonItem alloc] initWithCustomView:doneItem];
+    }
+    
+    return _doneItem;
+}
+
+- (void)doneClick:(UIButton *)item {
+    NSUInteger selectedIndex = -1;
+    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:LocalFileMiddleVCType],
+                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+                             };
+    
+    [self.view bubbleEventWithUserInfo:notify];
 }
 
 - (void)viewDidLoad {

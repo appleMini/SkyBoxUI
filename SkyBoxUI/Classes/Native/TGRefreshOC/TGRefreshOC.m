@@ -93,7 +93,7 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
                 _deltaH = fmaxf(0, -point.y - kBeginHeight - initInsetTop_);
                 self.innerImageView.hidden = NO;
                 [self setNeedsDisplay];
-                if (-point.y > kDragHeight + initInsetTop_) {
+                if ((-point.y > kDragHeight + initInsetTop_) && !self.sv.dragging) {
                     [self beginRefreshing];
                 }
             }

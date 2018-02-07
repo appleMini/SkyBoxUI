@@ -9,4 +9,5 @@
 
 @interface SPHelpRootViewController : SPBaseViewController
 
+- (instancetype)initWithDoneAction;
 @end

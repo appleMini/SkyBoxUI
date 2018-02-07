@@ -41,6 +41,7 @@ typedef enum : NSUInteger {
     AirScreenMiddleVCType,
     AirScreenResultMiddleVCType,
     HomeHelpMiddleVCType,
+    LocalFileMiddleVCType,
     TestType,
 } ResponderType;
 

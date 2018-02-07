@@ -68,7 +68,8 @@
     //                                               } errorCall:nil];
     NSUInteger selectedIndex = -1;
     NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:HomeHelpMiddleVCType],
-                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+                             @"Done": @YES
                              };
     
     [self.view bubbleEventWithUserInfo:notify];
