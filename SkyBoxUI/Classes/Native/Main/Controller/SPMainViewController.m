@@ -87,7 +87,7 @@
         
         [mutableDict addEntriesFromDictionary:@{@"devices" : arr}];
     }
-
+    
     return [mutableDict copy];
 }
 
@@ -96,7 +96,6 @@
     // Do any additional setup after loading the view.
     //注册DLAN回调
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"RegisterDLANCallBack"}];
-    
     
     SPMenuViewController *menuVC = [[SPMenuViewController alloc] init];
     menuVC.delegate = self;
@@ -441,4 +440,3 @@
 }
 
 @end
-

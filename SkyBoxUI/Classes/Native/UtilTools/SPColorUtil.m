@@ -9,10 +9,9 @@
 
 @implementation SPColorUtil
 
-//MARK: 获得渐变背景颜色
-+ (UIImage *)getGradientLayerIMG:(CGFloat)height width:(CGFloat)width fromColor:(UIColor *)fromC toColor:(UIColor *)toC  {
++ (UIImage *)getHalfGradientLayerIMG:(CGFloat)height width:(CGFloat)width fromColor:(UIColor *)fromC toColor:(UIColor *)toC {
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
-    [view.layer insertSublayer:[self getGradientLayer:height width:width fromColor:fromC toColor:toC] atIndex:0];
+    [view.layer insertSublayer:[self getHalfGradientLayer:CGRectMake(0, 0, width, height) fromColor:fromC toColor:toC] atIndex:0];
     
     UIGraphicsBeginImageContext(view.frame.size);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
@@ -24,12 +23,43 @@
 }
 
 //MARK: 获得渐变背景颜色
-+ (CAGradientLayer *)getGradientLayer:(CGFloat)height width:(CGFloat)width fromColor:(UIColor *)fromC toColor:(UIColor *)toC {
++ (UIImage *)getGradientLayerIMG:(CGFloat)height width:(CGFloat)width fromColor:(UIColor *)fromC toColor:(UIColor *)toC startPoint:(CGPoint)startPoint endPoint:(CGPoint)endPoint {
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+    [view.layer insertSublayer:[self getGradientLayer:height width:width fromColor:fromC toColor:toC startPoint:startPoint endPoint:endPoint] atIndex:0];
+    
+    UIGraphicsBeginImageContext(view.frame.size);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
+//MARK: 获得渐变背景颜色
++ (CAGradientLayer *)getHalfGradientLayer:(CGRect)rect fromColor:(UIColor *)fromC toColor:(UIColor *)toC {
     CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
-    gradient.frame = CGRectMake(0, 0, width, height);
-    gradient.colors = @[(__bridge id)fromC.CGColor, (__bridge id)toC.CGColor];
+    gradient.frame = rect;
+    gradient.colors = @[(__bridge id)fromC.CGColor, (__bridge id)fromC.CGColor, (__bridge id)toC.CGColor];
+    gradient.locations = @[@0.0, @0.5, @1.0];
     gradient.startPoint = CGPointMake(0.0, 0.0);
     gradient.endPoint = CGPointMake(0.0, 1.0);
+    
+    return gradient;
+}
+
++ (CAGradientLayer *)gradientLayer:(CGRect)rect fromColor:(UIColor *)fromC toColor:(UIColor *)toC startPoint:(CGPoint)startPoint endPoint:(CGPoint)endPoint {
+    CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
+    gradient.frame = rect;
+    gradient.colors = @[(__bridge id)fromC.CGColor, (__bridge id)toC.CGColor];
+    gradient.startPoint = startPoint;
+    gradient.endPoint = endPoint;
+    
+    return gradient;
+}
+
++ (CAGradientLayer *)getGradientLayer:(CGFloat)height width:(CGFloat)width fromColor:(UIColor *)fromC toColor:(UIColor *)toC startPoint:(CGPoint)startPoint endPoint:(CGPoint)endPoint {
+    CAGradientLayer *gradient = [self gradientLayer:CGRectMake(0, 0, width, height) fromColor:fromC toColor:toC startPoint:startPoint endPoint:endPoint];
     
     return gradient;
 }

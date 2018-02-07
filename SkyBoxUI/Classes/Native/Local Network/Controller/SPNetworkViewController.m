@@ -29,6 +29,8 @@
 @property (nonatomic, strong) NSMutableArray <SPCmdAddDevice *>*devices;
 
 @property (nonatomic, strong) SPDLANManager *dlanManager;
+
+@property (nonatomic, strong)  UIImageView *gradientV;
 @end
 
 @implementation SPNetworkViewController
@@ -107,10 +109,36 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     [self setupHeaderView];
     [self setupScrollView];
     
+    [self setupMaskView];
+    [self setupGradientLayer];
+    
+    [self.view bringSubviewToFront:self.headerView];
     [self monitorNetWorkState];
+    
+    self.view.clipsToBounds = YES;
+}
+
+- (void)setupMaskView {
+    UIView *mask = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 28 * kWSCALE)];
+    mask.backgroundColor = SPBgColor;
+    
+    [self.view insertSubview:mask aboveSubview:self.collectionView];
+}
+
+- (void)setupGradientLayer {
+    if (_gradientV) {
+        return;
+    }
+    
+    CGFloat H = 28 * kWSCALE + 20 - 64;
+    UIImageView *imgv = [[UIImageView alloc] initWithFrame:CGRectMake(0, H, self.view.frame.size.width, 64)];
+    [self.view addSubview:imgv];
+    _gradientV = imgv;
+    _gradientV.hidden = YES;
 }
 
 - (NSString *)titleOfLabelView {
@@ -204,6 +232,7 @@
         adjustsScrollViewInsets(_collectionView);
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
+        _collectionView.clipsToBounds = NO;
     }
     
     return _collectionView;
@@ -314,6 +343,33 @@ static CGFloat height = 0;
     
     _dataArr = [folders copy];
     [self reload];
+}
+
+#pragma -mark scrollView delegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (!_dataArr || _dataArr.count <= 0) {
+        return;
+    }
+    
+    CGFloat offsetY =  scrollView.contentOffset.y;
+    _gradientV.hidden = (offsetY <= 0);
+    
+    CGFloat Height = 2 * offsetY;
+    if (offsetY >= 32.0) {
+        Height = 64.0;
+    }else if(offsetY <= 0){
+        Height = 0.0;
+    }
+    
+    CGRect frame = _gradientV.frame;
+    frame.origin.y = (28 * kWSCALE - 64) + Height;
+    
+    _gradientV.frame = frame;
+    //        _gradientV.backgroundColor = [UIColor purpleColor];
+    _gradientV.image = [SPColorUtil getGradientLayerIMG:64 width:self.view.frame.size.width fromColor:RGBACOLOR(59, 63, 72, 1.0) toColor:RGBACOLOR(59, 63, 72, 0.0) startPoint:CGPointMake(0.5, 0.0) endPoint:CGPointMake(0.5, 1.0)];
+    
+    [self.view bringSubviewToFront:_gradientV];
+    [self.view bringSubviewToFront:self.headerView];
 }
 @end
 

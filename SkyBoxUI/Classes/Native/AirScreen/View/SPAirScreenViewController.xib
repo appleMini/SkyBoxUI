@@ -41,7 +41,7 @@
                         <constraint firstAttribute="height" constant="182" id="I4o-zX-Y0e"/>
                     </constraints>
                 </imageView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TJZ-Gz-ZOx">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TJZ-Gz-ZOx" customClass="SPHighlightedButton">
                     <rect key="frame" x="44.5" y="558" width="286" height="42"/>
                     <color key="backgroundColor" red="0.99931293725967407" green="0.87064182758331299" blue="0.62466120719909668" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>

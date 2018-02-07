@@ -11,6 +11,7 @@
 #import "SPVideo.h"
 #import "UILabel+SPAttri.h"
 #import "SPAirScreenManager.h"
+#import "SPAirscreenCell.h"
 
 typedef enum : NSUInteger {
     AirScreenStartupStatus = 0,
@@ -35,7 +36,7 @@ typedef enum : NSUInteger {
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *pcImgVHeightConstraint;
 
 @property (weak, nonatomic) IBOutlet UIImageView *pcImgV;
-@property (weak, nonatomic) IBOutlet UIButton *searchButton;
+@property (weak, nonatomic) IBOutlet SPHighlightedButton *searchButton;
 @property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentViewTopConstraint;
@@ -169,15 +170,11 @@ typedef enum : NSUInteger {
     self.searchLabel.textColor = [SPColorUtil getHexColor:@"#ffffff"];
     
     self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
-    [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateNormal];
-    [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateHighlighted];
     self.searchButton.backgroundColor = [SPColorUtil getHexColor:@"#ffde9e"];
     [self.searchButton setTitle:@"SEARCH DEVICE" forState:UIControlStateNormal];
     self.searchButton.layer.cornerRadius = 21.0;//
     self.searchButton.layer.borderWidth = 0.0f;//设置边框颜色
     self.searchButton.layer.masksToBounds = YES;
-    [self.searchButton setBackgroundImage:[[SPColorUtil getHexColor:@"#ffde9e"] createImageWithColor:self.searchButton.bounds] forState:UIControlStateNormal];
-    [self.searchButton setBackgroundImage:[[SPColorUtil getHexColor:@"#d9b97a"] createImageWithColor:self.searchButton.bounds] forState:UIControlStateHighlighted];
     
     self.contentView.backgroundColor = [UIColor clearColor];
     
@@ -220,26 +217,33 @@ typedef enum : NSUInteger {
     if (_status == AirScreenStartupStatus) {
         self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
         [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateNormal];
-        [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateHighlighted];
         self.searchButton.backgroundColor = [SPColorUtil getHexColor:@"#ffde9e"];
         [self.searchButton setTitle:@"SEARCH DEVICE" forState:UIControlStateNormal];
         self.searchButton.layer.cornerRadius = 21.0;//
         self.searchButton.layer.borderWidth = 0.0f;//设置边框颜色
         self.searchButton.layer.masksToBounds = YES;
-        [self.searchButton setBackgroundImage:[[SPColorUtil getHexColor:@"#ffde9e"] createImageWithColor:self.searchButton.bounds] forState:UIControlStateNormal];
-        [self.searchButton setBackgroundImage:[[SPColorUtil getHexColor:@"#d9b97a"] createImageWithColor:self.searchButton.bounds] forState:UIControlStateHighlighted];
+        self.searchButton.bgNormalColor = [SPColorUtil getHexColor:@"#ffde9e"];
+        self.searchButton.bgHighlightedColor = [SPColorUtil getHexColor:@"#d9b97a"];
+        self.searchButton.titleHighlightedColor = [SPColorUtil getHexColor:@"#3c3f48"];
+        self.searchButton.titleNormalColor = [SPColorUtil getHexColor:@"#3c3f48"];
+        self.searchButton.normalAlpha = 1.0;
+        self.searchButton.highlightedAlpha = 1.0;
     }else{
         self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
         [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
-        [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateHighlighted];
         self.searchButton.backgroundColor = [UIColor clearColor];
         [self.searchButton setTitle:@"CANCEL" forState:UIControlStateNormal];
         self.searchButton.layer.cornerRadius = 21.0;//
         self.searchButton.layer.borderColor = [UIColor whiteColor].CGColor;//设置边框颜色
         self.searchButton.layer.borderWidth = 2.0f;//设置边框颜色
         self.searchButton.layer.masksToBounds = YES;
-        [self.searchButton setBackgroundImage:[[UIColor clearColor] createImageWithColor:self.searchButton.bounds] forState:UIControlStateNormal];
-        [self.searchButton setBackgroundImage:[[SPColorUtil getHexColor:@"#e5e5e5"] createImageWithColor:self.searchButton.bounds] forState:UIControlStateHighlighted];
+
+        self.searchButton.normalAlpha = 1.0;
+        self.searchButton.highlightedAlpha = 0.5;
+        self.searchButton.bgNormalColor = [UIColor clearColor];
+        self.searchButton.bgHighlightedColor = [UIColor clearColor];
+        self.searchButton.titleHighlightedColor = [SPColorUtil getHexColor:@"#ffffff"];
+        self.searchButton.titleNormalColor = [SPColorUtil getHexColor:@"#ffffff"];
     }
     
     self.pcImgVHeightConstraint.constant = 270 * kHSCALE;
@@ -522,10 +526,10 @@ typedef enum : NSUInteger {
 
 static NSString *cellID = @"AIRSCREEN_CELLID";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
+    SPAirscreenCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
     
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+        cell = [[SPAirscreenCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = [_dataArr[indexPath.row] computerName];

@@ -65,6 +65,7 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
 
   s.prefix_header_contents = <<-EOS
     #ifdef __OBJC__
+        #import "SPHighlightedButton.h"
         #import "SPDLANManager.h"
         #import "SPAirScreenManager.h"
         #import "SPDataManager.h"

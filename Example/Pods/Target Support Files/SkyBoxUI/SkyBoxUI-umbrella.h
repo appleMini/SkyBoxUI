@@ -59,6 +59,7 @@
 #import "SPDataManager.h"
 #import "SPDLANVideoInfo.h"
 #import "SPBackgrondView.h"
+#import "SPHighlightedButton.h"
 #import "SPNavigationBar.h"
 #import "SPSwitchBar.h"
 #import "SPTabBar.h"

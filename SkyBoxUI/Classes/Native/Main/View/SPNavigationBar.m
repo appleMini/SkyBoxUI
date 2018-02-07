@@ -14,9 +14,9 @@
     
     CGRect frame = self.frame;
     frame.size.height = 64;
-    self.frame = frame;    
-//    self.backgroundColor = [UIColor redColor];
+    self.frame = frame;
     
+//    [self clear:self];
     Class navigationBarContentView = NSClassFromString(@"_UINavigationBarContentView");
     Class barBackground = NSClassFromString(@"_UIBarBackground");
     for (UIView *view in self.subviews) {
@@ -25,6 +25,14 @@
             vframe.origin.y = (self.frame.size.height - vframe.size.height) / 2;
             view.frame = vframe;
         }
+    }
+}
+
+- (void)clear:(UIView *)view {
+    for (UIView *v in view.subviews) {
+        v.backgroundColor = [UIColor clearColor];
+        v.alpha = 0.0;
+        [self clear:v];
     }
 }
 @end

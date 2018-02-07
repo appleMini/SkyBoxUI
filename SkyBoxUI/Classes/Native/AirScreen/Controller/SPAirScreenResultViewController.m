@@ -12,7 +12,7 @@
     BOOL _showDisconnect;
 }
 
-@property (nonatomic, strong) UIButton *disconnBtn;
+@property (nonatomic, strong) SPHighlightedButton *disconnBtn;
 @property (nonatomic, strong) UIButton *serverBtn;
 @property (nonatomic, strong) UIView *topView;
 @property (nonatomic, strong) UIView *maskView;
@@ -142,12 +142,19 @@
 
 - (UIButton *)disconnBtn {
     if (!_disconnBtn) {
-        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectZero];
+        SPHighlightedButton *btn = [[SPHighlightedButton alloc] initWithFrame:CGRectZero];
         btn.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
         [btn setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
         [btn setTitle:@"DISCONNECT" forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(disconnection:) forControlEvents:UIControlEventTouchUpInside];
         btn.backgroundColor = [SPColorUtil getHexColor:@"#4b4d56"];
+        
+        btn.bgNormalColor = [SPColorUtil getHexColor:@"#4b4d56"];
+        btn.bgHighlightedColor = [SPColorUtil getHexColor:@"#37393f"];
+        btn.titleHighlightedColor = [SPColorUtil getHexColor:@"#ffffff"];
+        btn.titleNormalColor = [SPColorUtil getHexColor:@"#ffffff"];
+        btn.normalAlpha = 1.0;
+        btn.highlightedAlpha = 1.0;
         _disconnBtn = btn;
     }
     

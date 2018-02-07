@@ -41,10 +41,16 @@ static SPDataManager *_manager = nil;
     return arrCopy;
 }
 
-- (void)addServer:(SPCmdAddDevice *)device {
-    if (device) {
+- (void)addServer:(SPCmdAddDevice *)server {
+    if (server) {
         dispatch_barrier_async(_concurrentQueue, ^{
-            [_servers addObject:device];
+            for(SPCmdAddDevice *device in _servers) {
+                if ([device.deviceId isEqualToString:server.deviceId]) {
+                    return ;
+                }
+            }
+            
+            [_servers addObject:server];
         });
     }
 }
