@@ -208,10 +208,6 @@ SPSingletonM(SPSwitchBar)
         return;
     }
     _selectIndex = selectIndex;
-    //    [_leftBtn setImage:[Commons getImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_channels%@", _selectIndex == 0 ? @"_active" : @""]] forState:UIControlStateNormal];
-    //    [_rightBtn setImage:[Commons getImageFromResource:[NSString stringWithFormat:@"Home_tabbar_button_history%@", _selectIndex == 2 ? @"_active" : @""]] forState:UIControlStateNormal];
-    //    _rightBtn.imageView.contentMode = UIViewContentModeScaleToFill;
-    //    [_centerBtn setImage:[Commons getPdfImageFromResource:(_selectIndex == 1 ? @"Home_tabbar_button_VR" : @"Home_tabbar_button_videos")] forState:UIControlStateNormal];
 }
 
 - (void)fixPosition:(CGFloat)dx baseWidth:(CGFloat)width {
@@ -228,6 +224,11 @@ SPSingletonM(SPSwitchBar)
         self.leftBtn_active.alpha = alpha;
         self.rightBtn_active.alpha = 0.0;
         self.rightBtn.alpha = 1.0;
+    }else {
+        self.rightBtn.alpha = 1.0 - alpha;
+        self.rightBtn_active.alpha = alpha;
+        self.leftBtn_active.alpha = alpha;
+        self.leftBtn.alpha = 1.0 - alpha;
     }
     
     if (!_animation) {
@@ -379,8 +380,6 @@ SPSingletonM(SPSwitchBar)
     if (self.delegate && [self.delegate respondsToSelector:@selector(switchBar: selectIndex:)]) {
         [self.delegate switchBar:self selectIndex:0];
     }
-    
-    
 }
 - (void)centerBtnClick:(UIButton *)btn {
     if (self.selectIndex == 1) {

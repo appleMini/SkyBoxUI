@@ -297,6 +297,8 @@
         SPBaseViewController *vc = self.childViewControllers[1];
         [vc showTopViewAlpha:alpha];
     }
+    
+    [SPSwitchBar shareSPSwitchBar].selectIndex = index;
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
