@@ -425,7 +425,7 @@
 //}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return kWSCALE*94;
+    return kWSCALE*94 - 29 * 2;
 }
 
 - (nullable UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
@@ -484,7 +484,7 @@ static CGFloat height = 0;
 
 - (UIEdgeInsets)edgeInsetsOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
 {
-    return UIEdgeInsetsMake(0, 17, kWSCALE*94, 17);
+    return UIEdgeInsetsMake(0, 17, kWSCALE*94 - 29 * 2, 17);
 }
 
 
@@ -531,6 +531,28 @@ static CGFloat height = 0;
 //    _gradientV.image = [SPColorUtil getGradientLayerIMG:128 width:self.view.frame.size.width fromColor:RGBACOLOR(59, 63, 72, 1.0) toColor:RGBACOLOR(59, 63, 72, 0.0) startPoint:CGPointMake(0.0, 0.5) endPoint:CGPointMake(0.0, 1.0)];
 //
 //    [self.view bringSubviewToFront:_gradientV];
+//}
+
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+//
+//    // 去除尾视图粘性的方法
+//    CGFloat sectionFooterHeight = kWSCALE*94;
+//
+//    CGFloat size_height = scrollView.contentSize.height;
+//
+//    CGFloat contentOffset_y = scrollView.contentOffset.y;
+//
+//    CGFloat result = size_height - contentOffset_y - [UIScreen mainScreen].bounds.size.height;
+//
+//    if (result > sectionFooterHeight) {
+//        scrollView.contentInset = UIEdgeInsetsMake(64, 0, -sectionFooterHeight, 0);
+//    }else{
+//        if (result>0) {
+//            scrollView.contentInset = UIEdgeInsetsMake(64, 0, -result, 0);
+//        }else{
+//            scrollView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
+//        }
+//    }
 //}
 @end
 
