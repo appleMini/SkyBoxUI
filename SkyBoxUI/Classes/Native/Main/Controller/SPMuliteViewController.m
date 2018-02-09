@@ -23,7 +23,6 @@
 }
 
 @property (nonatomic, assign) DisplayType showType;
-@property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, copy) NSString *cellIditify;
 @property (nonatomic, strong) UIBarButtonItem *menuItem;
 @property (nonatomic, strong) UIBarButtonItem *deleteItem;
