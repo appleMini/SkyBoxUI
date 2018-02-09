@@ -8,5 +8,11 @@
 #import <UIKit/UIKit.h>
 
 @interface SPAirscreenCell : UITableViewCell
+- (void)showLineView:(BOOL)show;
+@end
+
+
+@interface SPLineView : UIView
 
 @end
+

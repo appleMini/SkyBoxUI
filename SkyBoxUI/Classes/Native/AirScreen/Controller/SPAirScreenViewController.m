@@ -78,7 +78,7 @@ typedef enum : NSUInteger {
         self.status = AirScreenStartupStatus;
         [self.searchButton setTitle:@"SEARCH DEVICE" forState:UIControlStateNormal];
         
-        SPDataManager *dataManager = [SPDataManager shareDataManager];
+        SPDataManager *dataManager = [SPDataManager shareSPDataManager];
         if (dataManager && dataManager.airscreen) {
             _isAutoLogin = YES;
             _airscreen = dataManager.airscreen;
@@ -128,7 +128,7 @@ typedef enum : NSUInteger {
     AFNetworkReachabilityStatus status = [manager networkReachabilityStatus];
     if (_isAutoLogin && (status == AFNetworkReachabilityStatusReachableViaWiFi)) {
         [self.airScreenManager startupAirscreen];
-        [self.airScreenManager connectServer:_airscreen complete:^(NSArray *listResult) {
+        [self.airScreenManager connectServer:_airscreen complete:^(NSArray *listResult, NSString *resultStr) {
             //                [listResult removeAllObjects];
             NSUInteger selectedIndex = -1;
             NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenResultMiddleVCType],
@@ -443,7 +443,7 @@ typedef enum : NSUInteger {
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.separatorColor = [UIColor darkGrayColor];
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.layer.cornerRadius = 21;
         _tableView.layer.masksToBounds = YES;
     }
@@ -473,7 +473,7 @@ typedef enum : NSUInteger {
         [_topView addSubview:line1];
         
         [line1 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(2);
+            make.height.mas_equalTo(1);
             make.centerY.mas_equalTo(0);
             make.leading.mas_equalTo(5);
             make.trailing.equalTo(_devicesLabel.mas_leading).mas_equalTo(-8);
@@ -483,7 +483,7 @@ typedef enum : NSUInteger {
         line2.backgroundColor = [SPColorUtil getHexColor:@"#595c65"];
         [_topView addSubview:line2];
         [line2 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(2);
+            make.height.mas_equalTo(1);
             make.centerY.mas_equalTo(0);
             make.trailing.mas_equalTo(-5);
             make.leading.equalTo(_devicesLabel.mas_trailing).mas_equalTo(8);
@@ -536,6 +536,8 @@ static NSString *cellID = @"AIRSCREEN_CELLID";
     cell.textLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
     cell.textLabel.textColor = [SPColorUtil getHexColor:@"#3c3f48"];
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
+    
+    [cell showLineView:(indexPath.row != (_dataArr.count-1))];
     return cell;
 }
 
@@ -550,7 +552,7 @@ static NSString *cellID = @"AIRSCREEN_CELLID";
     }
     
     _airscreen = air;
-    [self.airScreenManager connectServer:air complete:^(NSArray *listResult) {
+    [self.airScreenManager connectServer:air complete:^(NSArray *listResult, NSString *resultStr) {
         //                [listResult removeAllObjects];
         NSUInteger selectedIndex = -1;
         NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenResultMiddleVCType],

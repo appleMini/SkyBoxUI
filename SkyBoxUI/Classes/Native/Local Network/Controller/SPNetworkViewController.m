@@ -96,7 +96,7 @@
             ws.dlanManager = [SPDLANManager shareDLANManager];
             ws.dlanManager.delegate = ws;
             
-            NSArray *devices = [SPDataManager shareDataManager].devices;
+            NSArray *devices = [SPDataManager shareSPDataManager].devices;
             if (devices) {
                 [ws.headerView setDevices:[devices mutableCopy]];
             }
@@ -136,6 +136,7 @@
     
     CGFloat H = 28 * kWSCALE + 20 - 64;
     UIImageView *imgv = [[UIImageView alloc] initWithFrame:CGRectMake(0, H, self.view.frame.size.width, 64)];
+    imgv.image = [Commons getImageFromResource:@"Network_list_mask@2x"];
     [self.view addSubview:imgv];
     _gradientV = imgv;
     _gradientV.hidden = YES;
@@ -287,7 +288,7 @@ static CGFloat height = 0;
 
 - (UIEdgeInsets)edgeInsetsOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
 {
-    return UIEdgeInsetsMake(0, 17, kWSCALE*94 - 29 * 2, 17);
+    return UIEdgeInsetsMake(0, 17, kWSCALE*94 - 29, 17);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -366,7 +367,7 @@ static CGFloat height = 0;
     
     _gradientV.frame = frame;
     //        _gradientV.backgroundColor = [UIColor purpleColor];
-    _gradientV.image = [SPColorUtil getGradientLayerIMG:64 width:self.view.frame.size.width fromColor:RGBACOLOR(59, 63, 72, 1.0) toColor:RGBACOLOR(59, 63, 72, 0.0) startPoint:CGPointMake(0.5, 0.0) endPoint:CGPointMake(0.5, 1.0)];
+//    _gradientV.image = [SPColorUtil getGradientLayerIMG:64 width:self.view.frame.size.width fromColor:RGBACOLOR(59, 63, 72, 1.0) toColor:RGBACOLOR(59, 63, 72, 0.0) startPoint:CGPointMake(0.5, 0.0) endPoint:CGPointMake(0.5, 1.0)];
     
     [self.view bringSubviewToFront:_gradientV];
     [self.view bringSubviewToFront:self.headerView];

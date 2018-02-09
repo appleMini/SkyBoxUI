@@ -69,7 +69,7 @@
     self.imgv.contentMode = UIViewContentModeScaleAspectFill;
     [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[Commons getImageFromResource:@"Home_videos_album_default"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         if (image) {
-            self.imgv.image = [image roundedCornerImage:5 borderSize:0];
+            self.imgv.image = [image roundedCornerImage:10 borderSize:0];
         }
     }];
     

@@ -100,7 +100,7 @@ static SPDLANManager *_manager = nil;
 }
 
 - (void)showDLANDevices {
-    SPDataManager *dataManager = [SPDataManager shareDataManager];
+    SPDataManager *dataManager = [SPDataManager shareSPDataManager];
     
     NSArray *servers = dataManager.servers;
     if (dataManager && servers) {
@@ -151,7 +151,7 @@ static SPDLANManager *_manager = nil;
         [keyWindow hideLoading];
     });
     
-    SPDataManager *dataManager = [SPDataManager shareDataManager];
+    SPDataManager *dataManager = [SPDataManager shareSPDataManager];
     [dataManager addServer:device];
     
     [self.timeoutTimer invalidate];
@@ -269,7 +269,7 @@ static SPDLANManager *_manager = nil;
     if (device) {
         [self browseDLNAFolder:device];
     }else {
-        SPDataManager *dataManager = [SPDataManager shareDataManager];
+        SPDataManager *dataManager = [SPDataManager shareSPDataManager];
         [dataManager removeAllServers];
         
         [self startupDLAN];

@@ -58,7 +58,7 @@ static SPAirScreenManager *_manager = nil;
     [self.sendTimer invalidate];
     
     if (_socketOpened) {
-        _socketOpened = NO;
+//        _socketOpened = NO;
         [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"DestroySKYBOX"}];
     }
 }
@@ -66,13 +66,13 @@ static SPAirScreenManager *_manager = nil;
 - (void)releaseAction {
     [self closeAirscreen];
     
-    [self.displink invalidate];
-    self.displink = nil;
+    //    [self.displink invalidate];
+    //    self.displink = nil;
     
     [self.sendTimer invalidate];
     self.sendTimer = nil;
     
-    _manager = nil;
+    //    _manager = nil;
 }
 
 - (void)startupAirscreen {
@@ -86,11 +86,11 @@ static SPAirScreenManager *_manager = nil;
 - (void)startupAndSendPackage {
     if (!_socketOpened) {
         [self startupAirscreen];
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.sendTimer fire];
-        });
     }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.sendTimer fire];
+    });
 }
 
 - (NSTimer *)sendTimer {
@@ -162,7 +162,7 @@ static SPAirScreenManager *_manager = nil;
         }
         
         if (_completeBlock) {
-            self.completeBlock([mediaListResult copy]);
+            self.completeBlock([mediaListResult copy], jsonStr);
         }
     }
 }

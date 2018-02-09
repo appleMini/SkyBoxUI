@@ -17,7 +17,7 @@
 //{
 //    self = [super init];
 //    if (self) {
-//        
+//
 //    }
 //    return self;
 //}
@@ -46,12 +46,12 @@
         make.bottom.mas_equalTo(0.0);
         
     }];
-//    CGRect frame = containerView.bounds;
-//    frame = UIEdgeInsetsInsetRect(frame, UIEdgeInsetsMake(40.0, 40.0, 200.0, 40.0));
+    //    CGRect frame = containerView.bounds;
+    //    frame = UIEdgeInsetsInsetRect(frame, UIEdgeInsetsMake(40.0, 40.0, 200.0, 40.0));
     CGSize contentSize = toViewController.preferredContentSize;
-//    CGFloat x = (SCREEN.size.width - contentSize.width)/2;
-//    CGFloat y = (SCREEN.size.height - 64 - contentSize.height)/2;
-//    toViewController.view.frame = CGRectMake(x, y, contentSize.width, contentSize.height);
+    //    CGFloat x = (SCREEN.size.width - contentSize.width)/2;
+    //    CGFloat y = (SCREEN.size.height - 64 - contentSize.height)/2;
+    //    toViewController.view.frame = CGRectMake(x, y, contentSize.width, contentSize.height);
     toViewController.view.layer.cornerRadius = 10;
     toViewController.view.layer.masksToBounds = YES;
     [containerView addSubview:toViewController.view];
@@ -62,23 +62,38 @@
         make.center.mas_offset(0);
     }];
     
+    //    [transitionContext completeTransition:YES];
+    //    return;
+    
+    //关闭动画
+    
+    
     //若动画中scale从大于0的值开始同时alpha从0到1，则可以让你动画速度比简单的scale从0到1更快。试着删除alpha动画，再和从0开始的scale动画比较。
     toViewController.view.alpha = 0.0;
-    toViewController.view.transform = CGAffineTransformMakeScale(0.3, 0.3);
+    toViewController.view.transform = CGAffineTransformMakeScale(0.6, 0.6);
     
     NSTimeInterval duration = [self transitionDuration:transitionContext];
     
-    [UIView animateWithDuration:duration / 2.0 animations:^{
+    //    [UIView animateWithDuration:duration / 4.0 animations:^{
+    //        toViewController.view.alpha = 1.0;
+    //    }];
+    
+    //回弹
+    //    CGFloat damping = 0.55;
+    
+    [UIView animateWithDuration:duration animations:^{
         toViewController.view.alpha = 1.0;
-    }];
-    
-    CGFloat damping = 0.55;
-    
-    [UIView animateWithDuration:duration delay:0.0 usingSpringWithDamping:damping initialSpringVelocity:1.0 / damping options:0 animations:^{
         toViewController.view.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
         [transitionContext completeTransition:YES];
     }];
+    //    [UIView animateWithDuration:duration delay:0.0 usingSpringWithDamping:damping initialSpringVelocity:1.0 / damping options:0 animations:^{
+    //        toViewController.view.transform = CGAffineTransformIdentity;
+    //    } completion:^(BOOL finished) {
+    //        [transitionContext completeTransition:YES];
+    //    }];
 }
 
 @end
+
+

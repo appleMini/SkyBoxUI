@@ -7,11 +7,12 @@
 
 #import <Foundation/Foundation.h>
 #import "SPBaseViewController.h"
-typedef void (^ResultBlock) (NSArray *listResult);
+typedef void (^ResultBlock) (NSArray *listResult, NSString *resultStr);
 @interface SPAirScreenManager : NSObject
 
 + (instancetype)shareAirScreenManager;
 
+- (void)closeAirscreen;
 - (void)startupAirscreen;
 - (void)startupAndSendPackage;
 - (void)stopSearch;

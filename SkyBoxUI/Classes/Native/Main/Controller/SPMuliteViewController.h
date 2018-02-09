@@ -7,18 +7,17 @@
 
 #import <UIKit/UIKit.h>
 #import "SPBaseViewController.h"
-typedef enum : NSUInteger {
-    LocalFilesType = 0,
-    VRVideosType,
-    FavoriteVideosType,
-    HistoryVideosType,
-    AirScreenType
-} DataSourceType;
 
 @interface SPMuliteViewController : SPBaseViewController
+
+@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, copy) NSArray *dataArr;
 
 - (instancetype)initWithDataSource:(NSArray *)data type:(DataSourceType)type displayType:(DisplayType)show;
 - (instancetype)initWithType:(DataSourceType)type displayType:(DisplayType)show;
 - (void)didFinishRequest:(NSArray *)arr;
 - (NSString *)cellIditify;
+
+- (void)reload;
+- (void)doRefreshSenior;
 @end

@@ -55,7 +55,7 @@
     [self.refreshBtn setImage:[Commons getPdfImageFromResource:@"Network_navigator_refresh"] forState:UIControlStateNormal];
     self.refreshBtn.backgroundColor = [UIColor clearColor];
     self.refreshBtnWidthConstraint.constant = 28 * kWSCALE;
-    self.layer.cornerRadius = 14;
+    self.layer.cornerRadius = 28 * kWSCALE / 2.0;
     self.layer.masksToBounds = YES;
 }
 
@@ -72,7 +72,7 @@
     [self.devices removeAllObjects];
     [self setupContentViews];
     
-    SPDataManager *dataManger = [SPDataManager shareDataManager];
+    SPDataManager *dataManger = [SPDataManager shareSPDataManager];
     dataManger.devices = nil;
     [[SPDLANManager shareDLANManager] showDLANDevices];
 }
@@ -80,6 +80,45 @@
     NSLog(@"refresh...");
     
     [[SPDLANManager shareDLANManager] refreshAction:_device];
+//                NSMutableArray *deviceArr = [NSMutableArray array];
+//                SPCmdAddDevice *device1 = [[SPCmdAddDevice alloc] init];
+//                device1.deviceId = @"uuid:00113263-934b-0011-4b93-4b9363321100";
+//                device1.deviceType = @"Synology Inc";
+//                device1.deviceName = @"Source-Database";
+//                device1.iconURL = @"http://192.168.0.173:50001/tmp_icon/dmsicon120.jpg";
+//                device1.ObjIDStr = @"0";
+//                device1.showLoginCode = NO;
+//                device1.parentID = @"-1";
+//                [deviceArr addObject:device1];
+//
+//                SPCmdAddDevice *device2 = [[SPCmdAddDevice alloc] init];
+//                device2.deviceId = @"uuid:00113263-934b-0011-4b93-4b9363321100";
+//                device2.deviceType = @"object.container.storageFolder";
+//                device2.deviceName = @"Video";
+//                device2.ObjIDStr = @"33";
+//                device2.showLoginCode = NO;
+//                device2.parentID = @"0";
+//                [deviceArr addObject:device2];
+//
+//                SPCmdAddDevice *device3 = [[SPCmdAddDevice alloc] init];
+//                device3.deviceId = @"uuid:00113263-934b-0011-4b93-4b9363321100";
+//                device3.deviceType = @"object.container.storageFolder";
+//                device3.deviceName = @"TestVideo";
+//                device3.ObjIDStr = @"33$99";
+//                device3.showLoginCode = NO;
+//                device3.parentID = @"33";
+//                [deviceArr addObject:device3];
+//
+//                SPCmdAddDevice *device4 = [[SPCmdAddDevice alloc] init];
+//                device4.deviceId = @"uuid:00113263-934b-0011-4b93-4b9363321100";
+//                device4.deviceType = @"object.container.storageFolder";
+//                device4.deviceName = @"9 kinds";
+//                device4.ObjIDStr = @"33$104";
+//                device4.showLoginCode = NO;
+//                device4.parentID = @"33$99";
+//                [deviceArr addObject:device4];
+//
+//    [self setDevices:deviceArr];
 }
 
 - (void)setupContentViews {
@@ -110,6 +149,7 @@
     UIImage *bgImg = [Commons getPdfImageFromResource:@"Network_navigator_path_bg"];
     
     //    button.backgroundColor  = randomColor;
+    [button setContentMode:UIViewContentModeScaleAspectFill];
     button.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:13.0];
     button.userInteractionEnabled = userInteractionEnabled;
     [button setTitle:(userInteractionEnabled ? device.deviceName : @"... ...") forState:UIControlStateNormal];
@@ -125,7 +165,8 @@
     if (islast) {
         [button setTitleColor:[SPColorUtil getHexColor:@"#ffd570"] forState:UIControlStateNormal];
     }else {
-        [button setBackgroundImage:[bgImg resizableImageWithCapInsets:UIEdgeInsetsMake(0, 79/2-1, 0, 79/2-1)] forState:UIControlStateNormal];
+        [button setBackgroundImage:bgImg forState:UIControlStateNormal];
+//        [button setBackgroundImage:[bgImg resizableImageWithCapInsets:UIEdgeInsetsMake(0, 79/2-1, 0, 79/2-1)] forState:UIControlStateNormal];
     }
     [button addTarget:self action:@selector(goDeviceAction:) forControlEvents:UIControlEventTouchUpInside];
     button.tag = tag;
@@ -143,7 +184,7 @@
     
     SPCmdAddDevice *device = self.devices[btn.tag];
     
-    SPDataManager *dataManger = [SPDataManager shareDataManager];
+    SPDataManager *dataManger = [SPDataManager shareSPDataManager];
     dataManger.devices = [_devices copy];
     [[SPDLANManager shareDLANManager] browseDLNAFolder:device];
 }
@@ -164,7 +205,7 @@
     }
     
     [self.devices addObject:device];
-    SPDataManager *dataManager = [SPDataManager shareDataManager];
+    SPDataManager *dataManager = [SPDataManager shareSPDataManager];
     dataManager.devices = [self.devices copy];
     [self setupContentViews];
 }

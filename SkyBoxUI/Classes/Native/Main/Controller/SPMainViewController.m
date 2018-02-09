@@ -73,12 +73,12 @@
 
 - (NSDictionary *)params {
     NSMutableDictionary *mutableDict = [[NSMutableDictionary alloc] init];
-    SPAirscreen *airscreen = [SPDataManager shareDataManager].airscreen;
+    SPAirscreen *airscreen = [SPDataManager shareSPDataManager].airscreen;
     if (airscreen) {
         [mutableDict addEntriesFromDictionary:@{@"airscreen" : [airscreen mj_JSONString]}];
     }
     
-    NSArray *devices = [SPDataManager shareDataManager].devices;
+    NSArray *devices = [SPDataManager shareSPDataManager].devices;
     if (devices) {
         NSMutableArray *arr = [NSMutableArray arrayWithCapacity:devices.count];
         for (SPCmdAddDevice *device in devices) {
@@ -297,8 +297,6 @@
         SPBaseViewController *vc = self.childViewControllers[1];
         [vc showTopViewAlpha:alpha];
     }
-    
-    [SPSwitchBar shareSPSwitchBar].selectIndex = index;
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -340,13 +338,20 @@
     }
     
     _selectMenuIndex = index;
+    
     if (ctrS) {
         Class cls =  NSClassFromString(ctrS);
         if (!cls) {
             return;
         }
         
-        SPBaseViewController *vc = [[cls alloc] initWithSomething];
+        if (self.childViewControllers.count < 3) {
+            return;
+        }
+        SPBaseViewController *vc = self.childViewControllers[1];
+        [vc releaseAction];
+        
+        vc = [[cls alloc] initWithSomething];
         [self changeMiddleContentView:vc];
     }
     

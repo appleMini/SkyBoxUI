@@ -16,6 +16,7 @@
 #import "SPAirScreenManager.h"
 #import "SPAirScreenResultViewController.h"
 #import "SPAirScreenViewController.h"
+#import "SPAirscreenCell.h"
 #import "SPButton.h"
 #import "SPPluginBridge.h"
 #import "UIButton+SPRadius.h"

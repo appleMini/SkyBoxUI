@@ -39,15 +39,21 @@
                          [transitionContext completeTransition:YES];
                      }];
     
-    [UIView animateWithDuration:2.0 * duration
-                          delay:0.0
-         usingSpringWithDamping:1.0
-          initialSpringVelocity:-15.0
-                        options:0
-                     animations:^{
-                         fromViewController.view.transform = CGAffineTransformMakeScale(0.3, 0.3);
-                     }
-                     completion:nil];
+    [UIView animateWithDuration:2.0 * duration animations:^{
+        fromViewController.view.transform = CGAffineTransformMakeScale(0.3, 0.3);
+    } completion:^(BOOL finished) {
+        
+    }];
+    //回弹
+//    [UIView animateWithDuration:2.0 * duration
+//                          delay:0.0
+//         usingSpringWithDamping:1.0
+//          initialSpringVelocity:-15.0
+//                        options:0
+//                     animations:^{
+//                         fromViewController.view.transform = CGAffineTransformMakeScale(0.3, 0.3);
+//                     }
+//                     completion:nil];
 }
 
 @end

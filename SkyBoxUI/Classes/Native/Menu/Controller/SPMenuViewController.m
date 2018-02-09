@@ -40,18 +40,16 @@ static NSString *cellID = @"MenuCell";
         adjustsScrollViewInsets(_tableView);
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.backgroundColor = [UIColor clearColor];
-//        _tableView.backgroundColor = [UIColor blueColor];
         _tableView.delegate = self;
         _tableView.dataSource = self;
+        _tableView.clipsToBounds = NO;
         [_tableView registerClass:[SPMenuCell class] forCellReuseIdentifier:cellID];
         
+        CGFloat top = (SCREEN_HEIGHT - 20 - kWSCALE*94 + kHSCALE*8 - 6 * 80.0) / 2.0;
+        _tableView.contentInset = UIEdgeInsetsMake(top, 0, kWSCALE*94 - kHSCALE*8, 0);
         [self.view addSubview:_tableView];
         [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-            CGFloat top = 0;
-            make.leading.mas_equalTo(0);
-            make.trailing.mas_equalTo(0);
-            make.top.mas_equalTo(top);
-            make.bottom.mas_equalTo(0);
+            make.edges.mas_equalTo(0);
         }];
     }
 }
@@ -94,13 +92,13 @@ static NSString *cellID = @"MenuCell";
     }
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectZero];
-    headerView.backgroundColor = [UIColor clearColor];
-    return headerView;
-}
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 44.0;
-}
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//    UIView *headerView = [[UIView alloc] initWithFrame:CGRectZero];
+//    headerView.backgroundColor = [UIColor clearColor];
+//    return headerView;
+//}
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+//    return 44.0;
+//}
 
 @end

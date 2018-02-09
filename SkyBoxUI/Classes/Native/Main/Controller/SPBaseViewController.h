@@ -35,7 +35,17 @@ _Pragma("clang diagnostic pop")\
 typedef enum : NSUInteger {
     TableViewType,
     CollectionViewType,
+    UnknownType
 } DisplayType;
+
+typedef enum : NSUInteger {
+    LocalFilesType = 0,
+    VRVideosType,
+    FavoriteVideosType,
+    HistoryVideosType,
+    AirScreenType,
+    DLANType
+} DataSourceType;
 
 typedef void (^RefreshBlock) (NSString *dataStr);
 typedef void (^NetStateBlock) (AFNetworkReachabilityStatus status);

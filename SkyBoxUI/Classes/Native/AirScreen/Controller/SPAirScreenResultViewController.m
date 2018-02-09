@@ -20,6 +20,8 @@
 @end
 
 @implementation SPAirScreenResultViewController
+@synthesize dataArr = _dataArr;
+@synthesize scrollView = _scrollView;
 
 - (instancetype)initWithSomething {
     self = [self initWithType:AirScreenType displayType:TableViewType];
@@ -49,7 +51,7 @@
 
 - (void)setAirscreen:(SPAirscreen *)airscreen {
     _airscreen = airscreen;
-    [SPDataManager shareDataManager].airscreen = _airscreen;
+    [SPDataManager shareSPDataManager].airscreen = _airscreen;
     
     self.topView.hidden = NO;
     [self.serverBtn setTitle:[_airscreen computerName] forState:UIControlStateNormal];
@@ -161,7 +163,18 @@
     return _disconnBtn;
 }
 
+- (void)doRefreshSenior {
+    NSLog(@"doRefreshSenior");
+    
+    [[SPAirScreenManager shareAirScreenManager] connectServer:_airscreen complete:^(NSArray *listResult, NSString *resultStr) {
+        _dataArr = [listResult copy];
+        
+        [self reload];
+    }];
+}
+
 - (void)releaseAction {
+    [super releaseAction];
     [_topView removeFromSuperview];
     _topView = nil;
     [_maskView removeGestureRecognizer:_tapGesture];
@@ -170,7 +183,7 @@
 }
 
 - (void)disconnection:(id)sender {
-    [SPDataManager shareDataManager].airscreen = nil;
+    [SPDataManager shareSPDataManager].airscreen = nil;
     NSUInteger selectedIndex = -1;
     NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenMiddleVCType],
                              kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],

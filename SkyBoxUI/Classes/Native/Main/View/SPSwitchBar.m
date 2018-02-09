@@ -59,7 +59,7 @@ SPSingletonM(SPSwitchBar)
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    CGFloat y = [SPDeviceUtil isiPhoneX] ? (SCREEN_HEIGHT - 0 - LargeHeight) : (SCREEN_HEIGHT - LargeHeight);
+    CGFloat y = (SCREEN_HEIGHT - LargeHeight);
     self.frame = CGRectMake(0, y, SCREEN_WIDTH, LargeHeight);
 }
 

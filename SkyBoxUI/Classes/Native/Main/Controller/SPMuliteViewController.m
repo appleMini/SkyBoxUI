@@ -15,9 +15,11 @@
 
 //UIScrollViewDelegate
 @interface SPMuliteViewController ()<UITableViewDelegate, UITableViewDataSource,UICollectionViewDelegate, UICollectionViewDataSource, SPWaterFallLayoutDelegate, SPVideoViewDelegate, SPVideoCollectionViewDelegate>{
-    NSMutableArray *_dataArr;
+    NSArray *_dataArr;
     DataSourceType _type;
     NSIndexPath *_showIndexpath;
+    
+    BOOL _animation;
 }
 
 @property (nonatomic, assign) DisplayType showType;
@@ -27,6 +29,9 @@
 @property (nonatomic, strong) UIBarButtonItem *deleteItem;
 @property (nonatomic, strong) UIButton *menuBtn;
 @property (nonatomic, strong) UIButton *deleteBtn;
+
+@property (nonatomic, strong) UIImage *snapshot;
+@property (nonatomic, strong) UIImageView *imgV;
 
 @end
 
@@ -38,7 +43,8 @@
     self = [super init];
     if (self) {
         _type = type;
-        _showType = show;
+        DisplayType willDisplayType = [[SPDataManager shareSPDataManager] getDisplayType:type];
+        _showType = (willDisplayType == UnknownType) ? show : willDisplayType;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
     }
     return self;
@@ -107,6 +113,14 @@
     
 }
 
+- (void)releaseAction {
+    SPDataManager *dataManager = [SPDataManager shareSPDataManager];
+    NSUInteger hash = [dataManager getHash:_type];
+    CGFloat offsetY = self.scrollView.contentOffset.y;
+    
+    [dataManager setCache:_type displayType:[NSNumber numberWithUnsignedInteger:_showType] contentOffsetY:[NSNumber numberWithFloat:offsetY] dataSourceString:[NSNumber numberWithUnsignedInteger:hash]];
+}
+
 - (void)setupMenuImage {
     switch (_showType) {
         case TableViewType:
@@ -133,18 +147,18 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-//    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-//    CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
-//    gradient.frame = rect;
-//
-//    UIColor *bgColor = SPBgColor;
-//
-//    gradient.colors = @[(__bridge id)[bgColor colorWithAlphaComponent:0.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor];
-//    gradient.locations = @[@0, @(1.0 * 22 / self.view.frame.size.height), @1.0];
-//    gradient.startPoint = CGPointMake(0.5, 0);
-//    gradient.endPoint = CGPointMake(0.5, 1.0);
-//
-//    self.view.layer.mask = gradient;
+    //    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    //    CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
+    //    gradient.frame = rect;
+    //
+    //    UIColor *bgColor = SPBgColor;
+    //
+    //    gradient.colors = @[(__bridge id)[bgColor colorWithAlphaComponent:0.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor];
+    //    gradient.locations = @[@0, @(1.0 * 22 / self.view.frame.size.height), @1.0];
+    //    gradient.startPoint = CGPointMake(0.5, 0);
+    //    gradient.endPoint = CGPointMake(0.5, 1.0);
+    //
+    //    self.view.layer.mask = gradient;
 }
 
 - (void)setupScrollView {
@@ -189,12 +203,51 @@
                 break;
         }
         
+        UIView *bgview = [self setBackgroundView];
+        if (bgview) {
+            [_scrollView setValue:bgview forKeyPath:@"_backgroundView"];
+        }
+        
         [self configRefresh];
         
         _scrollView.clipsToBounds = NO;
     }
     
     return _scrollView;
+}
+
+- (UIView *)setBackgroundView {
+    SPBackgrondView *backgroundView = nil;
+    switch (_type) {
+        case LocalFilesType:
+        {
+            backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoVideos];
+        }
+            break;
+        case VRVideosType:
+        {
+            backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoVideos];
+        }
+            break;
+        case FavoriteVideosType:
+        {
+            backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoFavorite];
+        }
+            break;
+        case HistoryVideosType:
+        {
+            backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoHistory];
+        }
+            break;
+        case AirScreenType:
+        {
+        }
+            break;
+        default:
+            break;
+    }
+    
+    return backgroundView;
 }
 
 - (void)visiableIndexPath {
@@ -218,15 +271,50 @@
     }
     
 }
+
+- (void)gradientLayer:(CGFloat)Height {
+    CGRect rect = CGRectMake(0, -64, self.view.frame.size.width, self.view.frame.size.height + 64);
+    CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
+    gradient.frame = rect;
+    
+    UIColor *bgColor = SPBgColor;
+    
+    gradient.colors = @[(__bridge id)[bgColor colorWithAlphaComponent:0.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor];
+    gradient.locations = @[@(1.0 * Height / rect.size.height), @(1.0 * (Height + 64) / rect.size.height), @1.0];
+    gradient.startPoint = CGPointMake(0.5, 0);
+    gradient.endPoint = CGPointMake(0.5, 1.0);
+    
+    self.view.layer.mask = gradient;
+}
+
+#pragma -mark 截图
+- (UIImage *)snapshotPhoto:(UIView *)view {
+    UIGraphicsBeginImageContext(view.frame.size);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
 - (void)setShowType:(DisplayType)showType {
+    _animation = YES;
     _showType = showType;
+    [self gradientLayer:0.0];
     
     [self visiableIndexPath];
     
     [self setupMenuImage];
+    //截图
+    _snapshot = [self snapshotPhoto:_scrollView];
+    self.imgV.image = _snapshot;
+    
     [_scrollView removeFromSuperview];
     _scrollView = nil;
     [self setupScrollView];
+    self.scrollView.alpha = 0.0;
+    [self.view bringSubviewToFront:self.imgV];
     
     [self reload];
 }
@@ -245,9 +333,23 @@
     }];
 }
 
+- (UIImageView *)imgV {
+    if (!_imgV) {
+        UIImageView *imgV = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        imgV.backgroundColor = [UIColor clearColor];
+        [self.view addSubview:imgV];
+        
+        _imgV = imgV;
+    }
+    
+    return _imgV;
+}
+
 - (void)reload {
+    __block  BOOL isHidden = YES;
     dispatch_async(dispatch_get_main_queue(), ^{
         if(!_dataArr || _dataArr.count <= 0) {
+            isHidden = NO;
             [UIView animateWithDuration:1.0 animations:^{
                 self.menuBtn.alpha = 0.4;
                 self.menuBtn.enabled = NO;
@@ -273,21 +375,6 @@
                     return;
                 }
                     break;
-                case VRVideosType:
-                {
-                    backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoVideos];
-                }
-                    break;
-                case FavoriteVideosType:
-                {
-                    backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoFavorite];
-                }
-                    break;
-                case HistoryVideosType:
-                {
-                    backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoHistory];
-                }
-                    break;
                 case AirScreenType:
                 {
                     backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoAirScreenResult];
@@ -301,6 +388,7 @@
             
             _emptyView = backgroundView;
         }else{
+            isHidden = YES;
             [UIView animateWithDuration:1.0 animations:^{
                 //                self.menuBtn.hidden = NO;
                 self.menuBtn.alpha = 1.0;
@@ -311,29 +399,59 @@
             }];
             [_emptyView removeFromSuperview];
             _emptyView = nil;
+            
         }
+    
+        if (_animation) {
+            self.imgV.alpha = 1.0;
+            self.scrollView.alpha = 0.01;
+            
+            [UIView animateWithDuration:1.0 animations:^{
+                self.imgV.alpha = 0.01;
+                self.scrollView.alpha = 1.0;
+            } completion:^(BOOL finished) {
+                [self.view bringSubviewToFront:self.scrollView];
+                
+            }];
+        }
+        
+        _animation = NO;
         
         switch (_showType) {
             case TableViewType:
             {
                 UITableView *tableView = (UITableView *)self.scrollView;
+                tableView.backgroundView.hidden = isHidden;
                 [((UITableView *)self.scrollView) reloadData];
                 
                 if (_showIndexpath) {
                     [tableView scrollToRowAtIndexPath:_showIndexpath atScrollPosition:UITableViewScrollPositionTop animated:NO];
                     _showIndexpath = nil;
+                }else {
+                    CGFloat offsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
+                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        offsetY == 0 ? nil : [self.scrollView setContentOffset:CGPointMake(0, offsetY) animated:YES];
+                    });
                 }
             }
                 break;
             case CollectionViewType:
             {
                 UICollectionView *collectionView = (UICollectionView *)self.scrollView;
+                collectionView.backgroundView.hidden = isHidden;
                 [((UICollectionView *)self.scrollView) reloadData];
                 
                 if (_showIndexpath) {
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         [collectionView scrollToItemAtIndexPath:_showIndexpath atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
                         _showIndexpath = nil;
+                    });
+                }else {
+                    CGFloat offsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
+                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        offsetY == 0 ? nil : [self.scrollView setContentOffset:CGPointMake(0, offsetY) animated:YES];
                     });
                 }
             }
@@ -341,7 +459,6 @@
             default:
                 break;
         }
-        
     });
 }
 
@@ -358,11 +475,14 @@
     });
 }
 
-
 - (void)doRefreshSenior {
+    __block NSUInteger dataType = _type;
     __weak typeof(self) ws = self;
     self.refreshBlock = ^(NSString *dataStr){
         NSLog(@"dataStr === %@", dataStr);
+        SPDataManager *dataManager = [SPDataManager shareSPDataManager];
+        [dataManager setCacheWithDataSource:dataType dataSourceString:[dataStr hash]];
+        
         NSArray *arr = [NSJSONSerialization JSONObjectWithData:[dataStr mj_JSONData] options:NSJSONReadingAllowFragments error:nil];
         
         [ws didFinishRequest:arr];
@@ -401,11 +521,12 @@
     //test
     NSString *jsonstr = @"[{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240},{\"videoWidth\":600,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"EasyMovieTexture\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/772239E4-98E6-4B6D-BDED-196E35A1ED95.png\",\"duration\":176000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/EasyMovieTexture.mp4\",\"videoHeight\":360},{\"videoWidth\":1920,\"isFavourite\":1,\"rcg_type\":\"2\",\"title\":\"Eagle1080 60\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/26010039-ED3A-4A43-A9D9-3BDCCC582D5E.png\",\"duration\":17000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/Eagle1080-60.mp4\",\"videoHeight\":1080},{\"videoWidth\":1280,\"isFavourite\":0,\"rcg_type\":\"2\",\"title\":\"aO3\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/83D0895F-29DD-45F4-9D6B-D1F59EEC154D.png\",\"duration\":307000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/aO3.mkv\",\"videoHeight\":720},{\"videoWidth\":1920,\"isFavourite\":1,\"rcg_type\":\"5\",\"title\":\"abcd3D\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/8E607AF6-2B7D-48B2-8985-E7244B338E8E.png\",\"duration\":180000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/abcd3D.mp4\",\"videoHeight\":1080},{\"videoWidth\":1024,\"isFavourite\":0,\"rcg_type\":\"2\",\"title\":\"abc\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/33E9B4E8-7895-4169-9D20-A1B97903E7B8.png\",\"duration\":132000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/abc.mp4\",\"videoHeight\":512},{\"videoWidth\":1920,\"isFavourite\":1,\"rcg_type\":\"1\",\"title\":\"333\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/4E3FE121-3FDA-4577-A729-F11E43E3A71C.png\",\"duration\":207000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/333.mp4\",\"videoHeight\":1080},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"2\",\"title\":\"2017\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/794A9A52-1F6F-4193-AAE6-09AFA44ACC41.png\",\"duration\":28000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/2017.mp4\",\"videoHeight\":480},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb2\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb3.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb5\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb6\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb8.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb9.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb11\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240}]";
     
-        NSArray *arr = [NSJSONSerialization JSONObjectWithData:[jsonstr dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingAllowFragments error:nil];
-        //        NSArray *arr = nil;
-//                    [self didFinishRequest:[arr subarrayWithRange:NSMakeRange(0, 0)]];
-        [self didFinishRequest:arr];
+    NSArray *arr = [NSJSONSerialization JSONObjectWithData:[jsonstr dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingAllowFragments error:nil];
+    //        NSArray *arr = nil;
+    //                    [self didFinishRequest:[arr subarrayWithRange:NSMakeRange(0, 0)]];
+    [self didFinishRequest:arr];
 }
+
 
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
@@ -430,7 +551,7 @@
 //}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return kWSCALE*94 - 29 * 2;
+    return kWSCALE*94 - 29;
 }
 
 - (nullable UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
@@ -489,23 +610,27 @@ static CGFloat height = 0;
 
 - (UIEdgeInsets)edgeInsetsOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
 {
-    return UIEdgeInsetsMake(0, 17, kWSCALE*94 - 29 * 2, 17);
+    return UIEdgeInsetsMake(0, 17, kWSCALE*94 - 29, 17);
 }
 
 
 #pragma -mark SPVideoViewDelegate
 - (void)SPVideoView:(SPVideo *)video favStateChanged:(BOOL)state {
+    return;
+    
     if (_type == FavoriteVideosType) {
-        [_dataArr removeObject:video];
-        [self reload];
+//        [_dataArr removeObject:video];
+//        [self reload];
     }
 }
 
 #pragma -mark SPVideoCollectionViewDelegate
 - (void)SPVideoCollectionView:(SPVideo *)video favStateChanged:(BOOL)state {
+    return;
+    
     if (_type == FavoriteVideosType) {
-        [_dataArr removeObject:video];
-        [self reload];
+//        [_dataArr removeObject:video];
+//        [self reload];
     }
 }
 
@@ -514,30 +639,18 @@ static CGFloat height = 0;
     if (!_dataArr || _dataArr.count <= 0) {
         return;
     }
-
+    
     CGFloat offsetY =  scrollView.contentOffset.y;
-
+    
     CGFloat Height = 2 * offsetY;
     if (offsetY >= 27.0) {
         Height = 54;
     }else if(offsetY <= 0){
         Height = 0.0;
     }
-
-    CGRect rect = CGRectMake(0, -64, self.view.frame.size.width, self.view.frame.size.height + 64);
-    CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
-    gradient.frame = rect;
     
-    UIColor *bgColor = SPBgColor;
-
-    gradient.colors = @[(__bridge id)[bgColor colorWithAlphaComponent:0.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor];
-    gradient.locations = @[@(1.0 * Height / rect.size.height), @(1.0 * (Height + 64) / rect.size.height), @1.0];
-    gradient.startPoint = CGPointMake(0.5, 0);
-    gradient.endPoint = CGPointMake(0.5, 1.0);
-    
-    self.view.layer.mask = gradient;
+    [self gradientLayer:Height];
 }
-
 //- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 //
 //    // 去除尾视图粘性的方法
@@ -560,5 +673,4 @@ static CGFloat height = 0;
 //    }
 //}
 @end
-
 
