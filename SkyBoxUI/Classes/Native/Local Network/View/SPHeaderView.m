@@ -183,7 +183,7 @@
     [self setupContentViews];
     
     SPCmdAddDevice *device = self.devices[btn.tag];
-    
+    _device = device;
     SPDataManager *dataManger = [SPDataManager shareSPDataManager];
     dataManger.devices = [_devices copy];
     [[SPDLANManager shareDLANManager] browseDLNAFolder:device];

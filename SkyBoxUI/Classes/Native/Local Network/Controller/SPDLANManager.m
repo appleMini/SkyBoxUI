@@ -269,10 +269,10 @@ static SPDLANManager *_manager = nil;
     if (device) {
         [self browseDLNAFolder:device];
     }else {
-        SPDataManager *dataManager = [SPDataManager shareSPDataManager];
-        [dataManager removeAllServers];
-        
-        [self startupDLAN];
+//        SPDataManager *dataManager = [SPDataManager shareSPDataManager];
+//        [dataManager removeAllServers];
+//        
+//        [self startupDLAN];
     }
 }
 
