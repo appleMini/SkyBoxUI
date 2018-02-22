@@ -18,6 +18,7 @@ SPSingletonH(SPDataManager)
 @property (nonatomic, strong) NSMutableDictionary               *cacheModel;
 
 - (void)addServer:(SPCmdAddDevice *)device;
+- (void)removeServer:(SPCmdAddDevice *)server;
 - (void)removeAllServers;
 
 - (void)setCacheWithShowtype:(DataSourceType)datasource displayType:(DisplayType)showtype;
@@ -31,3 +32,4 @@ SPSingletonH(SPDataManager)
 - (NSDictionary *)getCacheDict:(DataSourceType)datasource;
 
 @end
+

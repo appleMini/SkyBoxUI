@@ -21,7 +21,7 @@ SPSingletonM(SPDataManager)
     self = [super init];
     if (self) {
         _cacheModel = [[NSMutableDictionary alloc] initWithCapacity:6];
- 
+        
         _servers = [NSMutableArray array];
         _concurrentQueue = dispatch_queue_create("com.skyboxUI.SPDataManagerQueue.Servers", DISPATCH_QUEUE_CONCURRENT);
         _concurrentCacheQueue = dispatch_queue_create("com.skyboxUI.SPDataManagerQueue.Cache", DISPATCH_QUEUE_CONCURRENT);
@@ -147,9 +147,23 @@ SPSingletonM(SPDataManager)
     }
 }
 
+- (void)removeServer:(SPCmdAddDevice *)server {
+    if (server) {
+        dispatch_barrier_async(_concurrentQueue, ^{
+            for(SPCmdAddDevice *device in _servers) {
+                if ([device.deviceId hash] == [server.deviceId hash]) {
+                    [_servers removeObject:device];
+                    return ;
+                }
+            }
+        });
+    }
+}
+
 - (void)removeAllServers {
     dispatch_barrier_async(_concurrentQueue, ^{
         [_servers removeAllObjects];
     });
 }
 @end
+
