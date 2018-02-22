@@ -120,9 +120,6 @@ static SPAirScreenManager *_manager = nil;
 
 - (void)connectServer:(SPAirscreen *)airscreen  complete:(ResultBlock)block {
     if (_socketOpened && airscreen) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [MBProgressHUD showHUDAddedTo:KEYWINDOW animated:YES];
-        });
         [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"WebSocketConnect", @"airscreen" : airscreen}];
         
         if (block) {

@@ -240,12 +240,12 @@
     [SPSwitchBar shareSPSwitchBar].selectIndex = index;
 }
 
-- (void)changeMiddleContentView:(SPBaseViewController *)vc {
+- (void)changeMiddleContentView:(SPBaseViewController *)vc shouldRefresh:(BOOL)refresh {
     
     NSArray <UIViewController *>*childVCs = @[self.menuVC, vc, self.historyVC];
     [self setUpWithChildVCs:childVCs];
     
-    [self showChildVCAtIndex:1];
+    [self showChildVCViewAtIndex:1 shouldRefresh:refresh];
     [SPSwitchBar shareSPSwitchBar].selectIndex = 1;
 }
 
@@ -254,7 +254,7 @@
     SPAirscreen *airscreen = dict[@"airscreen"];
     SPAirScreenResultViewController *airscreenResult = [[SPAirScreenResultViewController alloc] initWithDataSource:videos type:AirScreenType displayType:CollectionViewType];
     airscreenResult.airscreen = airscreen;
-    [self changeMiddleContentView:airscreenResult];
+    [self changeMiddleContentView:airscreenResult shouldRefresh:NO];
 }
 #pragma -mark UIScrollViewDelegate
 - (CGFloat)fixAlpha:(CGFloat)x baseWidth:(CGFloat)width {
@@ -327,7 +327,7 @@
     _selectMenuIndex = index;
     
     [self.menuVC selectMenuItem:index jump:NO];
-    [self changeMiddleContentView:vc];
+    [self changeMiddleContentView:vc shouldRefresh:YES];
 }
 #pragma -mark SPMenuJumpProtocol
 - (void)MenuViewController:(UIViewController *)menu jumpViewController:(NSString *)ctrS menuIndex:(NSInteger)index{
@@ -352,7 +352,7 @@
         [vc releaseAction];
         
         vc = [[cls alloc] initWithSomething];
-        [self changeMiddleContentView:vc];
+        [self changeMiddleContentView:vc shouldRefresh:YES];
     }
     
 }
@@ -394,20 +394,20 @@
         case AirScreenMiddleVCType:
         {
             SPBaseViewController *vc = [[SPAirScreenViewController alloc] initWithSomething];
-            [self changeMiddleContentView:vc];
+            [self changeMiddleContentView:vc shouldRefresh:NO];
         }
             break;
         case HomeHelpMiddleVCType:
         {
             BOOL done = [[userInfo objectForKey:@"Done"] boolValue];
             SPBaseViewController *vc = done ? [[SPHelpRootViewController alloc] initWithDoneAction] : [[SPHelpRootViewController alloc] initWithSomething];
-            [self changeMiddleContentView:vc];
+            [self changeMiddleContentView:vc shouldRefresh:NO];
         }
             break;
         case LocalFileMiddleVCType:
         {
             SPBaseViewController *vc = [[SPHomeViewController alloc] initWithSomething];
-            [self changeMiddleContentView:vc];
+            [self changeMiddleContentView:vc shouldRefresh:YES];
         }
             break;
         case TestType:
@@ -454,3 +454,5 @@
 }
 
 @end
+
+

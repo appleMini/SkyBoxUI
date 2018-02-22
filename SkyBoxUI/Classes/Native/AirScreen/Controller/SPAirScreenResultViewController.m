@@ -6,6 +6,7 @@
 //
 
 #import "SPAirScreenResultViewController.h"
+#import "TGRefresh.h"
 #import "SPButton.h"
 
 @interface SPAirScreenResultViewController () {
@@ -21,10 +22,9 @@
 
 @implementation SPAirScreenResultViewController
 @synthesize dataArr = _dataArr;
-@synthesize scrollView = _scrollView;
 
 - (instancetype)initWithSomething {
-    self = [self initWithType:AirScreenType displayType:TableViewType];
+    self = [super initWithType:AirScreenType displayType:TableViewType];
     if (self) {
         
     }
@@ -169,7 +169,11 @@
     [[SPAirScreenManager shareAirScreenManager] connectServer:_airscreen complete:^(NSArray *listResult, NSString *resultStr) {
         _dataArr = [listResult copy];
         
-        [self reload];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
+            [self.scrollView.tg_header endRefreshing];
+            [self reload];
+        });
     }];
 }
 

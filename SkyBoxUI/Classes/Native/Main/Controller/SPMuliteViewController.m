@@ -410,7 +410,7 @@
                 self.scrollView.alpha = 1.0;
             } completion:^(BOOL finished) {
                 [self.view bringSubviewToFront:self.scrollView];
-                
+                [self.imgV removeFromSuperview];
             }];
         }
         
