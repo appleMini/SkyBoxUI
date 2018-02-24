@@ -544,7 +544,7 @@
     cell.videoView.video = video;
     cell.videoView.delegate = self;
     
-    if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.deviceId hash])) {
+    if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         cell.userInteractionEnabled = NO;
     }else {
         cell.userInteractionEnabled = YES;
@@ -577,7 +577,7 @@
     cell.videoView.video = video;
     cell.videoView.delegate = self;
     
-    if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.deviceId hash])) {
+    if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         cell.userInteractionEnabled = NO;
     }else {
         cell.userInteractionEnabled = YES;

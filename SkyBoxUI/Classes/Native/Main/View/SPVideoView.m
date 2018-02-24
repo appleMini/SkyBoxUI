@@ -63,7 +63,7 @@
         [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
     }
     
-    if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.deviceId hash])) {
+    if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         self.bottomView.backgroundColor = [UIColor darkGrayColor];
     }else {
         self.bottomView.backgroundColor = [UIColor whiteColor];
