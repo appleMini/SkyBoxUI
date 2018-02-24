@@ -129,6 +129,12 @@ static SPAirScreenManager *_manager = nil;
     
 }
 
+- (void)disConnectServer {
+    if (_socketOpened) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"WebSocketDisConnect"}];
+    }
+}
+
 - (void)receiveMessage:(NSNotification *)notify {
     NSDictionary *dict = [notify userInfo];
     

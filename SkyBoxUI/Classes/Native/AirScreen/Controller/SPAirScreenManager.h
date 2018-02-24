@@ -17,5 +17,6 @@ typedef void (^ResultBlock) (NSArray *listResult, NSString *resultStr);
 - (void)startupAndSendPackage;
 - (void)stopSearch;
 - (void)connectServer:(SPAirscreen *)airscreen  complete:(ResultBlock)block;
+- (void)disConnectServer;
 - (void)releaseAction;
 @end
