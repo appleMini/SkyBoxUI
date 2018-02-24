@@ -77,6 +77,7 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
+                <outlet property="bottomView" destination="6SO-N4-FKT" id="rRO-BP-syc"/>
                 <outlet property="durationLabel" destination="nNG-sz-ruG" id="g5G-HL-5rg"/>
                 <outlet property="favButton" destination="uLH-Qv-WeG" id="Nvr-m0-RgJ"/>
                 <outlet property="imgv" destination="wu8-dG-Pt8" id="XRJ-5D-uyL"/>

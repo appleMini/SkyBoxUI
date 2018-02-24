@@ -540,8 +540,15 @@
         cell = [[SPVideoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[self cellIditify]];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.videoView.video = _dataArr[indexPath.row];
+    SPVideo *video =  _dataArr[indexPath.row];
+    cell.videoView.video = video;
     cell.videoView.delegate = self;
+    
+    if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.deviceId hash])) {
+        cell.userInteractionEnabled = NO;
+    }else {
+        cell.userInteractionEnabled = YES;
+    }
     return cell;
 }
 
@@ -566,8 +573,15 @@
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     SPVideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[self cellIditify] forIndexPath:indexPath];
-    cell.videoView.video = _dataArr[indexPath.row];
+    SPVideo *video =  _dataArr[indexPath.row];
+    cell.videoView.video = video;
     cell.videoView.delegate = self;
+    
+    if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.deviceId hash])) {
+        cell.userInteractionEnabled = NO;
+    }else {
+        cell.userInteractionEnabled = YES;
+    }
     return cell;
 }
 

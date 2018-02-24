@@ -88,6 +88,12 @@
         self.favBtn.selected = NO;
         [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
     }
+    
+    if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.deviceId hash])) {
+        self.backgroundColor = [UIColor darkGrayColor];
+    }else {
+        self.backgroundColor = [UIColor clearColor];
+    }
 }
 
 - (void)setHighlighted:(BOOL)highlighted {

@@ -18,6 +18,7 @@
 @property (unsafe_unretained, nonatomic) IBOutlet UILabel *durationLabel;
 @property (unsafe_unretained, nonatomic) IBOutlet UIButton *favButton;
 @property (strong, nonatomic) UIGestureRecognizer *singleTap;
+@property (weak, nonatomic) IBOutlet UIView *bottomView;
 
 @end
 
@@ -60,6 +61,12 @@
     }else{
         self.favButton.selected = NO;
         [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+    }
+    
+    if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.deviceId hash])) {
+        self.bottomView.backgroundColor = [UIColor darkGrayColor];
+    }else {
+        self.bottomView.backgroundColor = [UIColor whiteColor];
     }
 }
 
