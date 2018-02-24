@@ -126,11 +126,10 @@ typedef enum : NSUInteger {
     
     AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
     AFNetworkReachabilityStatus status = [manager networkReachabilityStatus];
-    if (_isAutoLogin && (status == AFNetworkReachabilityStatusReachableViaWiFi)) {
+    if (_isAutoLogin && _airscreen && (status == AFNetworkReachabilityStatusReachableViaWiFi)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD showHUDAddedTo:KEYWINDOW animated:YES];
         });
-        [self.airScreenManager startupAirscreen];
         [self.airScreenManager connectServer:_airscreen complete:^(NSArray *listResult, NSString *resultStr) {
             //                [listResult removeAllObjects];
             NSUInteger selectedIndex = -1;
