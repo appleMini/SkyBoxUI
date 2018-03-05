@@ -21,3 +21,6 @@
 - (void)reload;
 - (void)doRefreshSenior;
 @end
+
+@interface SPAlertViewController : UIAlertController
+@end

@@ -46,24 +46,35 @@
                         <action selector="favAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="ydh-gO-Bqj"/>
                     </connections>
                 </button>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ho1-yy-ebB" userLabel="deleteV">
+                    <rect key="frame" x="140" y="108" width="28" height="28"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="28" id="fRV-ed-sCR"/>
+                        <constraint firstAttribute="width" constant="28" id="jop-q2-aWt"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <color key="backgroundColor" red="1" green="0.33616793280000001" blue="0.98772221289999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="i1I-hQ-hwT" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="1JK-UZ-82l"/>
                 <constraint firstItem="OHl-tu-Ia4" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="BuV-n0-Twv"/>
                 <constraint firstItem="BKk-6Q-k7G" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="OAp-2N-qso"/>
+                <constraint firstItem="Ho1-yy-ebB" firstAttribute="centerY" secondItem="OHl-tu-Ia4" secondAttribute="centerY" id="TTR-3S-4Xh"/>
                 <constraint firstItem="i1I-hQ-hwT" firstAttribute="top" secondItem="BKk-6Q-k7G" secondAttribute="bottom" constant="8" id="WHM-st-9s4"/>
                 <constraint firstAttribute="trailing" secondItem="OHl-tu-Ia4" secondAttribute="trailing" id="YIE-dd-3nY"/>
                 <constraint firstItem="OHl-tu-Ia4" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="ZjU-FH-ElE"/>
+                <constraint firstItem="Ho1-yy-ebB" firstAttribute="centerX" secondItem="OHl-tu-Ia4" secondAttribute="centerX" id="ZlB-0a-uFQ"/>
                 <constraint firstAttribute="trailing" secondItem="BKk-6Q-k7G" secondAttribute="trailing" id="azI-mQ-y8L"/>
                 <constraint firstItem="Mkc-iH-hfP" firstAttribute="bottom" secondItem="OHl-tu-Ia4" secondAttribute="bottom" id="etw-Fb-sPe"/>
                 <constraint firstAttribute="trailing" secondItem="Mkc-iH-hfP" secondAttribute="trailing" id="ifN-bT-npD"/>
+                <constraint firstItem="Ho1-yy-ebB" firstAttribute="centerY" secondItem="OHl-tu-Ia4" secondAttribute="centerY" id="mhd-OZ-iz7"/>
                 <constraint firstItem="BKk-6Q-k7G" firstAttribute="top" secondItem="OHl-tu-Ia4" secondAttribute="bottom" constant="8" id="yy6-sd-67L"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="i1I-hQ-hwT" secondAttribute="trailing" id="zWF-PA-hLL"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
+                <outlet property="deleteV" destination="Ho1-yy-ebB" id="Azq-xq-P6E"/>
                 <outlet property="durationLabel" destination="i1I-hQ-hwT" id="w9b-wo-qy2"/>
                 <outlet property="favBtn" destination="Mkc-iH-hfP" id="1vR-jz-Pzj"/>
                 <outlet property="imgv" destination="OHl-tu-Ia4" id="ftN-Hb-7yZ"/>

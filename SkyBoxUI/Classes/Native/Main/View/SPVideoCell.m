@@ -37,6 +37,12 @@
     }
     return self;
 }
+
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    [self.videoView prepareForReuse];
+}
+
 - (void)setupViews {
     SPVideoView *videoView = (SPVideoView *)[[[UINib nibWithNibName:@"SPVideoView" bundle:[Commons resourceBundle]] instantiateWithOwner:nil options:nil] firstObject];
     
@@ -48,7 +54,11 @@
     videoView.layer.masksToBounds = YES;
     
     [videoView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(UIEdgeInsetsMake(0, 18*kWSCALE, 29, 18*kWSCALE));
+        make.leading.mas_equalTo(18*kWSCALE);
+        make.trailing.mas_equalTo(-18*kWSCALE);
+        make.top.mas_equalTo(0);
+        make.bottom.mas_equalTo(-29);
+//         make.edges.mas_equalTo(UIEdgeInsetsMake(0, 18*kWSCALE, 29, 18*kWSCALE));
     }];
     self.videoView = videoView;
     
@@ -59,7 +69,11 @@
     [self.contentView insertSubview:shadowImgV belowSubview:self.videoView];
     
     [shadowImgV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(UIEdgeInsetsMake(0, 16, 25, 16));
+        make.leading.mas_equalTo(16);
+        make.trailing.mas_equalTo(-16);
+        make.top.mas_equalTo(0);
+        make.bottom.mas_equalTo(-25);
+//        make.edges.mas_equalTo(UIEdgeInsetsMake(0, 16, 25, 16));
     }];
 }
 

@@ -18,7 +18,11 @@
 @property (unsafe_unretained, nonatomic) IBOutlet UILabel *durationLabel;
 @property (unsafe_unretained, nonatomic) IBOutlet UIButton *favButton;
 @property (strong, nonatomic) UIGestureRecognizer *singleTap;
+@property (strong, nonatomic) UILongPressGestureRecognizer *longPress;
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
+@property (weak, nonatomic) IBOutlet UIImageView *deleteV;
+
+@property (strong, nonatomic) UIButton *darkView;
 
 @end
 
@@ -28,6 +32,32 @@
     [super awakeFromNib];
     
     _imgvHeightConstraint.constant = 1.0 * 155 *kHSCALE;
+    _status = CommomStatus;
+    _deleteV.hidden = YES;
+}
+
+- (void)prepareForReuse {
+    self.imgv.image = nil;
+    self.favButton.hidden = YES;
+    _deleteV.hidden = YES;
+    self.titleLabel.text = nil;
+    self.durationLabel.text = nil;
+}
+
+- (void)removeDarkView {
+    _darkView.hidden = YES;
+}
+
+- (UIView *)darkView {
+    if (!_darkView) {
+        _darkView = [[DarkMaskButton alloc] initWithFrame:self.imgv.frame];
+        _darkView.backgroundColor = [UIColor blackColor];
+        [_darkView addTarget:self action:@selector(singleTapAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self insertSubview:_darkView aboveSubview:self.imgv];
+    }
+    
+    _darkView.hidden = NO;
+    return _darkView;
 }
 
 - (void)setVideo:(SPVideo *)video {
@@ -38,15 +68,15 @@
     self.imgv.contentMode = UIViewContentModeScaleAspectFill;
     UIImage *placeholderImage = [Commons getImageFromResource:@"Home_videos_album_list_default"];
     
-    
     CGSize newsize = CGSizeMake(SCREEN_WIDTH - 36 * kWSCALE, _imgvHeightConstraint.constant);
     placeholderImage = [placeholderImage resizeImageWithModeCenter:newsize imageSize:CGSizeMake(43 , 48) bgFillColor:[UIColor clearColor]];
     [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:placeholderImage options:SDWebImageRetryFailed];
     
     self.imgv.userInteractionEnabled = YES;
     //为图片添加手势
+
     [self.imgv addGestureRecognizer:self.singleTap];
-    
+
     
     self.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15];
     self.titleLabel.textColor = [SPColorUtil getHexColor:@"#262629"];
@@ -55,31 +85,74 @@
     self.durationLabel.textColor = [SPColorUtil getHexColor:@"#a4a4a4"];
     self.durationLabel.text = [Commons durationText:video.duration.doubleValue];
     
-    if (video.isFavourite) {
-        self.favButton.selected = YES;
-        [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
-    }else{
-        self.favButton.selected = NO;
-        [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+    if (_status == CommomStatus && (video.dataSource == LocalFilesType || video.dataSource == VRVideosType || video.dataSource == FavoriteVideosType)) {
+        self.favButton.hidden = NO;
+        _deleteV.hidden = YES;
+        [self removeDarkView];
+        
+        if (video.isFavourite) {
+            self.favButton.selected = YES;
+            [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
+        }else{
+            self.favButton.selected = NO;
+            [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+        }
+    }else {
+        self.favButton.hidden = YES;
+        
+        if (_status == DeleteStatus) {
+            _deleteV.hidden = NO;
+            [self bringSubviewToFront:_deleteV];
+            _deleteV.alpha = 0.0;
+            if (_video.isDelete) {
+                self.darkView.alpha = 0.4;
+                _deleteV.image = [Commons getImageFromResource:@"Home_videos_selected"];
+            }else {
+                self.darkView.alpha = 0.2;
+                _deleteV.image = [Commons getImageFromResource:@"Home_videos_unselect"];
+            }
+            
+            [UIView animateWithDuration:0.3 animations:^{
+                _deleteV.alpha = 1.0;
+            }];
+        }else {
+            _deleteV.hidden = YES;
+            [self removeDarkView];
+        }
     }
     
     if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
-        self.bottomView.backgroundColor = [UIColor darkGrayColor];
+        self.alpha = 0.4;
+        self.durationLabel.text = @"DISCONNECTION";
     }else {
-        self.bottomView.backgroundColor = [UIColor whiteColor];
+        self.alpha = 1.0;
+    }
+    
+    if (_status == CommomStatus && (video.dataSource == LocalFilesType || video.dataSource == VRVideosType || video.dataSource == HistoryVideosType)) {
+        [self.imgv addGestureRecognizer:self.longPress];
+    }else {
+        [self.imgv removeGestureRecognizer:self.longPress];
     }
 }
 
 - (void)setHighlighted:(BOOL)highlighted {
     if(highlighted)
     {
-        self.imgv.alpha = 0.75;
+        self.darkView.alpha = 0.2;
     }
     else{
-        self.imgv.alpha = 1.0;
+        self.darkView.alpha = (_status == CommomStatus) ? 0.0 : 0.4;
     }
 }
 
+- (UIGestureRecognizer *)longPress {
+    if (!_longPress) {
+        _longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
+        _longPress.minimumPressDuration = 1.0;
+    }
+    
+    return _longPress;
+}
 -(UIGestureRecognizer *)singleTap {
     if (!_singleTap) {
         _singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapAction:)];
@@ -88,6 +161,16 @@
     return _singleTap;
 }
 - (IBAction)favAction:(UIButton *)sender {
+    if (@available(iOS 10.0, *)) {
+        UIImpactFeedbackGenerator *generator = [[UIImpactFeedbackGenerator alloc] initWithStyle: UIImpactFeedbackStyleLight];
+        [generator prepare];
+        [generator impactOccurred];
+    } else {
+        // Fallback on earlier versions
+        //        AudioServicesPlaySystemSoundWithCompletion((1519), ^{
+        //        });
+    }
+    
     sender.selected = !sender.isSelected;
     if (sender.isSelected) {
         [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
@@ -104,6 +187,24 @@
 }
 
 - (void)singleTapAction:(UIGestureRecognizer *)recognizer {
+    if (_status == DeleteStatus) {
+        _video.isDelete = !_video.isDelete;
+        if (_video.isDelete) {
+            self.darkView.selected = YES;
+            self.darkView.alpha = 0.4;
+            _deleteV.image = [Commons getImageFromResource:@"Home_videos_selected"];
+        }else {
+            self.darkView.selected = NO;
+            self.darkView.alpha = 0.2;
+            _deleteV.image = [Commons getImageFromResource:@"Home_videos_unselect"];
+        }
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoView: deleteAction:)]) {
+            [self.delegate SPVideoView:self.video deleteAction:_video.isDelete];
+        }
+        return;
+    }
+    
     NSUInteger selectedIndex = -1;
     NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:NativeToUnityType],
                              kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
@@ -112,4 +213,30 @@
     
     [self.imgv bubbleEventWithUserInfo:notify];
 }
+
+- (void)longPressAction:(UIGestureRecognizer *)recognizer {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoView: changeToDeleteStyle:)]) {
+        _video.isDelete = YES;
+        self.darkView.selected = YES;
+        self.darkView.alpha = 0.4;
+        [self.delegate SPVideoView:self.video changeToDeleteStyle:YES];
+    }
+}
+@end
+
+@interface DarkMaskButton()
+@end
+@implementation DarkMaskButton
+
+- (void)setHighlighted:(BOOL)highlighted {
+    [super setHighlighted:highlighted];
+    if(highlighted)
+    {
+        self.alpha = 0.4;
+    }
+    else{
+        self.alpha = self.selected ? 0.4 : 0.2;
+    }
+}
+
 @end

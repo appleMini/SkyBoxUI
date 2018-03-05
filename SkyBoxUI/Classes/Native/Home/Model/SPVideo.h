@@ -18,5 +18,7 @@
 @property (nonatomic, copy) NSString *duration;
 @property (nonatomic, copy) NSString *remote_id;
 @property (nonatomic, assign) BOOL   isFavourite;
+@property (nonatomic, assign) BOOL   isDelete;
 
+@property (nonatomic, assign) DataSourceType  dataSource;
 @end

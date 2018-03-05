@@ -10,5 +10,6 @@
 
 @interface SPVideoCell : UITableViewCell
 
+@property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, strong) SPVideoView *videoView;
 @end

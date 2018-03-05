@@ -102,6 +102,8 @@
     self.menuVC = menuVC;
     
     SPHistoryViewController *HistoryVC = [[SPHistoryViewController alloc] initWithSomething];
+    HistoryVC.mainVC = self;
+    HistoryVC.refreshEnable = NO;
     self.historyVC = HistoryVC;
     
     SPHomeViewController *homeVC = [[SPHomeViewController alloc] initWithSomething];
@@ -163,6 +165,23 @@
     return _contentView;
 }
 
+- (void)changeTitleView:(SPBaseViewController *)vc {
+    UIView *titleView = [vc customTitleView];
+    if (titleView) {
+        self.navigationItem.titleView = titleView;
+    }
+    
+    NSString *til = [vc titleOfLabelView];
+    if(til) {
+        self.titleLabel.text = til;
+        self.navigationItem.titleView = self.titleLabel;
+    }
+    
+    if (!titleView && !til) {
+        self.navigationItem.titleView = nil;
+    }
+}
+
 - (void)setUpWithChildVCs: (NSArray <UIViewController *>*)childVCs {
     if (self.childViewControllers.count == 3) {
         SPBaseViewController *vc = self.childViewControllers[1];
@@ -215,6 +234,7 @@
 - (void)showLastChildVC {
     if (self.childViewControllers.count == 3) {
         SPBaseViewController *vc = self.childViewControllers[2];
+        vc.refreshEnable = YES;
         (_canRefresh) ? [vc refresh] : nil;
     }
 }
@@ -229,6 +249,8 @@
     }
     
     SPBaseViewController *vc = [self setupNaviItem:index];
+    vc.refreshEnable = YES;
+    vc.mainVC = self;
     
     CGFloat top =  (index == 0) ? 0 : 64;
     vc.view.frame = CGRectMake(index * self.contentView.width, top, self.contentView.width, self.contentView.height-top);
@@ -240,8 +262,16 @@
     [SPSwitchBar shareSPSwitchBar].selectIndex = index;
 }
 
-- (void)changeMiddleContentView:(SPBaseViewController *)vc shouldRefresh:(BOOL)refresh {
+- (void)changeHistoryView:(SPBaseViewController *)vc shouldRefresh:(BOOL)refresh {
+    SPBaseViewController *mvc = self.childViewControllers[1];
+    NSArray <UIViewController *>*childVCs = @[self.menuVC, mvc, vc];
+    [self setUpWithChildVCs:childVCs];
     
+    [self showChildVCViewAtIndex:2 shouldRefresh:refresh];
+    [SPSwitchBar shareSPSwitchBar].selectIndex = 2;
+}
+
+- (void)changeMiddleContentView:(SPBaseViewController *)vc shouldRefresh:(BOOL)refresh {
     NSArray <UIViewController *>*childVCs = @[self.menuVC, vc, self.historyVC];
     [self setUpWithChildVCs:childVCs];
     
@@ -269,7 +299,6 @@
     CGFloat alpha = [self fixAlpha:fabs(moveDistance) baseWidth:scrollView.frame.size.width];
     
     NSInteger index = scrollView.contentOffset.x/scrollView.width;
-    
     if (index == 0) {
         if(alpha >= 0) {
             [self setupNaviItem:1];
@@ -294,8 +323,8 @@
     
     self.navigationController.navigationBar.alpha = fabs(alpha);
     if (self.childViewControllers.count == 3) {
-        SPBaseViewController *vc = self.childViewControllers[1];
-        [vc showTopViewAlpha:alpha];
+        SPBaseViewController *middleVC = self.childViewControllers[1];
+        [middleVC showTopViewAlpha:alpha];
     }
 }
 
@@ -303,6 +332,8 @@
     [[SPSwitchBar shareSPSwitchBar] resetAnimation];
     
     NSInteger index = scrollView.contentOffset.x/scrollView.width;
+    SPBaseViewController *vc = self.childViewControllers[index];
+    vc.refreshEnable = YES;
     
     NSInteger selectIndex = [SPSwitchBar shareSPSwitchBar].selectIndex;
     if (selectIndex == index) {
@@ -315,7 +346,8 @@
 }
 #pragma -mark SPSwitchBarDelegate
 - (void)switchBar:(SPSwitchBar *)bar selectIndex:(NSInteger)index {
-    [self showChildVCAtIndex:index];
+    // 滑动到对应位置
+    [self.contentView setContentOffset:CGPointMake(index * self.contentView.width, 0) animated:YES];
 }
 
 #pragma -mark jumpToMiddleVC
@@ -349,7 +381,10 @@
             return;
         }
         SPBaseViewController *vc = self.childViewControllers[1];
-        [vc releaseAction];
+        if ([NSStringFromClass([vc class]) hash] == [ctrS hash]) {
+            [self showChildVCViewAtIndex:1 shouldRefresh:YES];
+            return;
+        }
         
         vc = [[cls alloc] initWithSomething];
         [self changeMiddleContentView:vc shouldRefresh:YES];
@@ -359,6 +394,8 @@
 
 #pragma mark UIResponder bubble
 - (void)bubbleEventWithUserInfo:(NSDictionary *)userInfo {
+    self.contentView.scrollEnabled = YES;
+    
     NSInteger respType = (ResponderType)[[userInfo objectForKey:kEventType] unsignedIntegerValue];
     //    id target = [userInfo objectForKey:kTopViewController];
     NSString *path = [userInfo objectForKey:@"path"];
@@ -408,6 +445,40 @@
         {
             SPBaseViewController *vc = [[SPHomeViewController alloc] initWithSomething];
             [self changeMiddleContentView:vc shouldRefresh:YES];
+        }
+            break;
+        case DeleteLoaclVideosType:
+        {
+            if (!self.contentView.scrollEnabled) {
+                return;
+            }
+            
+            [[SPSwitchBar shareSPSwitchBar] hiddenWithAnimation];
+            self.contentView.scrollEnabled = NO;
+        }
+            break;
+        case CommonLoaclVideosType:
+        {
+            [[SPSwitchBar shareSPSwitchBar] showWithAnimation];
+            [self setupNaviItem:1];
+        }
+            break;
+            
+        case DeleteHistoryType:
+        {
+            if (!self.contentView.scrollEnabled) {
+                return;
+            }
+            
+            [[SPSwitchBar shareSPSwitchBar] hiddenWithAnimation];
+            self.contentView.scrollEnabled = NO;
+        }
+            break;
+            
+        case CommonHistoryType:
+        {
+            [[SPSwitchBar shareSPSwitchBar] showWithAnimation];
+            [self setupNaviItem:2];
         }
             break;
         case TestType:

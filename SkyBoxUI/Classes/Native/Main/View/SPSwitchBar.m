@@ -15,7 +15,9 @@
 #define UpperSpace       kHSCALE*8
 #define leadingSpace     kWSCALE*0
 
-@interface SPSwitchBar()
+@interface SPSwitchBar() {
+    BOOL _isHidden;
+}
 
 @property (nonatomic, strong) UIButton *leftBtn;
 @property (nonatomic, strong) UIButton *leftBtn_active;
@@ -34,6 +36,43 @@
 @implementation SPSwitchBar
 SPSingletonM(SPSwitchBar)
 
+#pragma -mark
+- (BOOL)isHidden {
+    return _isHidden;
+}
+
+- (void)hiddenWithAnimation {
+    if (_isHidden) {
+        return;
+    }
+    
+    _isHidden = YES;
+    CGRect frame = self.frame;
+    frame.origin.y += LargeHeight;
+    [UIView animateWithDuration:0.3 animations:^{
+        self.frame = frame;
+    } completion:^(BOOL finished) {
+        self.hidden = YES;
+    }];
+}
+- (void)showWithAnimation {
+    if (!_isHidden) {
+        return;
+    }
+    
+    _isHidden = NO;
+    self.hidden = NO;
+    [[self superview] bringSubviewToFront:self];
+    CGRect frame = self.frame;
+    frame.origin.y -= LargeHeight;
+    [UIView animateWithDuration:0.3 animations:^{
+        self.frame = frame;
+    } completion:^(BOOL finished) {
+        
+    }];
+}
+
+#pragma -mark init
 - (instancetype)init
 {
     CGFloat y = [SPDeviceUtil isiPhoneX] ? (SCREEN_HEIGHT - 0 - LargeHeight) : (SCREEN_HEIGHT - LargeHeight);

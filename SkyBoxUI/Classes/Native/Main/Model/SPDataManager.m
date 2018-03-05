@@ -23,8 +23,9 @@ SPSingletonM(SPDataManager)
         _cacheModel = [[NSMutableDictionary alloc] initWithCapacity:6];
         
         _servers = [NSMutableArray array];
-        _concurrentQueue = dispatch_queue_create("com.skyboxUI.SPDataManagerQueue.Servers", DISPATCH_QUEUE_CONCURRENT);
-        _concurrentCacheQueue = dispatch_queue_create("com.skyboxUI.SPDataManagerQueue.Cache", DISPATCH_QUEUE_CONCURRENT);
+        dispatch_queue_attr_t attr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT, QOS_CLASS_USER_INTERACTIVE, -1);
+        _concurrentQueue = dispatch_queue_create("com.skyboxUI.SPDataManagerQueue.Servers", attr);
+        _concurrentCacheQueue = dispatch_queue_create("com.skyboxUI.SPDataManagerQueue.Cache", attr);
     }
     return self;
 }
@@ -104,6 +105,9 @@ SPSingletonM(SPDataManager)
     NSDictionary *model = [self getCacheDict:datasource];
     
     BOOL update = [self hasUpdate:hash dataSource:datasource];
+    if (!update) {
+        return;
+    }
     
     NSNumber *contentOffset = model[@"contentOffsetY"] ? model[@"contentOffsetY"] : [NSNumber numberWithFloat:(0.0)];
     if (update) {

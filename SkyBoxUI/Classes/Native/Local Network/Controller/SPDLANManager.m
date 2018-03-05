@@ -133,7 +133,7 @@ static SPDLANManager *_manager = nil;
     });
     
     self.status = DLANAddDeviceStatus;
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
         _timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(emptyServers) userInfo:nil repeats:NO];
         [[NSRunLoop currentRunLoop] run];
         
@@ -234,7 +234,7 @@ static SPDLANManager *_manager = nil;
                     albumDevice.iconURL = [resElement stringValue];
                     
                     [arr addObject:albumDevice];
-                }else if(pDevice.deviceType && [pDevice.deviceType isEqualToString:@"object.item.videoItem"]) {
+                }else if(pDevice.deviceType && [pDevice.deviceType containsString:@"object.item.videoItem"]) {
                     SPCmdVideoDevice *videoDevice = [[SPCmdVideoDevice alloc] init];
                     videoDevice.deviceId = pDevice.deviceId;
                     videoDevice.parentID = parentId;
@@ -404,7 +404,7 @@ static void DBrowseDLNAFolderCallback(const char *BrowseFolderXML, int xmlLength
                     albumDevice.iconURL = [resElement stringValue];
                     
                     [arr addObject:albumDevice];
-                }else if(device.deviceType && [device.deviceType isEqualToString:@"object.item.videoItem"]) {
+                }else if(device.deviceType && [device.deviceType containsString:@"object.item.videoItem"]) {
                     SPCmdVideoDevice *videoDevice = [[SPCmdVideoDevice alloc] init];
                     videoDevice.deviceId = device.deviceId;
                     videoDevice.parentID = parentId;

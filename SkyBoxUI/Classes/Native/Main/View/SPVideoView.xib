@@ -57,20 +57,28 @@
                         <constraint firstAttribute="trailing" secondItem="uLH-Qv-WeG" secondAttribute="trailing" id="4tH-Qe-Hkh"/>
                         <constraint firstItem="IhA-Eu-7KO" firstAttribute="top" secondItem="6SO-N4-FKT" secondAttribute="top" constant="10" id="9pw-m7-BSN"/>
                         <constraint firstItem="IhA-Eu-7KO" firstAttribute="leading" secondItem="6SO-N4-FKT" secondAttribute="leading" constant="10" id="PHk-XN-Gnq"/>
-                        <constraint firstItem="uLH-Qv-WeG" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IhA-Eu-7KO" secondAttribute="trailing" constant="20" id="WwF-wc-fOM"/>
                         <constraint firstAttribute="bottom" secondItem="nNG-sz-ruG" secondAttribute="bottom" constant="10" id="eXi-dJ-KIO"/>
                         <constraint firstItem="uLH-Qv-WeG" firstAttribute="centerY" secondItem="6SO-N4-FKT" secondAttribute="centerY" id="tOt-I9-Re2"/>
                         <constraint firstAttribute="height" constant="60" id="wg0-FG-YyZ"/>
                     </constraints>
                 </view>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bpb-mG-wL3" userLabel="deleteImgV">
+                    <rect key="frame" x="267.5" y="134" width="36" height="36"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="36" id="V2Q-br-LtI"/>
+                        <constraint firstAttribute="width" constant="36" id="lvJ-VH-tQQ"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="bpb-mG-wL3" firstAttribute="centerX" secondItem="wu8-dG-Pt8" secondAttribute="centerX" id="ALV-Fh-Xdd"/>
                 <constraint firstAttribute="bottom" secondItem="6SO-N4-FKT" secondAttribute="bottom" id="EpT-Ru-zy4"/>
                 <constraint firstItem="6SO-N4-FKT" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="FVC-e5-7CQ"/>
                 <constraint firstItem="wu8-dG-Pt8" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="QQH-YM-Ky4"/>
                 <constraint firstAttribute="trailing" secondItem="6SO-N4-FKT" secondAttribute="trailing" id="S9D-vw-LlD"/>
                 <constraint firstAttribute="trailing" secondItem="wu8-dG-Pt8" secondAttribute="trailing" id="dnm-e3-S06"/>
+                <constraint firstItem="bpb-mG-wL3" firstAttribute="centerY" secondItem="wu8-dG-Pt8" secondAttribute="centerY" id="vJt-43-wbv"/>
                 <constraint firstItem="wu8-dG-Pt8" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="xB0-Tn-s84"/>
                 <constraint firstItem="6SO-N4-FKT" firstAttribute="top" secondItem="wu8-dG-Pt8" secondAttribute="bottom" id="yDh-Zv-Adt"/>
             </constraints>
@@ -78,6 +86,7 @@
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
                 <outlet property="bottomView" destination="6SO-N4-FKT" id="rRO-BP-syc"/>
+                <outlet property="deleteV" destination="bpb-mG-wL3" id="EoA-e8-cvs"/>
                 <outlet property="durationLabel" destination="nNG-sz-ruG" id="g5G-HL-5rg"/>
                 <outlet property="favButton" destination="uLH-Qv-WeG" id="Nvr-m0-RgJ"/>
                 <outlet property="imgv" destination="wu8-dG-Pt8" id="XRJ-5D-uyL"/>

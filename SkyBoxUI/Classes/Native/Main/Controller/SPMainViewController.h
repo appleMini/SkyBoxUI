@@ -11,7 +11,10 @@
 @interface SPMainViewController : SPBaseViewController
 
 @property (weak, nonatomic) id<SPMainViewJumpDelegate> jumpDelegate;
+
 - (void)jumpToMiddleVC:(SPBaseViewController *)vc menuIndex:(NSInteger)index;
+
+- (void)changeTitleView:(SPBaseViewController *)vc;
 @end
 
 @protocol SPMainViewJumpDelegate <NSObject>

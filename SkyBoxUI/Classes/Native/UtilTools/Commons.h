@@ -42,11 +42,16 @@ typedef enum : NSUInteger {
     AirScreenResultMiddleVCType,
     HomeHelpMiddleVCType,
     LocalFileMiddleVCType,
+    DeleteLoaclVideosType,
+    CommonLoaclVideosType,
+    DeleteHistoryType,
+    CommonHistoryType,
     TestType,
 } ResponderType;
 
 @interface Commons : NSObject
 
++ (NSURL *)getResourceFromBundleResource:(NSString *)name extension:(NSString *)ext;
 + (NSURL *)getMovieFromResource:(NSString *)name extension:(NSString *)ext;
 + (UIImage *)getImageFromResource:(NSString *)name;
 + (UIImage *)getPdfImageFromResource:(NSString *)name;

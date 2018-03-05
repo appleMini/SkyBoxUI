@@ -19,6 +19,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *label;
 @property (weak, nonatomic) IBOutlet UILabel *durationLabel;
 @property (weak, nonatomic) IBOutlet UIButton *favBtn;
+@property (weak, nonatomic) IBOutlet UIImageView *deleteV;
+
+@property (strong, nonatomic) UIView *darkView;
+
+@property (strong, nonatomic) UILongPressGestureRecognizer *longPress;
 
 @end
 
@@ -26,6 +31,8 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
+    _status = CommomStatus;
+    _deleteV.hidden = YES;
     
 }
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
@@ -59,6 +66,21 @@
     self.imgv.image = nil;
 }
 
+- (void)removeDarkView {
+    _darkView.hidden = YES;
+}
+
+- (UIView *)darkView {
+    if (!_darkView) {
+        _darkView = [[UIView alloc] initWithFrame:self.imgv.frame];
+        _darkView.backgroundColor = [UIColor blackColor];
+        [self insertSubview:_darkView aboveSubview:self.imgv];
+    }
+    
+    _darkView.hidden = NO;
+    return _darkView;
+}
+
 - (void)setVideo:(SPVideo *)video {
     _video = video;
     self.imgvHeightConstraint.constant = 1.0 * 208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324;
@@ -72,7 +94,7 @@
             self.imgv.image = [image roundedCornerImage:10 borderSize:0];
         }
     }];
-    
+
     self.label.font = [UIFont fontWithName:@"Calibri-Bold" size:15];
     self.label.textColor = [SPColorUtil getHexColor:@"#ffffff"];
     self.label.text = video.title;
@@ -81,32 +103,96 @@
     self.durationLabel.textColor = [SPColorUtil getHexColor:@"#b0b1b3"];
     self.durationLabel.text = [Commons durationText:video.duration.doubleValue];
     
-    if (video.isFavourite) {
-        self.favBtn.selected = YES;
-        [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
-    }else{
-        self.favBtn.selected = NO;
-        [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+    if (_status == CommomStatus && (video.dataSource == LocalFilesType || video.dataSource == VRVideosType || video.dataSource == FavoriteVideosType)) {
+        self.favBtn.hidden = NO;
+        _deleteV.hidden = YES;
+        [self removeDarkView];
+        
+        if (video.isFavourite) {
+            self.favBtn.selected = YES;
+            [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
+        }else{
+            self.favBtn.selected = NO;
+            [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+        }
+    }else {
+        self.favBtn.hidden = YES;
+        if (_status == DeleteStatus) {
+            _deleteV.hidden = NO;
+            [self bringSubviewToFront:_deleteV];
+            
+            if (_video.isDelete) {
+                self.darkView.alpha = 0.4;
+                _deleteV.image = [Commons getImageFromResource:@"Home_videos_selected"];
+            }else {
+                self.darkView.alpha = 0.2;
+                _deleteV.image = [Commons getImageFromResource:@"Home_videos_unselect"];
+            }
+        }else {
+            _deleteV.hidden = YES;
+            [self removeDarkView];
+        }
     }
     
     if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
-        self.backgroundColor = [UIColor darkGrayColor];
+        self.alpha = 0.4;
+        self.durationLabel.text = @"DISCONNECTION";
     }else {
-        self.backgroundColor = [UIColor clearColor];
+        self.alpha = 1.0;
+    }
+    
+    if (_status == CommomStatus && (video.dataSource == LocalFilesType || video.dataSource == VRVideosType || video.dataSource == HistoryVideosType)) {
+        self.imgv.userInteractionEnabled = YES;
+        [self.imgv addGestureRecognizer:self.longPress];
+    }else {
+        [self.imgv removeGestureRecognizer:self.longPress];
     }
 }
 
 - (void)setHighlighted:(BOOL)highlighted {
     if(highlighted)
     {
-        self.imgv.alpha = 0.75;
+        self.darkView.alpha = 0.2;
     }
     else{
-        self.imgv.alpha = 1.0;
+        self.darkView.alpha = (_status == CommomStatus) ? 0.0 : (self.video.isDelete ? 0.4 : 0.2);
     }
 }
 
+- (void)longPressAction:(UIGestureRecognizer *)recognizer {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoCollectionView: changeToDeleteStyle:)]) {
+        _video.isDelete = YES;
+        self.darkView.alpha = 0.4;
+        [self.delegate SPVideoCollectionView:self.video changeToDeleteStyle:YES];
+    }
+}
+
+- (UIGestureRecognizer *)longPress {
+    if (!_longPress) {
+        _longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
+        _longPress.minimumPressDuration = 1.0;
+    }
+    
+    return _longPress;
+}
+
 - (void)singleTapAction:(UIGestureRecognizer *)recognizer {
+    if (_status == DeleteStatus) {
+        _video.isDelete = !_video.isDelete;
+        if (_video.isDelete) {
+            self.darkView.alpha = 0.4;
+            _deleteV.image = [Commons getImageFromResource:@"Home_videos_selected"];
+        }else {
+            self.darkView.alpha = 0.2;
+            _deleteV.image = [Commons getImageFromResource:@"Home_videos_unselect"];
+        }
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoCollectionView: deleteAction:)]) {
+            [self.delegate SPVideoCollectionView:self.video deleteAction:_video.isDelete];
+        }
+        return;
+    }
+    
     NSUInteger selectedIndex = -1;
     NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:NativeToUnityType],
                              kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
@@ -117,6 +203,16 @@
 }
 
 - (IBAction)favAction:(UIButton *)sender {
+    if (@available(iOS 10.0, *)) {
+        UIImpactFeedbackGenerator *generator = [[UIImpactFeedbackGenerator alloc] initWithStyle: UIImpactFeedbackStyleLight];
+        [generator prepare];
+        [generator impactOccurred];
+    } else {
+        // Fallback on earlier versions
+        //        AudioServicesPlaySystemSoundWithCompletion((1519), ^{
+        //        });
+    }
+    
     sender.selected = !sender.isSelected;
     if (sender.isSelected) {
         [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];

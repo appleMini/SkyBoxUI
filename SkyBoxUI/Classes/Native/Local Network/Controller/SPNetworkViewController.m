@@ -293,7 +293,7 @@ static CGFloat height = 0;
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     SPCmdAddDevice *device = _dataArr[indexPath.row];
-    if(device.deviceType && [device.deviceType isEqualToString:@"object.item.videoItem"]){
+    if(device.deviceType && [device.deviceType containsString:@"object.item.videoItem"]){
         NSUInteger selectedIndex = -1;
         NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:NativeToUnityType],
                                  kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],

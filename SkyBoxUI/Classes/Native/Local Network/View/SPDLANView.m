@@ -66,7 +66,7 @@
     CGFloat imgvHeight = 208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324;
     self.iconVHeightConstraint.constant = imgvHeight;
     
-    if([device.deviceType isEqualToString:@"object.item.videoItem"]){
+    if([device.deviceType containsString:@"object.item.videoItem"]){
         self.tagLabel.textAlignment = NSTextAlignmentLeft;
         
         SPCmdVideoDevice *video = (SPCmdVideoDevice *)device;

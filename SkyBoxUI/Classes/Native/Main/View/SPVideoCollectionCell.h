@@ -10,5 +10,6 @@
 @class SPVideoCollectionView;
 @interface SPVideoCollectionCell : UICollectionViewCell
 
+@property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, strong) SPVideoCollectionView *videoView;
 @end

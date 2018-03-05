@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "SPBackgrondView.h"
- #import <AFNetworking/AFNetworking.h>
+#import <AFNetworking/AFNetworking.h>
 
 #define  adjustsScrollViewInsets(scrollView)\
 do {\
@@ -47,15 +47,24 @@ typedef enum : NSUInteger {
     DLANType
 } DataSourceType;
 
+typedef enum : NSUInteger {
+    CommomStatus,
+    DeleteStatus
+} SPCellStatus;
+
+typedef void (^CompleteBlock) (void);
 typedef void (^RefreshBlock) (NSString *dataStr);
 typedef void (^NetStateBlock) (AFNetworkReachabilityStatus status);
 
 @interface SPBaseViewController : UIViewController
 
+@property (nonatomic, strong) UIViewController *mainVC;
+@property (nonatomic, copy) CompleteBlock completeBlock;
 @property (nonatomic, copy) RefreshBlock refreshBlock;
 @property (nonatomic, copy) NetStateBlock netStateBlock;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) SPBackgrondView *emptyView;
+@property (nonatomic, assign) BOOL refreshEnable;
 
 - (instancetype)initWithSomething;
 - (UIView *)customTitleView;

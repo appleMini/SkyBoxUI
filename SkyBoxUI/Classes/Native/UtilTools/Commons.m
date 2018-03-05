@@ -10,6 +10,11 @@
 
 @implementation Commons
 
++ (NSURL *)getResourceFromBundleResource:(NSString *)name extension:(NSString *)ext {
+    NSURL *resUrl = [[Commons resourceBundle] URLForResource:name withExtension:ext];
+    return resUrl;
+}
+
 + (NSURL *)getMovieFromResource:(NSString *)name extension:(NSString *)ext {
     NSURL *movieUrl = [[Commons resourceBundle] URLForResource:name withExtension:ext];
     return movieUrl;
