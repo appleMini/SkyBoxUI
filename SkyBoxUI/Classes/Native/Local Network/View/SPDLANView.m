@@ -70,8 +70,15 @@
         self.tagLabel.textAlignment = NSTextAlignmentLeft;
         
         SPCmdVideoDevice *video = (SPCmdVideoDevice *)device;
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+        NSString *libraryPath = [paths lastObject];
+        
+        NSString *dlanPath =  [libraryPath stringByAppendingPathComponent:@"Caches/DLAN"];
+        
+        NSURL *iconURL = [NSURL fileURLWithPath:[dlanPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lud.png", (unsigned long)[video.deviceName hash]]]];
+        
         self.iconV.contentMode = UIViewContentModeScaleAspectFill;
-        [self.iconV sd_setImageWithURL:[NSURL URLWithString:video.iconURL] placeholderImage:[Commons getImageFromResource:@"Home_videos_album_default"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        [self.iconV sd_setImageWithURL:iconURL placeholderImage:[Commons getImageFromResource:@"Home_videos_album_default"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
             if (image) {
                 self.iconV.image = [image roundedCornerImage:5 borderSize:0];
             }
