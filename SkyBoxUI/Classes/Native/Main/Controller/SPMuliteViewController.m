@@ -184,14 +184,14 @@
 }
 
 - (void)deleteItem:(UIButton *)item {
-    UIAlertController *alterVC = [UIAlertController alertControllerWithTitle:@"Delete history" message:@"Are you sure you want to delete selected history?"
+    SPAlertViewController *alterVC = [SPAlertViewController alertControllerWithTitle:@"Delete history" message:@"Are you sure you want to delete selected history?"
                                                               preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [alterVC dismissViewControllerAnimated:YES completion:nil];
     }];
     
     __weak typeof(self) ws = self;
-    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         //
         [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"DeleteAllHistory"}];
         [alterVC dismissViewControllerAnimated:YES completion:nil];
