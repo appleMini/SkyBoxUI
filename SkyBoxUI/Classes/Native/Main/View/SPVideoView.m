@@ -121,7 +121,7 @@
         }
     }
     
-    if (video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
+    if ([video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         self.alpha = 0.4;
         self.durationLabel.text = @"DISCONNECTION";
     }else {

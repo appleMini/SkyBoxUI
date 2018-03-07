@@ -17,6 +17,7 @@
 @property (nonatomic, copy) NSString *rcg_type;
 @property (nonatomic, copy) NSString *duration;
 @property (nonatomic, copy) NSString *remote_id;
+@property (nonatomic, copy) NSString *type;
 @property (nonatomic, assign) BOOL   isFavourite;
 @property (nonatomic, assign) BOOL   isDelete;
 
