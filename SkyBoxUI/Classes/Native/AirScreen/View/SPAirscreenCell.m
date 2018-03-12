@@ -64,10 +64,10 @@
     //动画高亮变色效果
     if(highlighted) {
         self.contentView.backgroundColor = [SPColorUtil getHexColor:@"#e5e5e5"];
-        self.lineView.backgroundColor = [SPColorUtil getHexColor:@"#e5e5e5"];
+        self.lineView.backgroundColor = [SPColorUtil getHexColor:@"#d4d5d7"];
     }else {
         self.contentView.backgroundColor = [UIColor whiteColor];
-        self.lineView.backgroundColor = [SPColorUtil getHexColor:@"#e5e5e5"];
+        self.lineView.backgroundColor = [SPColorUtil getHexColor:@"#d4d5d7"];
     }
 }
 
@@ -114,7 +114,7 @@
     CGContextMoveToPoint(ctx, 0, rect.size.height); // 起点
     CGContextAddLineToPoint(ctx, rect.size.width, rect.size.height); //终点
     //    CGContextSetRGBStrokeColor(ctx, 0, 1.0, 0, 1.0); // 颜色
-    [[SPColorUtil getHexColor:@"##d4d5d7"] set]; // 两种设置颜色的方式都可以
+    [[SPColorUtil getHexColor:@"#d4d5d7"] set]; // 两种设置颜色的方式都可以
     CGContextSetLineWidth(ctx, 2.0f); // 线的宽度
     //    CGContextSetLineCap(ctx, kCGLineCapRound); // 起点和重点圆角
     //    CGContextSetLineJoin(ctx, kCGLineJoinRound); // 转角圆角

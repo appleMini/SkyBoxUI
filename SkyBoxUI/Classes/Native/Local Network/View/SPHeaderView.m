@@ -145,7 +145,7 @@
 - (void)addDeviceLabelBtn:(SPCmdAddDevice *)device index:(NSInteger)index tag:(NSInteger)tag userInteractionEnabled:(BOOL)userInteractionEnabled isLast:(BOOL)islast {
     CGFloat width = (SCREEN_WIDTH - 20 - 28*kWSCALE - 50*kWSCALE)/4;
     CGFloat x = -7 + width * index;
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(x, 0, width+7, 28*kWSCALE)];
+    SPDeviceButton *button = [[SPDeviceButton alloc] initWithFrame:CGRectMake(x, 0, width+7, 28*kWSCALE)];
     UIImage *bgImg = [Commons getPdfImageFromResource:@"Network_navigator_path_bg"];
     
     //    button.backgroundColor  = randomColor;
@@ -227,3 +227,14 @@
 }
 @end
 
+@implementation SPDeviceButton : UIButton
+
+- (void)setHighlighted:(BOOL)highlighted {
+    if (highlighted) {
+//        self.titleLabel.alpha = 0.5;
+        self.alpha = 0.5;
+    }else {
+        self.alpha = 1.0;
+    }
+}
+@end

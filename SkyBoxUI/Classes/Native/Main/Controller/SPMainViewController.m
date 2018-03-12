@@ -27,6 +27,13 @@
 @property (nonatomic, strong) SPMenuViewController *menuVC;
 @property (nonatomic, strong) SPHistoryViewController *historyVC;
 
+@property (nonatomic, strong) SPHomeViewController *homeVC;
+@property (nonatomic, strong) SPVRViewController *vrVC;
+@property (nonatomic, strong) SPNetworkViewController *networkVC;
+@property (nonatomic, strong) SPAirScreenResultViewController *airscreenResultVC;
+@property (nonatomic, strong) SPFavoriteViewController *favoriteVC;
+
+
 @end
 
 @implementation SPMainViewController
@@ -107,6 +114,8 @@
     self.historyVC = HistoryVC;
     
     SPHomeViewController *homeVC = [[SPHomeViewController alloc] initWithSomething];
+    _homeVC = homeVC;
+    
     NSArray <UIViewController *>*childVCs = @[self.menuVC, homeVC, self.historyVC];
     [self setUpWithChildVCs:childVCs];
     
@@ -352,19 +361,81 @@
 
 #pragma -mark jumpToMiddleVC
 - (void)jumpToMiddleVC:(SPBaseViewController *)vc menuIndex:(NSInteger)index {
-    if (index < 0) {
+    if (index < 0 || index >= self.menuVC.menuCount) {
         return;
     }
     
-    _selectMenuIndex = index;
-    
-    [self.menuVC selectMenuItem:index jump:NO];
-    [self changeMiddleContentView:vc shouldRefresh:YES];
+    [self.menuVC selectMenuItem:index jump:YES];
 }
 #pragma -mark SPMenuJumpProtocol
-- (void)MenuViewController:(UIViewController *)menu jumpViewController:(NSString *)ctrS menuIndex:(NSInteger)index{
+- (void)jumpViewController:(NSString *)ctrS {
+    BOOL refresh = YES;
+    SPBaseViewController *VC = nil;
+    if ([ctrS hash] == [NSStringFromClass([SPHomeViewController class]) hash]) {
+        if (!self.homeVC) {
+            self.homeVC =  [[SPHomeViewController alloc] initWithSomething];
+        }
+
+        VC = self.homeVC;
+    }else if ([ctrS hash] == [NSStringFromClass([SPVRViewController class]) hash]) {
+        if (!self.vrVC) {
+            self.vrVC =  [[SPVRViewController alloc] initWithSomething];
+        }
+        VC = self.vrVC;
+    }else if ([ctrS hash] == [NSStringFromClass([SPNetworkViewController class]) hash]) {
+        if (!self.networkVC) {
+            self.networkVC =  [[SPNetworkViewController alloc] initWithSomething];
+        }
+
+        VC = self.networkVC;
+    }else if ([ctrS hash] == [NSStringFromClass([SPAirScreenViewController class]) hash]) {
+        SPAirscreen *airscreen = [SPDataManager shareSPDataManager].airscreen;
+        
+        if (!airscreen) {
+            VC =  [[SPAirScreenViewController alloc] initWithSomething];
+            refresh = NO;
+        }else {
+            if ([[self.airscreenResultVC.airscreen computerId] hash] != [airscreen.computerId hash]) {
+                VC = self.airscreenResultVC = [[SPAirScreenResultViewController alloc] initWithSomething];
+                self.airscreenResultVC.airscreen = airscreen;
+            }else {
+                VC = self.airscreenResultVC;
+                self.airscreenResultVC.airscreen = airscreen;
+                refresh = NO;
+            }
+        }
+    }else if ([ctrS hash] == [NSStringFromClass([SPFavoriteViewController class]) hash]) {
+        if (!self.favoriteVC) {
+            self.favoriteVC =  [[SPFavoriteViewController alloc] initWithSomething];
+        }
+        VC = self.favoriteVC;
+    }
+    
+    [VC viewWillToChanged];
+    [self changeMiddleContentView:VC shouldRefresh:refresh];
+}
+
+- (void)cacheMidleVC:(SPBaseViewController *)vc {
+    if ([vc isMemberOfClass:[SPHomeViewController class]]) {
+        self.homeVC = (SPHomeViewController *)vc;
+    }else if ([vc isMemberOfClass:[SPVRViewController class]]) {
+        self.vrVC = (SPVRViewController *)vc;
+    }else if ([vc isMemberOfClass:[SPNetworkViewController class]]) {
+        self.networkVC = (SPNetworkViewController *)vc;
+    }else if ([vc isMemberOfClass:[SPAirScreenResultViewController class]]) {
+        self.airscreenResultVC = (SPAirScreenResultViewController *)vc;
+    }else if ([vc isMemberOfClass:[SPFavoriteViewController class]]) {
+        self.favoriteVC = (SPFavoriteViewController *)vc;
+    }
+}
+
+- (void)MenuViewController:(UIViewController *)menu jumpViewController:(NSString *)ctrS menuIndex:(NSInteger)index {
     self.navigationController.navigationBar.alpha = 0.0;
-    if (_selectMenuIndex == index) {
+    if (self.childViewControllers.count < 3) {
+        return;
+    }
+    SPBaseViewController *vc = self.childViewControllers[1];
+    if ((_selectMenuIndex == index) && [vc isMemberOfClass:[SPAirScreenViewController class]]) {
         [self showChildVCViewAtIndex:1 shouldRefresh:NO];
         return;
     }
@@ -377,17 +448,16 @@
             return;
         }
         
-        if (self.childViewControllers.count < 3) {
-            return;
-        }
-        SPBaseViewController *vc = self.childViewControllers[1];
         if ([NSStringFromClass([vc class]) hash] == [ctrS hash]) {
             [self showChildVCViewAtIndex:1 shouldRefresh:YES];
             return;
+        }else {
+            //缓存VC
+            [self cacheMidleVC:vc];
         }
         
-        vc = [[cls alloc] initWithSomething];
-        [self changeMiddleContentView:vc shouldRefresh:YES];
+        [self jumpViewController:ctrS];
+        
     }
     
 }
@@ -424,12 +494,16 @@
             break;
         case AirScreenResultMiddleVCType:
         {
-            NSDictionary *dict = [userInfo objectForKey:kParams];
-            [self jumpToAirScreenResultVC:dict];
+            SPAirscreen *airscreen = [userInfo objectForKey:@"airscreen"];
+            SPAirScreenResultViewController *airscreenResult = [[SPAirScreenResultViewController alloc] initWithSomething];
+            airscreenResult.airscreen = airscreen;
+            [self changeMiddleContentView:airscreenResult shouldRefresh:YES];
         }
             break;
         case AirScreenMiddleVCType:
         {
+            //断开airscreen
+            self.airscreenResultVC = nil;
             SPBaseViewController *vc = [[SPAirScreenViewController alloc] initWithSomething];
             [self changeMiddleContentView:vc shouldRefresh:NO];
         }

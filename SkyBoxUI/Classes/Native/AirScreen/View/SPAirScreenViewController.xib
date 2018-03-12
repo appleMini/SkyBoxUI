@@ -23,6 +23,7 @@
                 <outlet property="pcImgV" destination="6wb-XR-GTZ" id="nkt-ov-Om8"/>
                 <outlet property="pcImgVHeightConstraint" destination="I4o-zX-Y0e" id="bsw-i3-olx"/>
                 <outlet property="pcImgVTopConstraint" destination="9Wb-0d-X1K" id="9B2-4s-BOr"/>
+                <outlet property="pcImgVWidthConstraint" destination="Qd7-M5-hj4" id="v1x-4I-7ge"/>
                 <outlet property="refreshImgv" destination="eeN-xZ-ZNT" id="Hsx-MY-270"/>
                 <outlet property="refreshView" destination="An1-gz-yvJ" id="AwM-zg-KRD"/>
                 <outlet property="searchButton" destination="TJZ-Gz-ZOx" id="zZZ-oj-4PU"/>
@@ -39,6 +40,7 @@
                     <rect key="frame" x="0.0" y="60" width="375" height="182"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="182" id="I4o-zX-Y0e"/>
+                        <constraint firstAttribute="width" constant="375" id="Qd7-M5-hj4"/>
                     </constraints>
                 </imageView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TJZ-Gz-ZOx" customClass="SPHighlightedButton">
@@ -130,10 +132,9 @@
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="TJZ-Gz-ZOx" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="23e-3O-mut"/>
-                <constraint firstItem="6wb-XR-GTZ" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="5VS-yh-WUq"/>
-                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="6wb-XR-GTZ" secondAttribute="trailing" id="7Pj-bS-GKr"/>
                 <constraint firstItem="6wb-XR-GTZ" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="40" id="9Wb-0d-X1K"/>
                 <constraint firstItem="h9t-3h-fqz" firstAttribute="top" secondItem="6wb-XR-GTZ" secondAttribute="bottom" constant="67" id="FJi-7l-CLu"/>
+                <constraint firstItem="6wb-XR-GTZ" firstAttribute="centerX" secondItem="Q5M-cg-NOt" secondAttribute="centerX" id="IgK-P1-Ebb"/>
                 <constraint firstItem="TJZ-Gz-ZOx" firstAttribute="top" secondItem="h9t-3h-fqz" secondAttribute="bottom" constant="30" id="Jwr-dC-BV7"/>
                 <constraint firstItem="h9t-3h-fqz" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="UJi-sH-6F7"/>
             </constraints>

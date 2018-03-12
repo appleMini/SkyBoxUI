@@ -9,6 +9,7 @@
 
 @interface SPVideo : NSObject
 
+@property (nonatomic, copy) NSString *mid;
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *videoWidth;

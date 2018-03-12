@@ -12,6 +12,7 @@
 @interface SPMenuViewController : SPBaseViewController
 
 @property (weak, nonatomic) id<SPMenuJumpProtocol> delegate;
+@property (assign, nonatomic) NSUInteger menuCount;
 
 - (void)selectMenuItem:(NSInteger)index jump:(BOOL)isScroll;
 @end

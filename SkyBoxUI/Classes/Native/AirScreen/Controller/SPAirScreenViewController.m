@@ -33,6 +33,8 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) UIBarButtonItem *helpItem;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *pcImgVTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *pcImgVWidthConstraint;
+
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *pcImgVHeightConstraint;
 
 @property (weak, nonatomic) IBOutlet UIImageView *pcImgV;
@@ -128,6 +130,10 @@ typedef enum : NSUInteger {
     AFNetworkReachabilityStatus status = [manager networkReachabilityStatus];
     if (_isAutoLogin && _airscreen && (status == AFNetworkReachabilityStatusReachableViaWiFi)) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            UIWindow *keyWindow = KEYWINDOW;
+            if (!keyWindow) {
+                return ;
+            }
             [MBProgressHUD showHUDAddedTo:KEYWINDOW animated:YES];
         });
         [self.airScreenManager connectServer:_airscreen complete:^(NSArray *listResult, NSString *resultStr) {
@@ -248,7 +254,9 @@ typedef enum : NSUInteger {
         self.searchButton.titleNormalColor = [SPColorUtil getHexColor:@"#ffffff"];
     }
     
+    self.pcImgVWidthConstraint.constant = SCREEN_WIDTH;
     self.pcImgVHeightConstraint.constant = 270 * kHSCALE;
+    self.pcImgV.clipsToBounds = YES;
     switch (_status) {
         case AirScreenStartupStatus:
         {
@@ -554,19 +562,14 @@ static NSString *cellID = @"AIRSCREEN_CELLID";
     }
     
     _airscreen = air;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [MBProgressHUD showHUDAddedTo:KEYWINDOW animated:YES];
-    });
-    [self.airScreenManager connectServer:air complete:^(NSArray *listResult, NSString *resultStr) {
-        //                [listResult removeAllObjects];
-        NSUInteger selectedIndex = -1;
-        NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenResultMiddleVCType],
-                                 kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
-                                 kParams : @{@"dataSource": listResult, @"airscreen" :_airscreen}
-                                 };
-        
-        [self.view bubbleEventWithUserInfo:notify];
-    }];
+    
+    NSUInteger selectedIndex = -1;
+    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenResultMiddleVCType],
+                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+                             @"airscreen" :_airscreen
+                             };
+    
+    [self.view bubbleEventWithUserInfo:notify];
 }
 @end
 

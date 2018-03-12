@@ -41,7 +41,7 @@
 }
 
 - (NSString *)titleOfLabelView {
-    return @"ALL FILES";
+    return @"ADD VIDEOS";
 }
 
 - (NSArray *)rightNaviItem {
@@ -65,16 +65,21 @@
 }
 
 - (void)doneClick:(UIButton *)item {
-    NSUInteger selectedIndex = -1;
-    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:LocalFileMiddleVCType],
-                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
-                             };
-    
-    [self.view bubbleEventWithUserInfo:notify];
+//    NSUInteger selectedIndex = -1;
+//    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:LocalFileMiddleVCType],
+//                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+//                             };
+//
+//    [self.view bubbleEventWithUserInfo:notify];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    if (self.navigationController) {
+        self.navigationItem.rightBarButtonItems = [self rightNaviItem];
+    }
     
     adjustsScrollViewInsets(self.scrollView);
     self.scrollView.pagingEnabled = YES;

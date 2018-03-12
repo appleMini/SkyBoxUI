@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
 @property (weak, nonatomic) UIScrollView *sv;
 @property (weak, nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (assign, nonatomic,getter=isAnimating) BOOL animating;
-@property (assign, nonatomic,getter=isRefreshing) BOOL refreshing;
+//@property (assign, nonatomic,getter=isRefreshing) BOOL refreshing;
 @property (assign,nonatomic) TGRefreshState refreshState;
 @property (weak,nonatomic) UIImageView *innerImageView;
 @property (weak,nonatomic) UIImageView *tipIcon;
@@ -94,6 +94,7 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
                 self.innerImageView.hidden = NO;
                 [self setNeedsDisplay];
                 if ((-point.y > kDragHeight + initInsetTop_) && !self.sv.dragging) {
+                    _refreshing = YES;
                     [self beginRefreshing];
                 }
             }

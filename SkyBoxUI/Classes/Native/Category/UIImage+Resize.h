@@ -9,6 +9,10 @@
 @interface UIImage (Resize)
 - (UIImage *)resizeImageWithModeCenter:(CGSize)size imageSize:(CGSize)imgsize bgFillColor:(UIColor *)bgcolor;
 - (UIImage *)croppedImage:(CGRect)bounds;
+- (UIImage *)thumbnailImageWithCornerRadius:(CGFloat)thumbnailWidth thumbnailHeight:(CGFloat)thumbnailHeight
+                          transparentBorder:(NSUInteger)borderSize
+                               cornerRadius:(NSUInteger)cornerRadius
+                       interpolationQuality:(CGInterpolationQuality)quality;
 - (UIImage *)thumbnailImage:(NSInteger)thumbnailSize
           transparentBorder:(NSUInteger)borderSize
                cornerRadius:(NSUInteger)cornerRadius

@@ -12,4 +12,6 @@
 
 @property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, strong) SPVideoCollectionView *videoView;
+
+- (void)hiddenShadow : (BOOL)isHidden;
 @end

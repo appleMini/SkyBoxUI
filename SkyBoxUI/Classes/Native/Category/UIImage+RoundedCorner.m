@@ -35,6 +35,8 @@
                      ovalWidth:cornerSize*scale
                     ovalHeight:cornerSize*scale];
     CGContextClosePath(context);
+    
+    
     CGContextClip(context);
 
     // Draw the image to the context; the clipping path will make anything outside the rounded rect transparent

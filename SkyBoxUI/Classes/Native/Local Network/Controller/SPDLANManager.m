@@ -133,7 +133,7 @@ static SPDLANManager *_manager = nil;
     });
     
     self.status = DLANAddDeviceStatus;
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
         _timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(emptyServers) userInfo:nil repeats:NO];
         [[NSRunLoop currentRunLoop] run];
         

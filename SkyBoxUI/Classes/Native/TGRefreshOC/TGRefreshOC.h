@@ -20,6 +20,9 @@ typedef NS_ENUM(NSInteger,TGRefreshAlignment) {
 };
 
 @interface TGRefreshOC : UIControl
+
+@property (assign, nonatomic,getter=isRefreshing) BOOL refreshing;
+
 /** 类型，默认为QQ弹簧 皮筋效果 */
 @property(nonatomic,assign) TGRefreshKind kind;
 /** 背景色（在有contentInset时为scrollview等背景色） */

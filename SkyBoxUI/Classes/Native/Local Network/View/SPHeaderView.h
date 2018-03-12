@@ -15,3 +15,6 @@
 - (NSArray <NSString *>*)getDevices;
 @end
 
+
+@interface SPDeviceButton : UIButton
+@end

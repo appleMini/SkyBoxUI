@@ -29,6 +29,11 @@ SPSingletonM(SPDataManager)
     }
     return self;
 }
+
+- (SPCmdAddDevice *)currentDevice {
+    return [self.devices lastObject];
+}
+
 /**
  
  cache  Model @{DataSourceType0 : @{showType: contentOffsetY: hash:} }

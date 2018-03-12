@@ -9,7 +9,7 @@
 
 @interface SPVideoCell()
 
-
+@property (nonatomic, strong) UIImageView *shadowImgV;
 @end
 
 @implementation SPVideoCell
@@ -67,7 +67,7 @@
     shadowImgV.image = [Commons getImageFromResource:@"Home_videos_album_shadow@2x"];
     
     [self.contentView insertSubview:shadowImgV belowSubview:self.videoView];
-    
+    _shadowImgV = shadowImgV;
     [shadowImgV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.mas_equalTo(16);
         make.trailing.mas_equalTo(-16);
@@ -75,6 +75,10 @@
         make.bottom.mas_equalTo(-25);
 //        make.edges.mas_equalTo(UIEdgeInsetsMake(0, 16, 25, 16));
     }];
+}
+
+- (void)hiddenShadow : (BOOL)isHidden {
+    self.shadowImgV.hidden = isHidden;
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {

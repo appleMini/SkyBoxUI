@@ -13,6 +13,9 @@
 @interface SPVideoView()
 
 @property (unsafe_unretained, nonatomic) IBOutlet UIImageView *imgv;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleLabelMaxWidthConstraint;
+
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imgvHeightConstraint;
 @property (unsafe_unretained, nonatomic) IBOutlet UILabel *titleLabel;
 @property (unsafe_unretained, nonatomic) IBOutlet UILabel *durationLabel;
@@ -31,6 +34,7 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     
+    _titleLabelMaxWidthConstraint.constant = 1.0 * 280 * kWSCALE;
     _imgvHeightConstraint.constant = 1.0 * 155 *kHSCALE;
     _status = CommomStatus;
     _deleteV.hidden = YES;
@@ -123,7 +127,7 @@
     
     if ([video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         self.alpha = 0.4;
-        self.durationLabel.text = @"DISCONNECTION";
+        self.durationLabel.text = @"Disconnected";
     }else {
         self.alpha = 1.0;
     }

@@ -10,7 +10,6 @@
 @implementation UIImage(Radius)
 
 - (UIImage *)drawRectWithRoundedCorner:(CGFloat)radius bgColor:(UIColor *)bgColor inRect:(CGRect)rect {
-    
     CGSize imageSize = self.size;
     CGFloat width = CGImageGetWidth(self.CGImage);
     CGFloat height = CGImageGetWidth(self.CGImage);
@@ -35,34 +34,43 @@
         scaledWidth = width * scaleFactor;
         scaledHeight = height * scaleFactor;
         
-        if(widthFactor > heightFactor){
-            thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
-        }else if(widthFactor < heightFactor){
-            thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
-        }
+        thumbnailPoint.x = (width - scaledWidth) * 0.5;
+        thumbnailPoint.y = (height - scaledHeight) * 0.5;
     }
     
-    UIGraphicsBeginImageContextWithOptions(rect.size, false, [UIScreen mainScreen].scale);
+    CGSize scaleSize = CGSizeMake(scaledWidth, scaledHeight);
+    UIGraphicsBeginImageContextWithOptions(scaleSize, false, [UIScreen mainScreen].scale);
     CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
+//    CGRect newRect =  CGRectMake(thumbnailPoint.x, thumbnailPoint.y, width, height);
+    [self drawInRect:rect];
     
     UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:radius];
     CGContextAddPath(ctx, path.CGPath);
     CGContextClip(ctx);
-    
-    CGContextSetFillColorWithColor(ctx, bgColor.CGColor);
-//    CGContextSetLineWidth(ctx, 3.0);//线的宽度
-//    CGContextSetStrokeColorWithColor(ctx, bgColor.CGColor);
-    CGContextFillRect(ctx, rect);//绘制
-    
-    CGRect scaleRect = CGRectMake(thumbnailPoint.x, thumbnailPoint.y, scaledWidth, scaledHeight);
-    [self drawInRect:scaleRect];
-    CGContextDrawPath(ctx, kCGPathFillStroke);
-    
     UIImage *output = UIGraphicsGetImageFromCurrentImageContext();
-    
     UIGraphicsEndImageContext();
     
     
+//    UIGraphicsBeginImageContextWithOptions(rect.size, false, [UIScreen mainScreen].scale);
+//    CGContextRef newCtx = UIGraphicsGetCurrentContext();
+//
+//    [output drawInRect:rect];
+//
+//    if (bgColor) {
+//        CGContextSetFillColorWithColor(newCtx, bgColor.CGColor);
+//        //    CGContextSetLineWidth(ctx, 3.0);//线的宽度
+//        //    CGContextSetStrokeColorWithColor(ctx, bgColor.CGColor);
+//        CGContextFillRect(newCtx, rect);//绘制
+//    }
+//
+//    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:radius];
+//    CGContextAddPath(newCtx, path.CGPath);
+//    CGContextClip(newCtx);
+//
+//    output = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+
     return output;
 }
 @end

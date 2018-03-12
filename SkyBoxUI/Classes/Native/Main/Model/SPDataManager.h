@@ -17,6 +17,8 @@ SPSingletonH(SPDataManager)
 @property (nonatomic, strong) NSMutableArray<SPCmdAddDevice *>  *servers;
 @property (nonatomic, strong) NSMutableDictionary               *cacheModel;
 
+@property (nonatomic, strong) SPCmdAddDevice                    *currentDevice;
+
 - (void)addServer:(SPCmdAddDevice *)device;
 - (void)removeServer:(SPCmdAddDevice *)server;
 - (void)removeAllServers;

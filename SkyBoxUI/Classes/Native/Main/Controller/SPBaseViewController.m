@@ -126,6 +126,7 @@
 }
 - (BOOL)showNavigatinBar {return YES;}
 - (NSDictionary *)params {return nil;}
+- (void)viewWillToChanged {}
 - (void)refresh {
     
 }
@@ -166,13 +167,16 @@
 @end
 @implementation SPMediaListResult
 @end
+
+@implementation SPCmdReadyMediaInfo
+@end
 @implementation SPSubtitleInfo
 @end
 @implementation SPCmdMediaInfo
 
-+ (NSString *)mj_replacedKeyFromPropertyName121:(NSString *)propertyName {
-    if ([propertyName isEqualToString:@"mid"]) return @"id";
-    return [propertyName mj_underlineFromCamel];
++ (NSDictionary *)replacedKeyFromPropertyName {
+    
+    return @{@"mid" : @"id"};
 }
 @end
 

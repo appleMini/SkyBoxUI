@@ -7,8 +7,7 @@
 
 #import "SPDLANView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
-#import "UIImage+Radius.h"
-#import "UIImage+RoundedCorner.h"
+#import "UIImage+Resize.h"
 
 @interface SPDLANView ()
 @property (weak, nonatomic) IBOutlet UIImageView *iconV;
@@ -78,12 +77,21 @@
         NSURL *iconURL = [NSURL fileURLWithPath:[dlanPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lud.png", (unsigned long)[video.deviceName hash]]]];
         
         self.iconV.contentMode = UIViewContentModeScaleAspectFill;
-        [self.iconV sd_setImageWithURL:iconURL placeholderImage:[Commons getImageFromResource:@"Home_videos_album_default"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-            if (image) {
-                self.iconV.image = [image roundedCornerImage:5 borderSize:0];
-            }
-        }];
+        
+//        CGFloat imgvWidth = (SCREEN_WIDTH - 17 * 3) / 2;
+//        UIImage *cornerRadiusImage = [[Commons getImageFromResource:@"Home_videos_album_default"] thumbnailImageWithCornerRadius:imgvWidth thumbnailHeight:imgvHeight transparentBorder:0 cornerRadius:5 interpolationQuality:kCGInterpolationHigh];
+//        [self.iconV sd_setImageWithURL:iconURL placeholderImage:cornerRadiusImage options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+//            if (image) {
+//                self.iconV.image = [image thumbnailImageWithCornerRadius:imgvWidth thumbnailHeight:imgvHeight transparentBorder:0 cornerRadius:5 interpolationQuality:kCGInterpolationHigh];
+//            }
+//        }];
 
+        [self.iconV sd_setImageWithURL:iconURL placeholderImage:[Commons getImageFromResource:@"Home_videos_album_default"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+        }];
+        
+        self.iconV.layer.cornerRadius = 5.0;
+        self.iconV.layer.masksToBounds = YES;
+        
         self.durationLabelTopConstraint.constant = 8;
         self.durationLabel.hidden = NO;
         self.durationLabel.font = [UIFont fontWithName:@"Calibri-light" size:12];

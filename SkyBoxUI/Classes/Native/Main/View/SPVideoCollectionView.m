@@ -7,10 +7,9 @@
 
 #import "SPVideoCollectionView.h"
 #import "SPVideo.h"
-#import "UIImage+Radius.h"
+#import "UIImage+Resize.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "UILabel+SPAttri.h"
-#import "UIImage+RoundedCorner.h"
 
 @interface SPVideoCollectionView()
 @property (weak, nonatomic) IBOutlet UIImageView *imgv;
@@ -83,17 +82,30 @@
 
 - (void)setVideo:(SPVideo *)video {
     _video = video;
+    
     self.imgvHeightConstraint.constant = 1.0 * 208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324;
     if (video.thumbnail_uri && ![video.thumbnail_uri hasPrefix:@"file://"] && ![video.thumbnail_uri hasPrefix:@"http://"] && ![video.thumbnail_uri hasPrefix:@"https://"]) {
         video.thumbnail_uri = [NSString stringWithFormat:@"file://%@", video.thumbnail_uri];
     }
     
     self.imgv.contentMode = UIViewContentModeScaleAspectFill;
+    CGFloat imgvWidth = (SCREEN_WIDTH - 17 * 3) / 2;
+    CGFloat imgvHeight = self.imgvHeightConstraint.constant;
+//    UIImage *cornerRadiusImage = [[Commons getImageFromResource:@"Home_videos_album_default"] thumbnailImageWithCornerRadius:imgvWidth thumbnailHeight:imgvHeight transparentBorder:0 cornerRadius:5 interpolationQuality:kCGInterpolationHigh];
+    
+//    [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:cornerRadiusImage options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+//        if (image) {
+//            self.imgv.image = [image thumbnailImageWithCornerRadius:imgvWidth thumbnailHeight:imgvHeight transparentBorder:0 cornerRadius:5 interpolationQuality:kCGInterpolationHigh];
+//        }
+//    }];
+    
     [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:[Commons getImageFromResource:@"Home_videos_album_default"] options:SDWebImageRetryFailed completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-        if (image) {
-            self.imgv.image = [image roundedCornerImage:10 borderSize:0];
-        }
     }];
+    
+    self.imgv.layer.cornerRadius = 5.0;
+    self.imgv.layer.masksToBounds = YES;
+//    self.imgv.layer.shouldRasterize = YES;
+//    self.imgv.layer.allowsEdgeAntialiasing = YES;
 
     self.label.font = [UIFont fontWithName:@"Calibri-Bold" size:15];
     self.label.textColor = [SPColorUtil getHexColor:@"#ffffff"];
@@ -136,7 +148,7 @@
     
     if ([video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         self.alpha = 0.4;
-        self.durationLabel.text = @"DISCONNECTION";
+        self.durationLabel.text = @"Disconnected";
     }else {
         self.alpha = 1.0;
     }

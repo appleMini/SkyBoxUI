@@ -74,6 +74,8 @@ typedef void (^NetStateBlock) (AFNetworkReachabilityStatus status);
 - (NSDictionary *)params;
 - (BOOL)showNavigatinBar;
 - (void)setupNaviView;
+//重新装载之后，检测见面更新
+- (void)viewWillToChanged;
 - (void)refresh;
 - (void)releaseAction;
 - (void)showOrHiddenTopView:(BOOL)show;
@@ -160,6 +162,11 @@ typedef enum : NSUInteger
 @class SPCmdMediaInfo;
 @interface SPMediaListResult : SPCmdBase
 @property (nonatomic, copy) NSArray *list;
+
+@end
+
+@interface SPCmdReadyMediaInfo : SPCmdBase
+@property (nonatomic, copy) NSDictionary *media;
 
 @end
 

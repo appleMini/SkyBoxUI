@@ -6,6 +6,8 @@
 //
 
 #import "SPHomeViewController.h"
+#import "SPHelpRootViewController.h"
+#import "SPNavigationBar.h"
 
 @interface SPHomeViewController ()
 
@@ -44,6 +46,7 @@
         UIButton *addItem = [UIButton buttonWithType:UIButtonTypeCustom];
         [addItem setImage:[Commons getPdfImageFromResource:@"Home_titlebar_button_add"] forState:UIControlStateNormal];
         addItem.backgroundColor = [UIColor clearColor];
+        addItem.userInteractionEnabled = NO;
         addItem.frame = CGRectMake(0, 0, 20, 20);
         [addItem addTarget:self action:@selector(addClick:) forControlEvents:UIControlEventTouchUpInside];
         
@@ -66,13 +69,18 @@
     //                                               [item bubbleEventWithUserInfo:notify];
     //
     //                                               } errorCall:nil];
-    NSUInteger selectedIndex = -1;
-    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:HomeHelpMiddleVCType],
-                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
-                             @"Done": @YES
-                             };
+//    NSUInteger selectedIndex = -1;
+//    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:HomeHelpMiddleVCType],
+//                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+//                             @"Done": @YES
+//                             };
+//
+//    [self.view bubbleEventWithUserInfo:notify];
+    SPHelpRootViewController *helpRootVC =  [[SPHelpRootViewController alloc] initWithDoneAction];
+    SPNavigationController *naivc = [[SPNavigationController alloc] initWithNavigationBarClass:[SPNavigationBar class] toolbarClass:nil];
+    naivc.viewControllers = @[helpRootVC];
     
-    [self.view bubbleEventWithUserInfo:notify];
+    [self presentViewController:naivc animated:YES completion:nil];
 }
 @end
 

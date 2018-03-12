@@ -8,6 +8,7 @@
 #import "SPAirScreenResultViewController.h"
 #import "TGRefresh.h"
 #import "SPButton.h"
+#import "SPVideo.h"
 
 @interface SPAirScreenResultViewController () {
     BOOL _showDisconnect;
@@ -21,12 +22,20 @@
 @end
 
 @implementation SPAirScreenResultViewController
-@synthesize dataArr = _dataArr;
+@synthesize emptyView = _emptyView;
 
-- (instancetype)initWithSomething {
-    self = [super initWithType:AirScreenType displayType:TableViewType];
+- (instancetype)init
+{
+    self = [super init];
     if (self) {
-        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveMessage:) name:UNITYTOUINOTIFICATIONNAME object:nil];
+    }
+    return self;
+}
+- (instancetype)initWithSomething {
+    self = [self initWithType:AirScreenType displayType:TableViewType];
+    if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveMessage:) name:UNITYTOUINOTIFICATIONNAME object:nil];
     }
     return self;
 }
@@ -34,6 +43,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self monitorNetWorkState];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -41,12 +51,128 @@
     [self topViewAddToKeyWindow];
     self.topView.hidden = NO;
     [KEYWINDOW bringSubviewToFront:self.topView];
+    self.topView.alpha = 0.0;
+    
+    [UIView animateWithDuration:1.0 animations:^{
+        self.topView.alpha = 1.0;
+    }];
+    
+    [self.serverBtn setTitle:[_airscreen computerName] forState:UIControlStateNormal];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [_topView removeFromSuperview];
     _topView = nil;
+}
+
+- (void)receiveMessage:(NSNotification *)notify {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideHUDForView:KEYWINDOW animated:YES];
+    });
+    
+    NSDictionary *dict = [notify userInfo];
+    NSString *jsonStr = dict[@"JsonResult"];
+    
+    if ([dict[@"method"] hash] == [@"showResult" hash]) {
+        if (!jsonStr) {
+            NSLog(@"mediaListResult is none....");
+            self.dataArr = nil;
+            [self reload];
+            return;
+        }
+        
+        SPMediaListResult *listResult = [[SPMediaListResult alloc] mj_setKeyValues:jsonStr];
+        
+        NSMutableArray *mediaListResult = [[NSMutableArray alloc] initWithCapacity:listResult.list.count];
+        for (NSDictionary *info in listResult.list) {
+            SPCmdMediaInfo *media = [[SPCmdMediaInfo alloc] mj_setKeyValues:info];
+            SPVideo *video = [[SPVideo alloc] init];
+            video.dataSource = AirScreenType;
+            video.mid = media.mid;
+            video.path = media.url;
+            video.title = media.name;
+            video.videoWidth = [NSString stringWithFormat:@"%d", media.width];
+            video.videoHeight = [NSString stringWithFormat:@"%d", media.height];
+            video.thumbnail_uri = media.thumbnail;
+            video.duration = [NSString stringWithFormat:@"%f", media.duration];
+            [mediaListResult addObject:video];
+        }
+        
+        self.dataArr = [mediaListResult copy];
+        [self reload];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
+            [self.scrollView.tg_header endRefreshing];
+            [self enableNavigationItems:YES];
+        });
+    }else if ([dict[@"method"] hash] == [@"updateNewMediasToClients" hash]) {
+        // "{\"command\":\"updateNewMediasToClients\",\"list\":[{\"defaultVRSetting\":2,\"duration\":0,\"height\":0,\"id\":\"6682fe7e28644cc6a79652bea1b943ff\",\"lastModified\":1509000978000,\"name\":\"abcd3D.mp4\",\"orientDegree\":\"0\",\"ratioTypeFor2DScreen\":\"default\",\"rotationFor2DScreen\":0,\"size\":64744560,\"subtitles\":[{\"type\":\"ass\",\"url\":\"http://192.168.14.90:6888/subtitle/6682fe7e28644cc6a79652bea1b943ff/i/0\"}],\"thumbnail\":\"\",\"thumbnailHeight\":0,\"thumbnailWidth\":0,\"url\":\"http://192.168.14.90:8001/stream/6682fe7e28644cc6a79652bea1b943ff\",\"userVRSetting\":-1,\"width\":0}]}"
+        SPMediaListResult *listResult = [[SPMediaListResult alloc] mj_setKeyValues:jsonStr];
+        
+        NSMutableArray *mediaListResult = [[NSMutableArray alloc] initWithCapacity:listResult.list.count];
+        for (NSDictionary *info in listResult.list) {
+            SPCmdMediaInfo *media = [[SPCmdMediaInfo alloc] mj_setKeyValues:info];
+            SPVideo *video = [[SPVideo alloc] init];
+            video.dataSource = AirScreenType;
+            video.mid = media.mid;
+            video.path = media.url;
+            video.title = media.name;
+            video.videoWidth = [NSString stringWithFormat:@"%d", media.width];
+            video.videoHeight = [NSString stringWithFormat:@"%d", media.height];
+            video.thumbnail_uri = media.thumbnail;
+            video.duration = [NSString stringWithFormat:@"%f", media.duration];
+            [mediaListResult addObject:video];
+        }
+        
+        NSMutableArray *oldArr = [NSMutableArray arrayWithArray:self.dataArr];
+        [oldArr addObjectsFromArray:mediaListResult];
+        
+        self.dataArr = [oldArr copy];
+        [self reload];
+    }else if ([dict[@"method"] hash] == [@"updateReadyMediaToClients" hash]) {
+        //   {"command":"updateReadyMediaToClients","media":{"defaultVRSetting":5,"duration":180000,"height":1080,"id":"6682fe7e28644cc6a79652bea1b943ff","lastModified":1509000978000,"name":"abcd3D.mp4","orientDegree":"0","ratioTypeFor2DScreen":"default","rotationFor2DScreen":0,"size":64744560,"subtitles":[{"type":"ass","url":"http://192.168.14.90:6888/subtitle/6682fe7e28644cc6a79652bea1b943ff/i/0"}],"thumbnail":"http://192.168.14.90:6888/thumbnail/6682fe7e28644cc6a79652bea1b943ff","thumbnailHeight":120,"thumbnailWidth":186,"url":"http://192.168.14.90:8001/stream/6682fe7e28644cc6a79652bea1b943ff","userVRSetting":-1,"width":1920}}
+        SPCmdReadyMediaInfo *readyMedia = [[SPCmdReadyMediaInfo alloc] mj_setKeyValues:jsonStr];
+        SPCmdMediaInfo *media = [[SPCmdMediaInfo alloc] mj_setKeyValues:readyMedia.media];
+        NSUInteger count = self.dataArr.count;
+        for (int i = 0; i < count; i++) {
+            SPVideo *video = self.dataArr[i];
+            if ([media.mid hash] == [video.mid hash]) {
+                video.dataSource = AirScreenType;
+                video.mid = media.mid;
+                video.path = media.url;
+                video.title = media.name;
+                video.videoWidth = [NSString stringWithFormat:@"%d", media.width];
+                video.videoHeight = [NSString stringWithFormat:@"%d", media.height];
+                video.thumbnail_uri = media.thumbnail;
+                video.duration = [NSString stringWithFormat:@"%f", media.duration];
+                break;
+            }
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateVisiableCell];
+        }); 
+    }else if ([dict[@"method"] hash] == [@"activeDisconnect" hash]) {
+        [self disconnection:nil];
+    }else if ([dict[@"method"] hash] == [@"deleteMedia" hash]) {
+        //"{\"command\":\"deleteMedia\",\"id\":\"6682fe7e28644cc6a79652bea1b943ff\"}"
+        SPCmdMediaInfo *mediaInfo = [[SPCmdMediaInfo alloc] mj_setKeyValues:jsonStr];
+        NSUInteger count = self.dataArr.count;
+        for (int i = 0; i < count; i++) {
+            SPVideo *video = self.dataArr[i];
+            if ([video.mid hash] == [mediaInfo.mid hash]) {
+                video.isDelete = YES;
+                break;
+            }
+        }
+        
+        [self removeItemWithAnimation];
+    }else if ([dict[@"method"] hash] == [@"deleteAllMedias" hash]) {
+        self.dataArr = nil;
+        [self reload];
+    }
 }
 
 - (void)setAirscreen:(SPAirscreen *)airscreen {
@@ -65,10 +191,48 @@
     self.topView.alpha = alpha;
 }
 
+- (void)monitorNetWorkState {
+    AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
+    AFNetworkReachabilityStatus status = [manager networkReachabilityStatus];
+    
+    __weak typeof(self) ws = self;
+    self.netStateBlock = ^(AFNetworkReachabilityStatus status) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (status == -1 || status == 0 || status == 1) {
+                [ws enableNavigationItems:NO];
+                ws.topView.userInteractionEnabled = NO;
+                [ws hiddenGradientLayer:YES];
+                
+                SPBackgrondView *backgroundView = [[SPBackgrondView alloc] initWithFrame:ws.view.bounds
+                                                                          backgroundType:NoWifi];
+                backgroundView.backgroundColor = SPBgColor;
+                [ws.view addSubview:backgroundView];
+                [ws.view bringSubviewToFront:backgroundView];
+                
+                ws.emptyView = backgroundView;
+            }else {
+                [ws enableNavigationItems:YES];
+                [ws hiddenGradientLayer:NO];
+                ws.topView.userInteractionEnabled = YES;
+                [ws.emptyView removeFromSuperview];
+            }
+        });
+    };
+    
+    self.netStateBlock(status);
+}
+
+- (void)viewWillToChanged {
+    //添加topView
+    
+}
+
 - (void)dealloc {
     [_topView removeFromSuperview];
     [_maskView removeGestureRecognizer:_tapGesture];
     [_maskView removeFromSuperview];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UNITYTOUINOTIFICATIONNAME object:nil];
 }
 
 //- (UIWindow *)keyWindow {
@@ -165,15 +329,32 @@
 
 - (void)doRefreshSenior {
     NSLog(@"doRefreshSenior");
-    
-    [[SPAirScreenManager shareAirScreenManager] connectServer:_airscreen complete:^(NSArray *listResult, NSString *resultStr) {
-        _dataArr = [listResult copy];
-        
+    [self enableNavigationItems:NO];
+//    _airscreen.ip = @"asdasfsfs";
+//    _airscreen.ips = @[@"asfafdsfsasda"];
+    AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
+    AFNetworkReachabilityStatus status = [manager networkReachabilityStatus];
+    if (status == -1 || status == 0 || status == 1) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             //        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
             [self.scrollView.tg_header endRefreshing];
-            [self reload];
+            [self enableNavigationItems:YES];
         });
+        return;
+    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIWindow *keyWindow = KEYWINDOW;
+        if (!keyWindow) {
+            return ;
+        }
+        
+        if (!self.scrollView.tg_header.isRefreshing) {
+            [MBProgressHUD showHUDAddedTo:KEYWINDOW animated:YES];
+        }
+    });
+    [[SPAirScreenManager shareAirScreenManager] connectServer:_airscreen complete:^(NSArray *listResult, NSString *resultStr) {
+        
     }];
 }
 

@@ -19,17 +19,16 @@
     NSInteger _level;
 }
 
-@property (nonatomic, assign) DisplayType showType;
-@property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) SPHeaderView *headerView;
-@property (nonatomic, copy) NSString *cellIditify;
-@property (nonatomic, strong) UIBarButtonItem *menuItem;
-@property (nonatomic, strong) UIButton *menuBtn;
+@property (nonatomic, assign) DisplayType       showType;
+@property (nonatomic, strong) UICollectionView  *collectionView;
+@property (nonatomic, strong) SPHeaderView      *headerView;
+@property (nonatomic, copy) NSString            *cellIditify;
+@property (nonatomic, strong) UIBarButtonItem   *menuItem;
+@property (nonatomic, strong) UIButton          *menuBtn;
 
-@property (nonatomic, strong) NSMutableArray <SPCmdAddDevice *>*devices;
+@property (nonatomic, strong) SPDLANManager     *dlanManager;
 
-@property (nonatomic, strong) SPDLANManager *dlanManager;
-
+@property (nonatomic, strong) NSString          *currentDeviceID;
 @property (nonatomic, strong)  UIImageView *gradientV;
 @end
 
@@ -62,15 +61,35 @@
     return self;
 }
 
+- (void)viewWillToChanged {
+    SPCmdAddDevice *__currentDevice = [SPDataManager shareSPDataManager].currentDevice;
+    if ((!__currentDevice) || ([_currentDeviceID hash] == [__currentDevice.ObjIDStr hash])) {
+        return;
+    }
+    
+    [self reloadDevice];
+}
+
 - (void)releaseAction {
-    [_dlanManager releaseAction];
-    _dlanManager = nil;
+//    [_dlanManager releaseAction];
+//    _dlanManager = nil;
 }
 
 - (void)dealloc {
     [_dlanManager releaseAction];
     _dlanManager = nil;
     NSLog(@"NetworkViewController  释放.....");
+}
+
+- (void)reloadDevice {
+    self.dlanManager = [SPDLANManager shareDLANManager];
+    self.dlanManager.delegate = self;
+    
+    NSArray *devices = [SPDataManager shareSPDataManager].devices;
+    if (devices) {
+        [self.headerView setDevices:[devices mutableCopy]];
+    }
+    [self.dlanManager showDLANDevices];
 }
 
 - (void)monitorNetWorkState {
@@ -93,14 +112,7 @@
             ws.dlanManager = nil;
         }else {
             [ws.emptyView removeFromSuperview];
-            ws.dlanManager = [SPDLANManager shareDLANManager];
-            ws.dlanManager.delegate = ws;
-            
-            NSArray *devices = [SPDataManager shareSPDataManager].devices;
-            if (devices) {
-                [ws.headerView setDevices:[devices mutableCopy]];
-            }
-            [ws.dlanManager showDLANDevices];
+            [ws reloadDevice];
         }
     };
     
@@ -332,6 +344,8 @@ static CGFloat height = 0;
         [_dataArr addObject:device];
         [self reload];
     }
+    
+    _currentDeviceID = pid;
 }
 
 - (void)browseDLNAFolder:(NSArray<SPCmdAddDevice *> *)folders parentID:(NSString *)pid {
@@ -344,6 +358,7 @@ static CGFloat height = 0;
     
     _dataArr = [folders copy];
     [self reload];
+    _currentDeviceID = pid;
 }
 
 #pragma -mark scrollView delegate

@@ -39,6 +39,9 @@
                         </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="GOOGLE SPOTLIGHT STORY - HELP" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IhA-Eu-7KO">
                             <rect key="frame" x="10" y="10" width="252" height="18"/>
+                            <constraints>
+                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="252" id="SBM-Q0-Vba"/>
+                            </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -92,6 +95,7 @@
                 <outlet property="imgv" destination="wu8-dG-Pt8" id="XRJ-5D-uyL"/>
                 <outlet property="imgvHeightConstraint" destination="lAw-vP-LSd" id="k15-WC-ETf"/>
                 <outlet property="titleLabel" destination="IhA-Eu-7KO" id="av6-JL-WmB"/>
+                <outlet property="titleLabelMaxWidthConstraint" destination="SBM-Q0-Vba" id="DFm-iR-HVt"/>
             </connections>
             <point key="canvasLocation" x="45.5" y="49"/>
         </view>

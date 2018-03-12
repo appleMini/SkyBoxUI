@@ -37,8 +37,6 @@ static SPAirScreenManager *_manager = nil;
         CADisplayLink *displink = [CADisplayLink displayLinkWithTarget:self selector:@selector(tickSocketIO_MainThread)];
         [displink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
         self.displink = displink;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveMessage:) name:UNITYTOUINOTIFICATIONNAME object:nil];
     }
     return self;
 }
@@ -59,7 +57,7 @@ static SPAirScreenManager *_manager = nil;
     
     if (_socketOpened) {
 //        _socketOpened = NO;
-        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"DestroySKYBOX"}];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"DestroySKYBOX"}];
     }
 }
 
@@ -135,43 +133,8 @@ static SPAirScreenManager *_manager = nil;
     }
 }
 
-- (void)receiveMessage:(NSNotification *)notify {
-    NSDictionary *dict = [notify userInfo];
-    
-    if ([dict[@"method"] isEqualToString:@"showResult"]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [MBProgressHUD hideHUDForView:KEYWINDOW animated:YES];
-        });
-        
-        NSString *jsonStr = dict[@"mediaListResult"];
-        if (!jsonStr) {
-            NSLog(@"mediaListResult is none....");
-            return;
-        }
-        
-        SPMediaListResult *listResult = [[SPMediaListResult alloc] mj_setKeyValues:jsonStr];
-        
-        NSMutableArray *mediaListResult = [[NSMutableArray alloc] initWithCapacity:listResult.list.count];
-        for (NSDictionary *info in listResult.list) {
-            SPCmdMediaInfo *media = [[SPCmdMediaInfo alloc] mj_setKeyValues:info];
-            SPVideo *video = [[SPVideo alloc] init];
-            video.path = media.url;
-            video.title = media.name;
-            video.videoWidth = [NSString stringWithFormat:@"%d", media.width];
-            video.videoHeight = [NSString stringWithFormat:@"%d", media.height];
-            video.thumbnail_uri = media.thumbnail;
-            video.duration = [NSString stringWithFormat:@"%f", media.duration];
-            [mediaListResult addObject:video];
-        }
-        
-        if (_completeBlock) {
-            self.completeBlock([mediaListResult copy], jsonStr);
-        }
-    }
-}
-
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UNITYTOUINOTIFICATIONNAME object:nil];
+    
 }
 @end
 

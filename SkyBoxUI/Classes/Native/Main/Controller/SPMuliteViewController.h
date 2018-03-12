@@ -20,6 +20,10 @@
 
 - (void)reload;
 - (void)doRefreshSenior;
+- (void)removeItemWithAnimation;
+- (void)updateVisiableCell;
+- (void)enableNavigationItems:(BOOL)enable;
+- (void)hiddenGradientLayer:(BOOL)isHidden;
 @end
 
 @interface SPAlertViewController : UIAlertController

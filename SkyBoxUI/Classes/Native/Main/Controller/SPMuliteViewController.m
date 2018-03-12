@@ -76,6 +76,7 @@
         UIButton *menuItem = [UIButton buttonWithType:UIButtonTypeCustom];
         //        menuItem.backgroundColor = [UIColor redColor];
         [menuItem addTarget:self action:@selector(menuClick:) forControlEvents:UIControlEventTouchUpInside];
+        menuItem.userInteractionEnabled = NO;
         _menuBtn = menuItem;
         [self setupMenuImage];
         _menuItem = [[UIBarButtonItem alloc] initWithCustomView:menuItem];
@@ -126,6 +127,7 @@
         
         for (NSIndexPath *indexPath in tableView.indexPathsForVisibleRows) {
             SPVideo *video = _dataArr[indexPath.row];
+            video.dataSource = _type;
             SPVideoCell *cell = (SPVideoCell *)[tableView cellForRowAtIndexPath:indexPath];
             cell.videoView.status = _status;
             cell.videoView.video = video;
@@ -142,6 +144,7 @@
         
         for (NSIndexPath *indexPath in visibleCells) {
             SPVideo *video = _dataArr[indexPath.row];
+            video.dataSource = _type;
             SPVideoCollectionCell *cell = (SPVideoCollectionCell *)[collectionView cellForItemAtIndexPath:indexPath];
             cell.videoView.status = _status;
             cell.videoView.video = video;
@@ -173,6 +176,7 @@
         UIButton *deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [deleteBtn setImage:[Commons getPdfImageFromResource:@"History_titlebar_button_delete"] forState:UIControlStateNormal];
         deleteBtn.backgroundColor = [UIColor clearColor];
+        deleteBtn.userInteractionEnabled = NO;
         //        deleteItem.frame = CGRectMake(0, 0, 20, 20);
         [deleteBtn addTarget:self action:@selector(deleteItem:) forControlEvents:UIControlEventTouchUpInside];
         
@@ -216,7 +220,6 @@
         cancelBtn.titleLabel.font = [UIFont fontWithName:@"Calibri" size:19];
         [cancelBtn setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
         cancelBtn.backgroundColor = [UIColor clearColor];
-        
         [cancelBtn addTarget:self action:@selector(cancelClick:) forControlEvents:UIControlEventTouchUpInside];
         
         _cancleItem = [[UIBarButtonItem alloc] initWithCustomView:cancelBtn];
@@ -249,7 +252,6 @@
         deleteBtn.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:19];
         [deleteBtn setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
         deleteBtn.backgroundColor = [UIColor clearColor];
-        
         [deleteBtn addTarget:self action:@selector(deleteClick:) forControlEvents:UIControlEventTouchUpInside];
         
         _delBtn = deleteBtn;
@@ -619,6 +621,10 @@
     
 }
 
+- (void)hiddenGradientLayer:(BOOL)isHidden {
+    self.view.layer.mask.hidden = isHidden;
+}
+
 - (void)gradientLayer:(CGFloat)Height {
     CGRect rect = CGRectMake(0, -64, self.view.frame.size.width, self.view.frame.size.height + 64);
     CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
@@ -650,8 +656,8 @@
     [self handleScroll];
     _showType = showType;
     [self enableNavigationItems:NO];
-    [UIView animateWithDuration:0.5 animations:^{
-        self.scrollView.alpha = 0.01;
+    [UIView animateWithDuration:0.2 animations:^{
+        self.scrollView.alpha = 0.0;
     } completion:^(BOOL finished) {
         [self gradientLayer:0.0];
         [self setupMenuImage];
@@ -660,7 +666,7 @@
         [self setupScrollView];
         [self.view bringSubviewToFront:self.imgV];
         
-        self.scrollView.alpha = 0.01;
+        self.scrollView.alpha = 0.0;
         [self reload];
     }];
     
@@ -670,6 +676,7 @@
 }
 
 - (void)refresh {
+    [self enableNavigationItems:YES];
     //    dispatch_async(dispatch_get_main_queue(), ^{
     //        [_scrollView.tg_header beginRefreshing];
     //    });
@@ -700,10 +707,18 @@
     return _imgV;
 }
 
+- (void)showScrollViewWithAnimation {
+    [UIView animateWithDuration:0.3 animations:^{
+        self.scrollView.alpha = 1.0;
+    } completion:^(BOOL finished) {
+        [self enableNavigationItems:YES];
+    }];
+}
+
 - (void)reload {
-    [_scrollView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-    
     dispatch_async(dispatch_get_main_queue(), ^{
+        [_scrollView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
+        
         BOOL isHidden = YES;
         [self enableNavigationItems:NO];
         if(!_dataArr || _dataArr.count <= 0) {
@@ -771,21 +786,31 @@
                             [tableView scrollToRowAtIndexPath:_showIndexpath atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
                         } completion:^(BOOL finished) {
                             _showIndexpath = nil;
-                            [self enableNavigationItems:YES];
+                            [self showScrollViewWithAnimation];
                         }];
                     });
                 }else {
-                    CGFloat offsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
-                    NSLog(@"offsetY ===== %f", offsetY);
-                    //                    [self.scrollView setContentOffset:CGPointMake(0, offsetY) animated:YES];
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         [UIScrollView animateWithDuration:0.02 animations:^{
-                            self.scrollView.contentOffset = (offsetY == 0) ? CGPointMake(0, 0) : CGPointMake(0, offsetY);
-                        } completion:^(BOOL finished) {
+                            self.scrollView.contentOffset = CGPointMake(0, 0);
+                         } completion:^(BOOL finished) {
                             [self enableNavigationItems:YES];
-                            [self addGradientLayer:offsetY];
                         }];
                     });
+                    
+                    
+//                    CGFloat offsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
+//                    NSLog(@"offsetY ===== %f", offsetY);
+//                    //                    [self.scrollView setContentOffset:CGPointMake(0, offsetY) animated:YES];
+//                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                        [UIScrollView animateWithDuration:0.02 animations:^{
+//                            self.scrollView.contentOffset = (offsetY == 0) ? CGPointMake(0, 0) : CGPointMake(0, offsetY);
+//                        } completion:^(BOOL finished) {
+//
+//                            [self addGradientLayer:offsetY];
+//                             [self showScrollViewWithAnimation];
+//                        }];
+//                    });
                 }
             }
                 break;
@@ -800,21 +825,33 @@
                             [collectionView scrollToItemAtIndexPath:_showIndexpath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:NO];
                         } completion:^(BOOL finished) {
                             _showIndexpath = nil;
-                            [self enableNavigationItems:YES];
+                            [UIView animateWithDuration:0.5 animations:^{
+                                self.scrollView.alpha = 1.0;
+                            } completion:^(BOOL finished) {
+                                [self showScrollViewWithAnimation];
+                            }];
                         }];
                     });
                     
                 }else {
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        CGFloat offsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
-                        
-                        [UIView animateWithDuration:0.02 animations:^{
-                            offsetY == 0 ? nil : [self.scrollView setContentOffset:CGPointMake(0, offsetY)];
+                        [UIScrollView animateWithDuration:0.02 animations:^{
+                            self.scrollView.contentOffset = CGPointMake(0, 0);
                         } completion:^(BOOL finished) {
                             [self enableNavigationItems:YES];
-                            [self addGradientLayer:offsetY];
                         }];
                     });
+//                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                        CGFloat offsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
+//
+//                        [UIView animateWithDuration:0.02 animations:^{
+//                            offsetY == 0 ? nil : [self.scrollView setContentOffset:CGPointMake(0, offsetY)];
+//                        } completion:^(BOOL finished) {
+//
+//                            [self addGradientLayer:offsetY];
+//                             [self showScrollViewWithAnimation];
+//                        }];
+//                    });
                 }
             }
                 break;
@@ -822,53 +859,36 @@
                 break;
         }
         
-        [UIView animateWithDuration:0.5 animations:^{
-            self.scrollView.alpha = 1.0;
-        } completion:^(BOOL finished) {
-            [self enableNavigationItems:YES];
-        }];
-        
-        _animation = NO;
-        if (_animation) {
-            self.imgV.alpha = 1.0;
-            self.scrollView.alpha = 0.01;
-
-            [UIView animateWithDuration:1.0 animations:^{
-                self.imgV.alpha = 0.01;
-            } completion:^(BOOL finished) {
-                [UIView animateWithDuration:2.0 animations:^{
-                    self.scrollView.alpha = 1.0;
-                } completion:^(BOOL finished) {
-                    [self.view bringSubviewToFront:self.scrollView];
-                    [UIView animateWithDuration:0.02 animations:^{
-                        [self.imgV removeFromSuperview];
-                        self.imgV = nil;
-                    }];
-                }];
-            }];
-        }
-
-        _animation = NO;
     });
 }
 
 - (void)didFinishRequest:(NSArray *)arr {
+    BOOL refresh = NO;
+    NSArray *array = nil;
     if (arr) {
-        _dataArr = [SPVideo mj_objectArrayWithKeyValuesArray:arr];
-        NSMutableArray *paths = [[NSMutableArray alloc] initWithCapacity:_dataArr.count];
-        for (SPVideo *video in _dataArr) {
+        array = [SPVideo mj_objectArrayWithKeyValuesArray:arr];
+        NSMutableArray *paths = [[NSMutableArray alloc] initWithCapacity:array.count];
+        for (SPVideo *video in array) {
             [paths addObject:video.path];
         }
         
         SPDataManager *dataManager = [SPDataManager shareSPDataManager];
-        [dataManager setCacheWithDataSource:_type dataSourceString:[[paths mj_JSONString] hash]];
+        
+        NSUInteger dataHash = [dataManager getHash:_type];
+        NSUInteger newHash = [[paths mj_JSONString] hash];
+        
+        if (dataHash != newHash) {
+            refresh = YES;
+            [dataManager setCacheWithDataSource:_type dataSourceString:newHash];
+        }
+        
     }
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         //        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
         [_scrollView.tg_header endRefreshing];
-        
-        [self reload];
+        _dataArr = array;
+        refresh ? [self reload] : [self updateVisiableCell];
     });
 }
 
@@ -946,8 +966,10 @@
     
     if(_status == CommomStatus && [video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         cell.userInteractionEnabled = NO;
+        [cell hiddenShadow:YES];
     }else {
         cell.userInteractionEnabled = YES;
+        [cell hiddenShadow:NO];
     }
     return cell;
 }
@@ -977,13 +999,16 @@
     video.dataSource = _type;
     cell.videoView.status = _status;
     cell.videoView.video = video;
+    
     cell.videoView.delegate = self;
     cell.indexPath = indexPath;
     
     if(_status == CommomStatus && [video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         cell.userInteractionEnabled = NO;
+        [cell hiddenShadow:YES];
     }else {
         cell.userInteractionEnabled = YES;
+        [cell hiddenShadow:NO];
     }
     return cell;
 }
@@ -1066,6 +1091,7 @@ static CGFloat height = 0;
         [UIView animateWithDuration:0.15 animations:^{
             self.mainVC.navigationController.navigationBar.alpha = 0.0;
         } completion:^(BOOL finished) {
+            
             self.mainVC.navigationItem.leftBarButtonItems = @[self.cancleItem];
             self.mainVC.navigationItem.rightBarButtonItems = @[self.delItem];
             
@@ -1176,17 +1202,17 @@ static CGFloat height = 0;
     [self addGradientLayer:offsetY];
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    CGFloat oldOffsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
-    CGFloat offsetY =  scrollView.contentOffset.y;
-    if (oldOffsetY != offsetY) {
-        SPDataManager *dataManager = [SPDataManager shareSPDataManager];
-        NSUInteger hash = [dataManager getHash:_type];
-        CGFloat offsetY = self.scrollView.contentOffset.y;
-        
-        [dataManager setCache:_type displayType:[NSNumber numberWithUnsignedInteger:_showType] contentOffsetY:[NSNumber numberWithFloat:offsetY] dataSourceString:[NSNumber numberWithUnsignedInteger:hash]];
-    }
-}
+//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+//    CGFloat oldOffsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
+//    CGFloat offsetY =  scrollView.contentOffset.y;
+//    if (oldOffsetY != offsetY) {
+//        SPDataManager *dataManager = [SPDataManager shareSPDataManager];
+//        NSUInteger hash = [dataManager getHash:_type];
+//        CGFloat offsetY = self.scrollView.contentOffset.y;
+//
+//        [dataManager setCache:_type displayType:[NSNumber numberWithUnsignedInteger:_showType] contentOffsetY:[NSNumber numberWithFloat:offsetY] dataSourceString:[NSNumber numberWithUnsignedInteger:hash]];
+//    }
+//}
 //- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 //
 //    // 去除尾视图粘性的方法
@@ -1214,7 +1240,7 @@ static CGFloat height = 0;
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    [self alertViewSubviews:self];
+//    [self alertViewSubviews:self];
 }
 
 #pragma -mark private

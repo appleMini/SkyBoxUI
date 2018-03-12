@@ -8,6 +8,10 @@
 #import "SPVideoCollectionCell.h"
 #import "SPVideoCollectionView.h"
 
+@interface SPVideoCollectionCell()
+@property (strong, nonatomic)UIImageView *shadowImgV;
+@end
+
 @implementation SPVideoCollectionCell
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -51,12 +55,18 @@
 //    shadowImgV.backgroundColor = [UIColor redColor];
     [self.contentView insertSubview:shadowImgV belowSubview:self.videoView];
     
+    _shadowImgV = shadowImgV;
     [shadowImgV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.mas_equalTo(-12);
         make.trailing.mas_equalTo(12);
         make.top.mas_equalTo(0);
         make.height.mas_equalTo(208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324 + 14);
     }];
+    
+}
+
+- (void)hiddenShadow : (BOOL)isHidden {
+    self.shadowImgV.hidden = isHidden;
 }
 
 - (void)setHighlighted:(BOOL)highlighted {

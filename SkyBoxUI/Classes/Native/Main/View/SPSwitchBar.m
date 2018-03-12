@@ -48,7 +48,7 @@ SPSingletonM(SPSwitchBar)
     
     _isHidden = YES;
     CGRect frame = self.frame;
-    frame.origin.y += LargeHeight;
+    frame.origin.y += (LargeHeight + 5);
     [UIView animateWithDuration:0.3 animations:^{
         self.frame = frame;
     } completion:^(BOOL finished) {
@@ -64,7 +64,7 @@ SPSingletonM(SPSwitchBar)
     self.hidden = NO;
     [[self superview] bringSubviewToFront:self];
     CGRect frame = self.frame;
-    frame.origin.y -= LargeHeight;
+    frame.origin.y -= (LargeHeight + 5);
     [UIView animateWithDuration:0.3 animations:^{
         self.frame = frame;
     } completion:^(BOOL finished) {
@@ -75,7 +75,7 @@ SPSingletonM(SPSwitchBar)
 #pragma -mark init
 - (instancetype)init
 {
-    CGFloat y = [SPDeviceUtil isiPhoneX] ? (SCREEN_HEIGHT - 0 - LargeHeight) : (SCREEN_HEIGHT - LargeHeight);
+    CGFloat y = [SPDeviceUtil isiPhoneX] ? (SCREEN_HEIGHT - 5 - LargeHeight) : (SCREEN_HEIGHT - LargeHeight);
     self = [self initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, LargeHeight)];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
@@ -98,7 +98,11 @@ SPSingletonM(SPSwitchBar)
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    CGFloat y = (SCREEN_HEIGHT - LargeHeight);
+    if (_isHidden) {
+        return;
+    }
+    
+    CGFloat y = [SPDeviceUtil isiPhoneX] ? (SCREEN_HEIGHT - 5 - LargeHeight) : (SCREEN_HEIGHT - LargeHeight);
     self.frame = CGRectMake(0, y, SCREEN_WIDTH, LargeHeight);
 }
 
