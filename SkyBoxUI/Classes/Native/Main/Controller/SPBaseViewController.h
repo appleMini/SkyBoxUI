@@ -32,6 +32,10 @@ _Pragma("clang diagnostic pop")\
 #define  UNITYTOUINOTIFICATIONNAME  @"AcrossDifferentNativeNotify_UNITY_UI"
 #define  SCANOVERUITOUNITYNOTIFICATIONNAME  @"SCANOVERNativeNotify_UI_UNITY"
 
+#ifndef  UPDATETHUMBNAIL_NOTIFICATION
+    #define  UPDATETHUMBNAIL_NOTIFICATION  @"UpdateThumbnailNotify_UI_UTIL"
+#endif
+
 typedef enum : NSUInteger {
     TableViewType,
     CollectionViewType,

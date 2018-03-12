@@ -22,6 +22,8 @@
     NSIndexPath *_showIndexpath;
     
     BOOL _animation;
+    
+    BOOL _autoRefresh;
 }
 
 @property (nonatomic, strong) NSMutableArray *selectArr;
@@ -55,6 +57,7 @@
         DisplayType willDisplayType = [[SPDataManager shareSPDataManager] getDisplayType:type];
         _showType = (willDisplayType == UnknownType) ? show : willDisplayType;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateThumbnail) name:UPDATETHUMBNAIL_NOTIFICATION object:nil];
     }
     return self;
 }
@@ -119,6 +122,21 @@
     return [NSString stringWithFormat:@"%d / %ld", _selectCount, _dataArr.count];
 }
 #pragma -mark private
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UPDATETHUMBNAIL_NOTIFICATION object:nil];
+}
+- (void)updateThumbnail {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.scrollView.tracking) {
+            _autoRefresh = YES;
+            return;
+        }
+        
+        [self updateVisiableCell];
+    });
+}
+
 - (void)updateVisiableCell {
     NSArray *visibleCells = nil;
     if (_showType == TableViewType) {
@@ -1202,17 +1220,13 @@ static CGFloat height = 0;
     [self addGradientLayer:offsetY];
 }
 
-//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-//    CGFloat oldOffsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
-//    CGFloat offsetY =  scrollView.contentOffset.y;
-//    if (oldOffsetY != offsetY) {
-//        SPDataManager *dataManager = [SPDataManager shareSPDataManager];
-//        NSUInteger hash = [dataManager getHash:_type];
-//        CGFloat offsetY = self.scrollView.contentOffset.y;
-//
-//        [dataManager setCache:_type displayType:[NSNumber numberWithUnsignedInteger:_showType] contentOffsetY:[NSNumber numberWithFloat:offsetY] dataSourceString:[NSNumber numberWithUnsignedInteger:hash]];
-//    }
-//}
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if (_autoRefresh) {
+        [self updateThumbnail];
+        _autoRefresh = NO;
+    }
+}
+
 //- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 //
 //    // 去除尾视图粘性的方法
