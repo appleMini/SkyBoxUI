@@ -24,6 +24,7 @@
     BOOL _animation;
     
     BOOL _autoRefresh;
+    BOOL _unAutoRefresh;
 }
 
 @property (nonatomic, strong) NSMutableArray *selectArr;
@@ -128,7 +129,7 @@
 }
 - (void)updateThumbnail {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.scrollView.tracking) {
+        if (_unAutoRefresh || self.scrollView.tracking) {
             _autoRefresh = YES;
             return;
         }
@@ -138,12 +139,13 @@
 }
 
 - (void)updateVisiableCell {
+    NSLog(@"当前线程 1====  %@", [[NSThread currentThread] name]);
     NSArray *visibleCells = nil;
     if (_showType == TableViewType) {
         UITableView *tableView = (UITableView *)self.scrollView;
         visibleCells = tableView.indexPathsForVisibleRows;
         
-        for (NSIndexPath *indexPath in tableView.indexPathsForVisibleRows) {
+        for (NSIndexPath *indexPath in visibleCells) {
             SPVideo *video = _dataArr[indexPath.row];
             video.dataSource = _type;
             SPVideoCell *cell = (SPVideoCell *)[tableView cellForRowAtIndexPath:indexPath];
@@ -670,27 +672,30 @@
 }
 
 - (void)setShowType:(DisplayType)showType {
-    _animation = YES;
-    [self handleScroll];
-    _showType = showType;
-    [self enableNavigationItems:NO];
-    [UIView animateWithDuration:0.2 animations:^{
-        self.scrollView.alpha = 0.0;
-    } completion:^(BOOL finished) {
-        [self gradientLayer:0.0];
-        [self setupMenuImage];
-        [_scrollView removeFromSuperview];
-        _scrollView = nil;
-        [self setupScrollView];
-        [self.view bringSubviewToFront:self.imgV];
+    NSLog(@"当前线程 ====  %@", [[NSThread currentThread] name]);
+        _animation = YES;
+        [self handleScroll];
+        _showType = showType;
+        [self enableNavigationItems:NO];
+        [UIView animateWithDuration:0.2 animations:^{
+            _unAutoRefresh = YES;
+            self.scrollView.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            [self gradientLayer:0.0];
+            [self setupMenuImage];
+            [_scrollView removeFromSuperview];
+            _scrollView = nil;
+            [self setupScrollView];
+            [self.view bringSubviewToFront:self.imgV];
+            
+            self.scrollView.alpha = 0.0;
+            [self reload];
+            _unAutoRefresh = NO;
+        }];
         
-        self.scrollView.alpha = 0.0;
-        [self reload];
-    }];
-    
-    //截图
-//    _snapshot = [self snapshotPhoto:_scrollView];
-//    self.imgV.image = _snapshot;
+        //截图
+        //    _snapshot = [self snapshotPhoto:_scrollView];
+        //    self.imgV.image = _snapshot;
 }
 
 - (void)refresh {
@@ -906,7 +911,7 @@
         //        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
         [_scrollView.tg_header endRefreshing];
         _dataArr = array;
-        refresh ? [self reload] : [self updateVisiableCell];
+        (refresh || !_dataArr || _dataArr.count == 0) ? [self reload] : [self updateVisiableCell];
     });
 }
 
@@ -1227,8 +1232,8 @@ static CGFloat height = 0;
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     if (_autoRefresh) {
-        [self updateThumbnail];
         _autoRefresh = NO;
+        [self updateThumbnail];
     }
 }
 
