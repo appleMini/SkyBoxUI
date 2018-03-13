@@ -107,7 +107,7 @@
         if (_status == DeleteStatus) {
             _deleteV.hidden = NO;
             [self bringSubviewToFront:_deleteV];
-            _deleteV.alpha = 0.0;
+            _deleteV.alpha = 1.0;
             if (_video.isDelete) {
                 self.darkView.alpha = 0.4;
                 _deleteV.image = [Commons getImageFromResource:@"Home_videos_selected"];
@@ -115,10 +115,6 @@
                 self.darkView.alpha = 0.2;
                 _deleteV.image = [Commons getImageFromResource:@"Home_videos_unselect"];
             }
-            
-            [UIView animateWithDuration:0.3 animations:^{
-                _deleteV.alpha = 1.0;
-            }];
         }else {
             _deleteV.hidden = YES;
             [self removeDarkView];

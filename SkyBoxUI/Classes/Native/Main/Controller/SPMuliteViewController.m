@@ -1149,6 +1149,9 @@ static CGFloat height = 0;
     
     [self updateVisiableCell];
     
+    self.delBtn.enabled = YES;
+    self.delBtn.alpha = 1.0;
+    
     //navigation
     [self resetNaviWithAnimation:YES];
     
@@ -1174,6 +1177,8 @@ static CGFloat height = 0;
     _status = DeleteStatus;
     _selectCount = 1;
     
+    self.delBtn.enabled = YES;
+    self.delBtn.alpha = 1.0;
     //navigation
     [self resetNaviWithAnimation:YES];
     
