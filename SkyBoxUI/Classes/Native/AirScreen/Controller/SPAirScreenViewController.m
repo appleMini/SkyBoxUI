@@ -371,7 +371,7 @@ typedef enum : NSUInteger {
 
 - (void)dealloc {
     _airScreenManager = nil;
-    NSLog(@"airscreen 销毁。。。。。。。");
+    //   NSLog(@"airscreen 销毁。。。。。。。");
 }
 
 - (IBAction)searchClick:(id)sender {

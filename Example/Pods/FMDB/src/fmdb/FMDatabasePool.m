@@ -156,7 +156,7 @@
                 NSUInteger currentCount = [self->_databaseOutPool count] + [self->_databaseInPool count];
                 
                 if (currentCount >= self->_maximumNumberOfDatabasesToCreate) {
-                    NSLog(@"Maximum number of databases (%ld) has already been reached!", (long)currentCount);
+                    //   NSLog(@"Maximum number of databases (%ld) has already been reached!", (long)currentCount);
                     return;
                 }
             }
@@ -188,7 +188,7 @@
             }
         }
         else {
-            NSLog(@"Could not open up the database at path %@", self->_path);
+            //   NSLog(@"Could not open up the database at path %@", self->_path);
             db = 0x00;
         }
     }];
@@ -308,7 +308,7 @@
     return err;
 #else
     NSString *errorMessage = NSLocalizedString(@"Save point functions require SQLite 3.7", nil);
-    if (self.logsErrors) NSLog(@"%@", errorMessage);
+    if (self.logsErrors) //   NSLog(@"%@", errorMessage);
     return [NSError errorWithDomain:@"FMDatabase" code:0 userInfo:@{NSLocalizedDescriptionKey : errorMessage}];
 #endif
 }

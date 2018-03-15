@@ -76,7 +76,7 @@
     
     if ([dict[@"method"] hash] == [@"showResult" hash]) {
         if (!jsonStr) {
-            NSLog(@"mediaListResult is none....");
+            //   NSLog(@"mediaListResult is none....");
             self.dataArr = nil;
             [self reload];
             return;
@@ -328,7 +328,7 @@
 }
 
 - (void)doRefreshSenior {
-    NSLog(@"doRefreshSenior");
+    //   NSLog(@"doRefreshSenior");
     [self enableNavigationItems:NO];
 //    _airscreen.ip = @"asdasfsfs";
 //    _airscreen.ips = @[@"asfafdsfsasda"];

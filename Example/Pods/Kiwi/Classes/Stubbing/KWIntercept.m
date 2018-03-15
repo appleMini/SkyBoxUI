@@ -71,7 +71,7 @@ IMP KWForwardingImplementationForMethodEncoding(const char* encoding) {
     NSMethodSignature *signature = [NSMethodSignature signatureWithObjCTypes:encoding];
 
     if (*[signature methodReturnType] == '{' && [signature methodReturnLength] > stretLengthThreshold) {
-        NSLog(@"Warning: The Objective-C runtime appears to have bugs when forwarding messages with certain struct layouts as return types, so if a crash occurs this could be the culprit");
+        //   NSLog(@"Warning: The Objective-C runtime appears to have bugs when forwarding messages with certain struct layouts as return types, so if a crash occurs this could be the culprit");
         return KWStretForwardingImplementation();
     } else {
         return KWRegularForwardingImplementation();

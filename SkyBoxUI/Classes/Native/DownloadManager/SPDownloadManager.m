@@ -74,7 +74,7 @@
     taskModel.localPath = tmpMoviePath;
     movieModel.localUrl = tmpMoviePath;
     
-    NSLog(@"tmpMoviePath ====== %@", tmpMoviePath);
+    //   NSLog(@"tmpMoviePath ====== %@", tmpMoviePath);
     return tmpMoviePath;
 }
 

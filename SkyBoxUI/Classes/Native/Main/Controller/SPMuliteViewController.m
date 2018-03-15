@@ -139,7 +139,7 @@
 }
 
 - (void)updateVisiableCell {
-    NSLog(@"当前线程 1====  %@", [[NSThread currentThread] name]);
+    //   NSLog(@"当前线程 1====  %@", [[NSThread currentThread] name]);
     NSArray *visibleCells = nil;
     if (_showType == TableViewType) {
         UITableView *tableView = (UITableView *)self.scrollView;
@@ -291,7 +291,7 @@
         
         NSString *propertyName = [NSString stringWithUTF8String:name];
         
-        NSLog(@"runtime ==  %@", propertyName);
+        //   NSLog(@"runtime ==  %@", propertyName);
     }
 }
 
@@ -568,7 +568,7 @@
                 }
             }
             
-            NSLog(@"finnalIndexPath  === %ld", (long)finnalIndexPath.row);
+            //   NSLog(@"finnalIndexPath  === %ld", (long)finnalIndexPath.row);
 //            _showIndexpath = [NSIndexPath indexPathForItem:finnalCell.indexPath.row inSection:0];
             _showIndexpath = [NSIndexPath indexPathForItem:finnalIndexPath.row inSection:0];
         }
@@ -590,7 +590,7 @@
                 }
             }
             
-            NSLog(@"CollectionViewType finnalIndexPath  === %ld", (long)finnalIndexPath.item);
+            //   NSLog(@"CollectionViewType finnalIndexPath  === %ld", (long)finnalIndexPath.item);
             _showIndexpath = [NSIndexPath indexPathForRow:finnalIndexPath.item inSection:0];
         }
             break;
@@ -672,7 +672,7 @@
 }
 
 - (void)setShowType:(DisplayType)showType {
-    NSLog(@"当前线程 ====  %@", [[NSThread currentThread] name]);
+    //   NSLog(@"当前线程 ====  %@", [[NSThread currentThread] name]);
         _animation = YES;
         [self handleScroll];
         _showType = showType;
@@ -823,7 +823,7 @@
                     
                     
 //                    CGFloat offsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
-//                    NSLog(@"offsetY ===== %f", offsetY);
+//                    //   NSLog(@"offsetY ===== %f", offsetY);
 //                    //                    [self.scrollView setContentOffset:CGPointMake(0, offsetY) animated:YES];
 //                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //                        [UIScrollView animateWithDuration:0.02 animations:^{
@@ -918,7 +918,7 @@
 - (void)doRefreshSenior {
     __weak typeof(self) ws = self;
     self.refreshBlock = ^(NSString *dataStr){
-        NSLog(@"dataStr === %@", dataStr);
+        //   NSLog(@"dataStr === %@", dataStr);
         NSArray *arr = [NSJSONSerialization JSONObjectWithData:[dataStr mj_JSONData] options:NSJSONReadingAllowFragments error:nil];
         
         [ws didFinishRequest:arr];
@@ -1271,7 +1271,7 @@ static CGFloat height = 0;
 - (NSArray <UIView *>*)alertControllerActionView:(UIView *)view {
     NSMutableArray *labels = [[NSMutableArray alloc] init];
     for (UIView *v in view.subviews) {
-//        NSLog(@"alertControllerActionView ===  %@", v);
+//        //   NSLog(@"alertControllerActionView ===  %@", v);
         if ([v isKindOfClass:[UILabel class]]) {
             [labels addObject:v];
         }else{

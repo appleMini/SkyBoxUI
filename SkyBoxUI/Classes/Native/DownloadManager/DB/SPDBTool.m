@@ -22,7 +22,7 @@
         ;
         if([_db executeUpdate:sql])
         {
-            NSLog(@"创建表成功");
+            //   NSLog(@"创建表成功");
         }
         
         [_db close];
@@ -36,7 +36,7 @@
         FMDatabaseQueue *queue = [FMDatabaseQueue databaseQueueWithPath:sqliteFilePath];
         [queue inDatabase:^(FMDatabase *db) {
             if ([db executeUpdate:@"UPDATE sp_movies_list SET remoteUrl = ?, localUrl = ?, bps = ?, totalLength = ?, isFinished = ? where movieTitle = ?;", movie.remoteUrl, movie.localUrl, movie.bps, [NSNumber numberWithLong:movie.totalLength], [NSNumber numberWithBool:movie.isFinished], movie.movieTitle]) {
-                NSLog(@"更新成功！");
+                //   NSLog(@"更新成功！");
             }
             
             [db close];
@@ -46,7 +46,7 @@
         FMDatabaseQueue *queue = [FMDatabaseQueue databaseQueueWithPath:sqliteFilePath];
         [queue inDatabase:^(FMDatabase *db) {
             if ([db executeUpdate:@"INSERT INTO sp_movies_list (movieTitle, remoteUrl, localUrl, bps,totalLength, isFinished) VALUES (?, ? , ? , ?, ?, ?);", movie.movieTitle, movie.remoteUrl ,movie.localUrl, movie.bps, [NSNumber numberWithLong:movie.totalLength],[NSNumber numberWithBool:movie.isFinished]]) {
-                NSLog(@"保存成功！");
+                //   NSLog(@"保存成功！");
             }
             
             [db close];
@@ -58,7 +58,7 @@
     FMDatabaseQueue *queue = [FMDatabaseQueue databaseQueueWithPath:sqliteFilePath];
     [queue inDatabase:^(FMDatabase *db) {
         if ([db executeUpdate:@"delete from sp_movies_list where movieTitle = ?;", movie.movieTitle]) {
-            NSLog(@"删除成功");
+            //   NSLog(@"删除成功");
         }
         
         [db close];
@@ -69,7 +69,7 @@
     FMDatabaseQueue *queue = [FMDatabaseQueue databaseQueueWithPath:sqliteFilePath];
     [queue inDatabase:^(FMDatabase *db) {
         if ([db executeUpdate:@"delete from sp_movies_list;"]) {
-            NSLog(@"删除成功");
+            //   NSLog(@"删除成功");
         }
         
         [db close];

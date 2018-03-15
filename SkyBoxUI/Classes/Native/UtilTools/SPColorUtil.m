@@ -106,7 +106,7 @@
         alphaValue = (float)(unsigned char)(colorCode>>24)/0xff;
     }
     
-//    NSLog(@"alpha:%f----r:%f----g:%f----b:%f",alphaValue,(float)redByte/0xff,(float)greenByte/0xff,(float)blueByte/0xff);
+//    //   NSLog(@"alpha:%f----r:%f----g:%f----b:%f",alphaValue,(float)redByte/0xff,(float)greenByte/0xff,(float)blueByte/0xff);
     result = [UIColor
               colorWithRed: (float)redByte / 0xff
               green: (float)greenByte/ 0xff

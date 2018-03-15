@@ -11,7 +11,7 @@
 #include "YH_config.h"
 
 #if defined (YHPDFImageLogShow) && (YHPDFImageLogShow == 1)
-    #define YHPDFLog(...) NSLog(__VA_ARGS__)
+    #define YHPDFLog(...) //   NSLog(__VA_ARGS__)
 
 #else
     #define YHPDFLog(...)

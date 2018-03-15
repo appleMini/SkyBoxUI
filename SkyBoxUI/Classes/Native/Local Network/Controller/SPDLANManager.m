@@ -281,7 +281,7 @@ static SPDLANManager *_manager = nil;
 }
 
 - (void)dealloc {
-    NSLog(@"Local Network 销毁。。。。。。。");
+    //   NSLog(@"Local Network 销毁。。。。。。。");
 }
 
 - (void)tickSocketIO_MainThread {
@@ -323,7 +323,7 @@ static void DAddDLNADeviceCallback(const char* UUID, int uuidLength, const char*
 }
 
 static void DRemoveDLNADeviceCallback(const char *UUID, int UUIDLength) {
-    NSLog(@"RemoveDLNADeviceCallback UUID == %@", [NSString stringWithUTF8String:UUID]);
+    //   NSLog(@"RemoveDLNADeviceCallback UUID == %@", [NSString stringWithUTF8String:UUID]);
 }
 
 static void DBrowseDLNAFolderCallback(const char *BrowseFolderXML, int xmlLength, const char *UUIDStr, int UUIDLength, const char *ObjIDStr, int ObjIDLength) {
@@ -337,7 +337,7 @@ static void DBrowseDLNAFolderCallback(const char *BrowseFolderXML, int xmlLength
     
     NSData *data = [NSData dataWithBytes:BrowseFolderXML length:xmlLength];
     
-    NSLog(@"BrowseFolderXML == \n%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    //   NSLog(@"BrowseFolderXML == \n%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     DDXMLDocument  *doc = [[DDXMLDocument alloc] initWithData:data options:0 error:nil];
     //开始解析
     NSArray *results = [doc nodesForXPath:@"//Result" error:nil];

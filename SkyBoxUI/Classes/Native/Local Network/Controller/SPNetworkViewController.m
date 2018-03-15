@@ -78,7 +78,7 @@
 - (void)dealloc {
     [_dlanManager releaseAction];
     _dlanManager = nil;
-    NSLog(@"NetworkViewController  释放.....");
+    //   NSLog(@"NetworkViewController  释放.....");
 }
 
 - (void)reloadDevice {

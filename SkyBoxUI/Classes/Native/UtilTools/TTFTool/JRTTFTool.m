@@ -48,7 +48,7 @@
             {
                 //如果注册失败，则不使用
                 CFStringRef errorDescription = CFErrorCopyDescription(error);
-                NSLog(@"Failed to load font: %@", errorDescription);
+                //   NSLog(@"Failed to load font: %@", errorDescription);
                 CFRelease(errorDescription);
             }
             else
@@ -72,19 +72,19 @@
     NSURL *url = [NSURL URLWithString:path];
     
     NSData *data = [NSData dataWithContentsOfURL:url];
-    NSLog(@"=====%ld",data.length);
+    //   NSLog(@"=====%ld",data.length);
     NSString *temp =  [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     
     NSFileManager *fm = [NSFileManager defaultManager];
     
     NSString *filePath = [temp stringByAppendingPathComponent:@"output.plist"];
-    NSLog(@"====filePath:%@",filePath);
+    //   NSLog(@"====filePath:%@",filePath);
     BOOL b = [fm createFileAtPath:filePath contents:data attributes:nil];
     
     if (b) {
-        NSLog(@"====加载plist成功");
+        //   NSLog(@"====加载plist成功");
     }else{
-        NSLog(@"====加载plist失败");
+        //   NSLog(@"====加载plist失败");
     }
     
     
@@ -92,7 +92,7 @@
     NSDictionary *fontDic=[NSDictionary dictionaryWithContentsOfURL:[NSURL URLWithString:path]];
     
     
-    NSLog(@"====%@",fontDic);
+    //   NSLog(@"====%@",fontDic);
     BOOL status=NO;
     
     //字体文件所在路径
@@ -112,7 +112,7 @@
     {
         //如果注册失败，则不使用
         CFStringRef errorDescription = CFErrorCopyDescription(error);
-        NSLog(@"Failed to load font: %@", errorDescription);
+        //   NSLog(@"Failed to load font: %@", errorDescription);
         CFRelease(errorDescription);
     }
     else

@@ -58,7 +58,7 @@
 
 - (void)addClick:(UIButton *)item {
     //    [ServiceCall callGetActionParams:nil requestUrl:@"http://192.168.7.241:8080/REST/json" resultctxCall:^(NSDictionary *result) {
-    //        NSLog(@"%@", result);
+    //        //   NSLog(@"%@", result);
     //        NSUInteger selectedIndex = self.tabBarController.selectedIndex;
     //        NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:TestType],
     //                                 kTopViewController: self,
