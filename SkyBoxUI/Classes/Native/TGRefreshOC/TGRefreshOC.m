@@ -80,13 +80,13 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
                                 self.ignoreScrollViewContentInsetTop -height ? : -height-initInsetTop_,
                                 self.sv.bounds.size.width,
                                 height);
-        ////   NSLog(@"insetTop>%f  height>%f  Y>%f state>%ld",self.sv.contentInset.top,height,self.sv.contentOffset.y,(long)self.refreshState);
+        ////     NSLog(@"insetTop>%f  height>%f  Y>%f state>%ld",self.sv.contentInset.top,height,self.sv.contentOffset.y,(long)self.refreshState);
         
         switch (_kind) {
             case RefreshKindQQ:{
                 if (_animating || _refreshing || self.refreshState == RefreshStateRefresh) {//动画中 刷新中 已经在计时缩小过程中 已经在刷新状态
                     //                    if (_deltaH>0){
-                    //                        //   NSLog(@"_deltaH %f",_deltaH);
+                    //                        //     NSLog(@"_deltaH %f",_deltaH);
                     //                    }
                     return;
                 }

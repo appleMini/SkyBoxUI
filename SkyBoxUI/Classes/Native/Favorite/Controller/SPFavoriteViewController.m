@@ -26,11 +26,11 @@
 }
 
 - (NSString *)titleOfLabelView {
-    return @"FAVIRITE";
+    return @"FAVORITE";
 }
 
 - (NSString *)cellIditify {
-    return @"FAVIRITE_VIDEOS_CellID";
+    return @"FAVORITE_VIDEOS_CellID";
 }
 
 @end

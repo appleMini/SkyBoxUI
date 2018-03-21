@@ -50,9 +50,9 @@ static SPDLANManager *_manager = nil;
 }
 
 - (void)emptyServers {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-        [keyWindow hideLoading];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        UIViewController *vc = (UIViewController *)self.delegate;
+        [vc.view hideLoading];
     });
     
     [self.timeoutTimer invalidate];
@@ -100,6 +100,11 @@ static SPDLANManager *_manager = nil;
 }
 
 - (void)showDLANDevices {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIViewController *vc = (UIViewController *)self.delegate;
+        [vc.view showLoadingAndUserInteractionEnabled:NO];
+    });
+    
     SPDataManager *dataManager = [SPDataManager shareSPDataManager];
     
     NSArray *servers = dataManager.servers;
@@ -118,6 +123,8 @@ static SPDLANManager *_manager = nil;
         }else {
             [self startupDLAN];
         }
+    }else {
+        [self startupDLAN];
     }
 }
 
@@ -128,8 +135,8 @@ static SPDLANManager *_manager = nil;
 - (void)startupDLAN {
     [self openDLAN];
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-        [keyWindow showLoadingAndUserInteractionEnabled:NO];
+        UIViewController *vc = (UIViewController *)self.delegate;
+        [vc.view showLoadingAndUserInteractionEnabled:NO];
     });
     
     self.status = DLANAddDeviceStatus;
@@ -146,11 +153,7 @@ static SPDLANManager *_manager = nil;
 }
 
 - (void)addDLNADevice:(SPCmdAddDevice *)device {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-        [keyWindow hideLoading];
-    });
-    
+
     SPDataManager *dataManager = [SPDataManager shareSPDataManager];
     [dataManager addServer:device];
     
@@ -266,13 +269,17 @@ static SPDLANManager *_manager = nil;
 }
 
 - (void)refreshAction:(SPCmdAddDevice *)device {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIViewController *vc = (UIViewController *)self.delegate;
+        [vc.view showLoadingAndUserInteractionEnabled:NO];
+    });
+    
     if (device) {
         [self browseDLNAFolder:device];
     }else {
-//        SPDataManager *dataManager = [SPDataManager shareSPDataManager];
-//        [dataManager removeAllServers];
-//        
-//        [self startupDLAN];
+        SPDataManager *dataManger = [SPDataManager shareSPDataManager];
+        dataManger.devices = nil;
+        [self showDLANDevices];
     }
 }
 
@@ -281,7 +288,7 @@ static SPDLANManager *_manager = nil;
 }
 
 - (void)dealloc {
-    //   NSLog(@"Local Network 销毁。。。。。。。");
+    //     NSLog(@"Local Network 销毁。。。。。。。");
 }
 
 - (void)tickSocketIO_MainThread {
@@ -297,12 +304,7 @@ static SPDLANManager *_manager = nil;
 }
 
 static void DAddDLNADeviceCallback(const char* UUID, int uuidLength, const char* title, int titleLength, const char* iconurl, int iconLength, const char* Manufacturer, int manufacturerLength) {
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-        [keyWindow hideLoading];
-    });
-    
+
     NSString *uuid = [[NSString alloc] initWithData:[NSData dataWithBytes:UUID length:uuidLength] encoding:NSUTF8StringEncoding];
     NSString *deviceTitle = [[NSString alloc] initWithData:[NSData dataWithBytes:title length:titleLength] encoding:NSUTF8StringEncoding];
     NSString *iconUrl = [[NSString alloc] initWithData:[NSData dataWithBytes:iconurl length:iconLength] encoding:NSUTF8StringEncoding];
@@ -323,7 +325,7 @@ static void DAddDLNADeviceCallback(const char* UUID, int uuidLength, const char*
 }
 
 static void DRemoveDLNADeviceCallback(const char *UUID, int UUIDLength) {
-    //   NSLog(@"RemoveDLNADeviceCallback UUID == %@", [NSString stringWithUTF8String:UUID]);
+    //     NSLog(@"RemoveDLNADeviceCallback UUID == %@", [NSString stringWithUTF8String:UUID]);
 }
 
 static void DBrowseDLNAFolderCallback(const char *BrowseFolderXML, int xmlLength, const char *UUIDStr, int UUIDLength, const char *ObjIDStr, int ObjIDLength) {
@@ -337,7 +339,7 @@ static void DBrowseDLNAFolderCallback(const char *BrowseFolderXML, int xmlLength
     
     NSData *data = [NSData dataWithBytes:BrowseFolderXML length:xmlLength];
     
-    //   NSLog(@"BrowseFolderXML == \n%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    //     NSLog(@"BrowseFolderXML == \n%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     DDXMLDocument  *doc = [[DDXMLDocument alloc] initWithData:data options:0 error:nil];
     //开始解析
     NSArray *results = [doc nodesForXPath:@"//Result" error:nil];

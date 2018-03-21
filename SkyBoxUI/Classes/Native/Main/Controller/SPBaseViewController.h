@@ -32,6 +32,8 @@ _Pragma("clang diagnostic pop")\
 #define  UNITYTOUINOTIFICATIONNAME  @"AcrossDifferentNativeNotify_UNITY_UI"
 #define  SCANOVERUITOUNITYNOTIFICATIONNAME  @"SCANOVERNativeNotify_UI_UNITY"
 
+#define  CHANGEDISPALYTYPENOTIFICATIONNAME  @"ChangeDispalyTypeNativeNotify_UI"
+
 #ifndef  UPDATETHUMBNAIL_NOTIFICATION
     #define  UPDATETHUMBNAIL_NOTIFICATION  @"UpdateThumbnailNotify_UI_UTIL"
 #endif
@@ -69,6 +71,7 @@ typedef void (^NetStateBlock) (AFNetworkReachabilityStatus status);
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) SPBackgrondView *emptyView;
 @property (nonatomic, assign) BOOL refreshEnable;
+@property (nonatomic, assign) BOOL isShow;
 
 - (instancetype)initWithSomething;
 - (UIView *)customTitleView;
@@ -78,7 +81,7 @@ typedef void (^NetStateBlock) (AFNetworkReachabilityStatus status);
 - (NSDictionary *)params;
 - (BOOL)showNavigatinBar;
 - (void)setupNaviView;
-//重新装载之后，检测见面更新
+//重新装载之后，检测界面更新
 - (void)viewWillToChanged;
 - (void)refresh;
 - (void)releaseAction;

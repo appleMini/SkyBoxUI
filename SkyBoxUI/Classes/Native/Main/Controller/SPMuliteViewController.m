@@ -42,7 +42,6 @@
 @property (nonatomic, strong) UIButton *delBtn;
 
 @property (nonatomic, strong) UIImage *snapshot;
-@property (nonatomic, strong) UIImageView *imgV;
 
 @end
 
@@ -55,10 +54,16 @@
     if (self) {
         _status = CommomStatus;
         _type = type;
-        DisplayType willDisplayType = [[SPDataManager shareSPDataManager] getDisplayType:type];
-        _showType = (willDisplayType == UnknownType) ? show : willDisplayType;
+//        DisplayType willDisplayType = [[SPDataManager shareSPDataManager] getDisplayType:type];
+//        _showType = (willDisplayType == UnknownType) ? show : willDisplayType;
+        NSNumber *display = [[NSUserDefaults standardUserDefaults] objectForKey:@"DisplayType"];
+        DisplayType willDisplayType = [display unsignedIntegerValue];
+        _showType = willDisplayType;
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateThumbnail) name:UPDATETHUMBNAIL_NOTIFICATION object:nil];
+        
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeDispalyType:) name:CHANGEDISPALYTYPENOTIFICATIONNAME object:nil];
     }
     return self;
 }
@@ -120,15 +125,22 @@
         return nil;
     }
     
-    return [NSString stringWithFormat:@"%d / %ld", _selectCount, _dataArr.count];
+    return [NSString stringWithFormat:@"%d / %d", _selectCount, (int)_dataArr.count];
 }
 #pragma -mark private
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UPDATETHUMBNAIL_NOTIFICATION object:nil];
+    
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:CHANGEDISPALYTYPENOTIFICATIONNAME object:nil];
 }
 - (void)updateThumbnail {
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (!self.isShow || !self.isViewLoaded || !self.view.window) {
+            _autoRefresh = YES;
+            return ;
+        }
+        
         if (_unAutoRefresh || self.scrollView.tracking) {
             _autoRefresh = YES;
             return;
@@ -138,8 +150,22 @@
     });
 }
 
-- (void)updateVisiableCell {
-    //   NSLog(@"当前线程 1====  %@", [[NSThread currentThread] name]);
+- (void)resetCollectionViewCellForIndexpath:(NSIndexPath *) indexPath {
+    UICollectionView *collectionView = (UICollectionView *)self.scrollView;
+    SPVideo *video = _dataArr[indexPath.item];
+    video.dataSource = _type;
+    SPVideoCollectionCell *cell = (SPVideoCollectionCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    cell.videoView.status = _status;
+    cell.videoView.video = video;
+    
+    if (_status == CommomStatus && video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
+        cell.userInteractionEnabled = NO;
+    }else {
+        cell.userInteractionEnabled = YES;
+    }
+}
+
+- (void)updateVisiableCellAfterDelete {
     NSArray *visibleCells = nil;
     if (_showType == TableViewType) {
         UITableView *tableView = (UITableView *)self.scrollView;
@@ -160,12 +186,54 @@
         }
     }else {
         UICollectionView *collectionView = (UICollectionView *)self.scrollView;
+       
         visibleCells = collectionView.indexPathsForVisibleItems;
+
+//        NSInteger minIndex = -1;
+//        NSInteger maxIndex = -1;
+        for (NSIndexPath *indexPath in visibleCells) {
+//            if (minIndex == -1) {
+//                minIndex = maxIndex = indexPath.item;
+//            }else {
+//                if (minIndex > indexPath.item) {
+//                    minIndex = indexPath.item;
+//                }
+//
+//                if (maxIndex < indexPath.item) {
+//                    maxIndex = indexPath.item;
+//                }
+//            }
+
+            [self resetCollectionViewCellForIndexpath:indexPath];
+        }
+//        //上下刷新两个
+//        NSIndexPath *firstIndexPath = [NSIndexPath indexPathForItem:(minIndex-1) inSection:0];
+//        NSIndexPath *secondIndexPath = [NSIndexPath indexPathForItem:(minIndex-2) inSection:0];
+//        NSIndexPath *thirdIndexPath = [NSIndexPath indexPathForItem:(maxIndex+1) inSection:0];
+//        NSIndexPath *fourthIndexPath = [NSIndexPath indexPathForItem:(maxIndex+2) inSection:0];
+//        NSArray *willDisplayIndexPaths = @[firstIndexPath, secondIndexPath, thirdIndexPath, fourthIndexPath];
+//
+//        for (NSIndexPath *indexPath in willDisplayIndexPaths) {
+//            if (indexPath.item < 0 || indexPath.item >= _dataArr.count) {
+//                continue;
+//            }
+//
+//            [self resetCollectionViewCellForIndexpath:indexPath];
+//        }
+    }
+}
+
+- (void)updateVisiableCell {
+    //     NSLog(@"当前线程 1====  %@", [[NSThread currentThread] name]);
+    NSArray *visibleCells = nil;
+    if (_showType == TableViewType) {
+        UITableView *tableView = (UITableView *)self.scrollView;
+        visibleCells = tableView.indexPathsForVisibleRows;
         
         for (NSIndexPath *indexPath in visibleCells) {
             SPVideo *video = _dataArr[indexPath.row];
             video.dataSource = _type;
-            SPVideoCollectionCell *cell = (SPVideoCollectionCell *)[collectionView cellForItemAtIndexPath:indexPath];
+            SPVideoCell *cell = (SPVideoCell *)[tableView cellForRowAtIndexPath:indexPath];
             cell.videoView.status = _status;
             cell.videoView.video = video;
             
@@ -175,7 +243,10 @@
                 cell.userInteractionEnabled = YES;
             }
         }
-    }
+    }else {
+        UICollectionView *collectionView = (UICollectionView *)self.scrollView;
+        [collectionView reloadData];
+   }
 }
 
 - (void)resetTitleView: (BOOL)isDelete  {
@@ -291,7 +362,7 @@
         
         NSString *propertyName = [NSString stringWithUTF8String:name];
         
-        //   NSLog(@"runtime ==  %@", propertyName);
+        //     NSLog(@"runtime ==  %@", propertyName);
     }
 }
 
@@ -382,7 +453,7 @@
             }
         }
         
-        [self updateVisiableCell];
+        [self updateVisiableCellAfterDelete];
         
         _dataArr = [resultArr copy];
         if (_showType == TableViewType) {
@@ -405,7 +476,19 @@
         }else {
             [self enableNavigationItems:YES];
         }
+        
+        [self configRefresh];
     });
+}
+
+- (void)viewWillToChanged {
+    NSNumber *display = [[NSUserDefaults standardUserDefaults] objectForKey:@"DisplayType"];
+    DisplayType willDisplayType = [display unsignedIntegerValue];
+    if (willDisplayType == _showType) {
+        return;
+    }
+    
+    [self changeDispalyType:willDisplayType];
 }
 
 - (void)releaseAction {
@@ -515,7 +598,7 @@
     return _scrollView;
 }
 
-- (UIView *)setBackgroundView {
+- (SPBackgrondView *)setBackgroundView {
     SPBackgrondView *backgroundView = nil;
     switch (_type) {
         case LocalFilesType:
@@ -557,6 +640,12 @@
             // 找到下一个要播放的cell(最在屏幕中心的)
             NSIndexPath *finnalIndexPath = nil;
             NSArray *visiableCells = [tableView indexPathsForVisibleRows];
+            
+            if (!visiableCells || visiableCells.count <= 0) {
+                _showIndexpath = nil;
+                return;
+            }
+            
             CGFloat gap = MAXFLOAT;
             for (NSIndexPath *indexPath in visiableCells) {
                 UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
@@ -568,7 +657,7 @@
                 }
             }
             
-            //   NSLog(@"finnalIndexPath  === %ld", (long)finnalIndexPath.row);
+            //     NSLog(@"finnalIndexPath  === %ld", (long)finnalIndexPath.row);
 //            _showIndexpath = [NSIndexPath indexPathForItem:finnalCell.indexPath.row inSection:0];
             _showIndexpath = [NSIndexPath indexPathForItem:finnalIndexPath.row inSection:0];
         }
@@ -579,6 +668,10 @@
             NSIndexPath *finnalIndexPath = nil;
             NSArray *visibleArr = collectionView.indexPathsForVisibleItems;
             
+            if (!visibleArr || visibleArr.count <= 0) {
+                _showIndexpath = nil;
+                return;
+            }
             CGFloat gap = MAXFLOAT;
             for (NSIndexPath *indexPath in visibleArr) {
                 UICollectionViewCell *item = [collectionView cellForItemAtIndexPath:indexPath];
@@ -590,7 +683,7 @@
                 }
             }
             
-            //   NSLog(@"CollectionViewType finnalIndexPath  === %ld", (long)finnalIndexPath.item);
+            //     NSLog(@"CollectionViewType finnalIndexPath  === %ld", (long)finnalIndexPath.item);
             _showIndexpath = [NSIndexPath indexPathForRow:finnalIndexPath.item inSection:0];
         }
             break;
@@ -671,31 +764,71 @@
     return image;
 }
 
-- (void)setShowType:(DisplayType)showType {
-    //   NSLog(@"当前线程 ====  %@", [[NSThread currentThread] name]);
-        _animation = YES;
-        [self handleScroll];
-        _showType = showType;
-        [self enableNavigationItems:NO];
-        [UIView animateWithDuration:0.2 animations:^{
-            _unAutoRefresh = YES;
-            self.scrollView.alpha = 0.0;
-        } completion:^(BOOL finished) {
-            [self gradientLayer:0.0];
-            [self setupMenuImage];
-            [_scrollView removeFromSuperview];
-            _scrollView = nil;
-            [self setupScrollView];
-            [self.view bringSubviewToFront:self.imgV];
-            
-            self.scrollView.alpha = 0.0;
-            [self reload];
-            _unAutoRefresh = NO;
-        }];
+//- (void)changeDispalyType:(NSNotification *)notify {
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        NSDictionary *userInfo = notify.userInfo;
+//        DisplayType showType = [userInfo[@"DisplayType"] unsignedIntegerValue];
+//        //     NSLog(@"当前线程 ====  %@", [[NSThread currentThread] name]);
+//        _animation = YES;
+//        [self handleScroll];
+//        _showType = showType;
+//        [self enableNavigationItems:NO];
+//
+//
+//        [UIView animateWithDuration:0.2 animations:^{
+//            _unAutoRefresh = YES;
+//            self.scrollView.alpha = 0.0;
+//        } completion:^(BOOL finished) {
+//            [self gradientLayer:0.0];
+//            [self setupMenuImage];
+//            [_scrollView removeFromSuperview];
+//            _scrollView = nil;
+//            [self setupScrollView];
+//
+//            self.scrollView.alpha = 0.0;
+//            [self reload];
+//            _unAutoRefresh = NO;
+//        }];
+//
+//    });
+//}
+
+- (void)changeDispalyType:(DisplayType)showType {
+    dispatch_async(dispatch_get_main_queue(), ^{
+            //     NSLog(@"当前线程 ====  %@", [[NSThread currentThread] name]);
+            _animation = YES;
+            [self handleScroll];
+            _showType = showType;
+            [self enableNavigationItems:NO];
         
-        //截图
-        //    _snapshot = [self snapshotPhoto:_scrollView];
-        //    self.imgV.image = _snapshot;
+
+            [UIView animateWithDuration:0.2 animations:^{
+                _unAutoRefresh = YES;
+                self.scrollView.alpha = 0.0;
+            } completion:^(BOOL finished) {
+                [self gradientLayer:0.0];
+                [self setupMenuImage];
+                [_scrollView removeFromSuperview];
+                _scrollView = nil;
+                [self setupScrollView];
+                
+                self.scrollView.alpha = 0.0;
+                [self reload];
+                _unAutoRefresh = NO;
+            }];
+        
+    });
+}
+
+- (void)setShowType:(DisplayType)showType {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:[NSNumber numberWithUnsignedInteger:showType] forKey:@"DisplayType"];
+    [userDefaults synchronize];
+    
+//    NSDictionary *userInfo = @{@"DisplayType" : [NSNumber numberWithUnsignedInteger:showType]};
+//    [[NSNotificationCenter defaultCenter] postNotificationName:CHANGEDISPALYTYPENOTIFICATIONNAME object:nil userInfo:userInfo];
+    
+    [self changeDispalyType:showType];
 }
 
 - (void)refresh {
@@ -716,18 +849,6 @@
     _scrollView.tg_header = [TGRefreshOC  refreshWithTarget:self action:@selector(doRefreshSenior) config:^(TGRefreshOC *refresh) {
         refresh.tg_bgColor(SPBgColor);
     }];
-}
-
-- (UIImageView *)imgV {
-    if (!_imgV) {
-        UIImageView *imgV = [[UIImageView alloc] initWithFrame:self.view.bounds];
-        imgV.backgroundColor = [UIColor clearColor];
-        [self.view addSubview:imgV];
-        
-        _imgV = imgV;
-    }
-    
-    return _imgV;
 }
 
 - (void)showScrollViewWithAnimation {
@@ -777,6 +898,7 @@
                 }
                     break;
                 default:
+                    backgroundView = [self setBackgroundView];
                     break;
             }
             
@@ -823,7 +945,7 @@
                     
                     
 //                    CGFloat offsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
-//                    //   NSLog(@"offsetY ===== %f", offsetY);
+//                    //     NSLog(@"offsetY ===== %f", offsetY);
 //                    //                    [self.scrollView setContentOffset:CGPointMake(0, offsetY) animated:YES];
 //                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //                        [UIScrollView animateWithDuration:0.02 animations:^{
@@ -844,16 +966,16 @@
                 
                 if (_showIndexpath) {
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [UIView animateWithDuration:0.02 animations:^{
-                            [collectionView scrollToItemAtIndexPath:_showIndexpath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:NO];
-                        } completion:^(BOOL finished) {
-                            _showIndexpath = nil;
-                            [UIView animateWithDuration:0.5 animations:^{
-                                self.scrollView.alpha = 1.0;
+                            [UIView animateWithDuration:0.02 animations:^{
+                                [collectionView scrollToItemAtIndexPath:_showIndexpath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:NO];
                             } completion:^(BOOL finished) {
-                                [self showScrollViewWithAnimation];
+                                _showIndexpath = nil;
+                                [UIView animateWithDuration:0.5 animations:^{
+                                    self.scrollView.alpha = 1.0;
+                                } completion:^(BOOL finished) {
+                                    [self showScrollViewWithAnimation];
+                                }];
                             }];
-                        }];
                     });
                     
                 }else {
@@ -911,14 +1033,14 @@
         //        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
         [_scrollView.tg_header endRefreshing];
         _dataArr = array;
-        (refresh || !_dataArr || _dataArr.count == 0) ? [self reload] : [self updateVisiableCell];
+        (refresh || !_dataArr || _dataArr.count == 0) ? [self reload] : nil;
     });
 }
 
 - (void)doRefreshSenior {
     __weak typeof(self) ws = self;
     self.refreshBlock = ^(NSString *dataStr){
-        //   NSLog(@"dataStr === %@", dataStr);
+        //     NSLog(@"dataStr === %@", dataStr);
         NSArray *arr = [NSJSONSerialization JSONObjectWithData:[dataStr mj_JSONData] options:NSJSONReadingAllowFragments error:nil];
         
         [ws didFinishRequest:arr];
@@ -1021,6 +1143,7 @@
     SPVideo *video =  _dataArr[indexPath.row];
     video.dataSource = _type;
     cell.videoView.status = _status;
+    
     cell.videoView.video = video;
     
     cell.videoView.delegate = self;
@@ -1271,7 +1394,7 @@ static CGFloat height = 0;
 - (NSArray <UIView *>*)alertControllerActionView:(UIView *)view {
     NSMutableArray *labels = [[NSMutableArray alloc] init];
     for (UIView *v in view.subviews) {
-//        //   NSLog(@"alertControllerActionView ===  %@", v);
+//        //     NSLog(@"alertControllerActionView ===  %@", v);
         if ([v isKindOfClass:[UILabel class]]) {
             [labels addObject:v];
         }else{

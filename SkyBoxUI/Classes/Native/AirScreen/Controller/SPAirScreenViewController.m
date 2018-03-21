@@ -22,6 +22,7 @@ typedef enum : NSUInteger {
 
 @interface SPAirScreenViewController () <UITableViewDelegate, UITableViewDataSource> {
     NSArray<SPAirscreen *> *_dataArr;
+    dispatch_source_t _timer;
 }
 @property (nonatomic, strong)  SPAirScreenManager *airScreenManager;
 
@@ -94,6 +95,7 @@ typedef enum : NSUInteger {
     AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
     AFNetworkReachabilityStatus status = [manager networkReachabilityStatus];
     
+    __weak typeof(_timer) timer = _timer;
     __weak typeof(self) ws = self;
     self.netStateBlock = ^(AFNetworkReachabilityStatus status) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -108,6 +110,12 @@ typedef enum : NSUInteger {
                 [ws.view bringSubviewToFront:backgroundView];
                 
                 ws.emptyView = backgroundView;
+                
+                [ws.airScreenManager stopSearch];
+                
+                if (timer) {
+                    dispatch_suspend(timer);
+                }
             }else {
                 [ws.emptyView removeFromSuperview];
             }
@@ -371,7 +379,35 @@ typedef enum : NSUInteger {
 
 - (void)dealloc {
     _airScreenManager = nil;
-    //   NSLog(@"airscreen 销毁。。。。。。。");
+    //     NSLog(@"airscreen 销毁。。。。。。。");
+}
+
+#pragma -mark private   DB
+/**
+ 开启一个定时器
+ 
+ @param target 定时器持有者
+ @param timeInterval 执行间隔时间
+ @param handler 重复执行事件
+ */
+void dispatchTimer(id target, double timeInterval,void (^handler)(dispatch_source_t timer))
+{
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_source_t timer =dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER,0, 0, queue);
+    dispatch_source_set_timer(timer, dispatch_walltime(NULL, 0), (uint64_t)(timeInterval *NSEC_PER_SEC), 0);
+    // 设置回调
+    __weak __typeof(target) weaktarget  = target;
+    dispatch_source_set_event_handler(timer, ^{
+        if (!weaktarget)  {
+            dispatch_source_cancel(timer);
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (handler) handler(timer);
+            });
+        }
+    });
+    // 启动定时器
+    dispatch_resume(timer);
 }
 
 - (IBAction)searchClick:(id)sender {
@@ -386,10 +422,17 @@ typedef enum : NSUInteger {
                 if (_status == AirScreenStartupStatus) {
                     return;
                 }
-                
-                [self.airScreenManager stopSearch];
                 _status = AirScreenResultStatus;
+        
                 [self showResultView];
+                if (!_timer) {
+                    dispatchTimer(self, 3.0, ^(dispatch_source_t timer) {
+                        _timer = timer;
+                        [self showResultView];
+                    });
+                }else {
+                    dispatch_resume(_timer);
+                }
             });
         }
             break;
@@ -398,11 +441,20 @@ typedef enum : NSUInteger {
             _status = AirScreenStartupStatus;
             
             [self.airScreenManager stopSearch];
+            
+            if (_timer) {
+                dispatch_suspend(_timer);
+            }
         }
             break;
         case AirScreenResultStatus:
         {
             _status = AirScreenStartupStatus;
+            
+            [self.airScreenManager stopSearch];
+            if (_timer) {
+                dispatch_suspend(_timer);
+            }
         }
             break;
         case AirScreenResultEmptyStatus:
@@ -559,6 +611,12 @@ static NSString *cellID = @"AIRSCREEN_CELLID";
     SPAirscreen *air = _dataArr[indexPath.row];
     if (!air) {
         return;
+    }
+    
+    [self.airScreenManager stopSearch];
+    
+    if (_timer) {
+        dispatch_suspend(_timer);
     }
     
     _airscreen = air;

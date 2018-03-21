@@ -13,6 +13,7 @@
 #import "SPDLANManager.h"
 #import "SPWaterFallLayout.h"
 #import "SPDataManager.h"
+#import "UIView+SPLoading.h"
 
 @interface SPNetworkViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, SPDLANManagerDelegate, SPWaterFallLayoutDelegate> {
     NSMutableArray *_dataArr;
@@ -78,7 +79,7 @@
 - (void)dealloc {
     [_dlanManager releaseAction];
     _dlanManager = nil;
-    //   NSLog(@"NetworkViewController  释放.....");
+    //     NSLog(@"NetworkViewController  释放.....");
 }
 
 - (void)reloadDevice {
@@ -321,6 +322,10 @@ static CGFloat height = 0;
 }
 #pragma -mark SPDLANManagerDelegate
 - (void)addDlanDevice:(SPCmdAddDevice *)device parentID:(NSString *)pid {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.view hideLoading];
+    });
+    
     if(!device) {
         _dataArr = nil;
         [self reload];
@@ -349,6 +354,10 @@ static CGFloat height = 0;
 }
 
 - (void)browseDLNAFolder:(NSArray<SPCmdAddDevice *> *)folders parentID:(NSString *)pid {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.view hideLoading];
+    });
+    
     if ([[SPDLANManager shareDLANManager] status] != DLANBrowseFolderStatus) {
         return;
     }

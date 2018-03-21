@@ -9,6 +9,7 @@
 #import "TGRefresh.h"
 #import "SPButton.h"
 #import "SPVideo.h"
+#import "UIViewController+MBPHUD.h"
 
 @interface SPAirScreenResultViewController () {
     BOOL _showDisconnect;
@@ -75,8 +76,23 @@
     NSString *jsonStr = dict[@"JsonResult"];
     
     if ([dict[@"method"] hash] == [@"showResult" hash]) {
+        if ([dict[@"connenct"] hash] == [@"false" hash]) {
+            //连接失败,退回搜索界面
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showHUDProgressWithMessage:@"Faild connect to PC!"];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [self hideHUDCompletion:^{
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self disconnection:nil];
+                        });
+                    }];
+                });
+            });
+            return;
+        }
+        
         if (!jsonStr) {
-            //   NSLog(@"mediaListResult is none....");
+            //     NSLog(@"mediaListResult is none....");
             self.dataArr = nil;
             [self reload];
             return;
@@ -126,8 +142,8 @@
             [mediaListResult addObject:video];
         }
         
-        NSMutableArray *oldArr = [NSMutableArray arrayWithArray:self.dataArr];
-        [oldArr addObjectsFromArray:mediaListResult];
+        NSMutableArray *oldArr = [NSMutableArray arrayWithArray:mediaListResult];
+        [oldArr addObjectsFromArray:self.dataArr];
         
         self.dataArr = [oldArr copy];
         [self reload];
@@ -328,7 +344,7 @@
 }
 
 - (void)doRefreshSenior {
-    //   NSLog(@"doRefreshSenior");
+    //     NSLog(@"doRefreshSenior");
     [self enableNavigationItems:NO];
 //    _airscreen.ip = @"asdasfsfs";
 //    _airscreen.ips = @[@"asfafdsfsasda"];
@@ -368,7 +384,9 @@
 }
 
 - (void)disconnection:(id)sender {
-    [[SPAirScreenManager shareAirScreenManager] disConnectServer];
+    if (_airscreen) {
+        [[SPAirScreenManager shareAirScreenManager] disConnectServer];
+    }
     [SPDataManager shareSPDataManager].airscreen = nil;
     NSUInteger selectedIndex = -1;
     NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:AirScreenMiddleVCType],

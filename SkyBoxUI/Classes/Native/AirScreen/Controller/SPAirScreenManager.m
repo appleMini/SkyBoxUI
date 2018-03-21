@@ -50,10 +50,14 @@ static SPAirScreenManager *_manager = nil;
 - (void)stopSearch {
     if (_socketOpened) {
         [self.sendTimer invalidate];
+        self.sendTimer = nil;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"DestroySKYBOX"}];
     }
 }
 - (void)closeAirscreen {
     [self.sendTimer invalidate];
+    self.sendTimer = nil;
     
     if (_socketOpened) {
 //        _socketOpened = NO;

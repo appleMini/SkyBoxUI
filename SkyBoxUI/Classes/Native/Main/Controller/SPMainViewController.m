@@ -16,6 +16,7 @@
 #import "SPAirScreenResultViewController.h"
 #import "SPAirScreenViewController.h"
 #import <MMDrawerController/UIViewController+MMDrawerController.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 @interface SPMainViewController ()<UIScrollViewDelegate, SPSwitchBarProtocol, SPMenuJumpProtocol> {
     BOOL _canRefresh;
@@ -123,6 +124,7 @@
     [self.view addSubview:[SPSwitchBar shareSPSwitchBar]];
     
     [self monitorNetWorkState];
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -131,6 +133,10 @@
     [self.mm_drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModePanningNavigationBar];
     
     [self.view bringSubviewToFront:[SPSwitchBar shareSPSwitchBar]];
+    
+    //清除缓存
+    [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
+    [[SDImageCache sharedImageCache] clearMemory];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -261,6 +267,13 @@
     vc.refreshEnable = YES;
     vc.mainVC = self;
     
+    for (int i=0; i<self.childViewControllers.count; i++) {
+        SPBaseViewController *mvc = self.childViewControllers[i];
+        mvc.isShow = (i == index) ? YES : NO;
+    }
+    
+    [vc viewWillToChanged];
+    
     CGFloat top =  (index == 0) ? 0 : 64;
     vc.view.frame = CGRectMake(index * self.contentView.width, top, self.contentView.width, self.contentView.height-top);
     
@@ -344,6 +357,13 @@
     SPBaseViewController *vc = self.childViewControllers[index];
     vc.refreshEnable = YES;
     
+    for (int i=0; i<self.childViewControllers.count; i++) {
+        SPBaseViewController *mvc = self.childViewControllers[i];
+        mvc.isShow = (i == index) ? YES : NO;
+    }
+    
+    [vc viewWillToChanged];
+    
     NSInteger selectIndex = [SPSwitchBar shareSPSwitchBar].selectIndex;
     if (selectIndex == index) {
         return;
@@ -411,7 +431,6 @@
         VC = self.favoriteVC;
     }
     
-    [VC viewWillToChanged];
     [self changeMiddleContentView:VC shouldRefresh:refresh];
 }
 
@@ -581,9 +600,10 @@
     }else if(_selectMenuIndex == 3) {
         mediaTab = @"airscreen";
     }else if(_selectMenuIndex == 4) {
-        mediaTab = @"onlineStream";
-    }else if(_selectMenuIndex == 5) {
         mediaTab = @"favourite";
+    }else if(_selectMenuIndex == 5) {
+//        mediaTab = @"favourite";
+//         mediaTab = @"onlineStream";
     }
     
     if (self.childViewControllers.count < 3) {

@@ -30,7 +30,7 @@ static NSString *kCellIdentifier = @"HYBVideoCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    ////   NSLog(@"SCREEN_WIDTH == %f, SCREEN_HEIGHT == %f", SCREEN_WIDTH, SCREEN_HEIGHT);
+    ////     NSLog(@"SCREEN_WIDTH == %f, SCREEN_HEIGHT == %f", SCREEN_WIDTH, SCREEN_HEIGHT);
     NSArray *urls = @[@"abc.mp4", @"2017.mp4", @"EasyMovieTexture.mp4", @"ed_1024_512kb.mp4", @"abcd.zip"];
     NSMutableArray *videoModels = [[NSMutableArray alloc] init];
     for (NSString *uid in urls) {
@@ -87,7 +87,7 @@ static NSString *kCellIdentifier = @"HYBVideoCell";
             break;
         }
         case SPDownloadStatusCompleted: {
-            //   NSLog(@"已下载完成，可以播放了，播放路径：%@", model.localPath);
+            //     NSLog(@"已下载完成，可以播放了，播放路径：%@", model.localPath);
             break;
         }
         case SPDownloadStatusFailed: {

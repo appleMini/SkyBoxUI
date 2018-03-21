@@ -187,7 +187,7 @@
 
 // 播放完成通知
 - (void)playbackFinished:(NSNotification *)notification{
-    //   NSLog(@"视频播放完成.");
+    //     NSLog(@"视频播放完成.");
     // 播放完成后重复播放
     // 跳到最新的时间点开始播放
     [_player seekToTime:CMTimeMake(0, 1)];
@@ -243,14 +243,14 @@
     if ([keyPath isEqualToString:@"status"]) {
         AVPlayerItemStatus status= [[change objectForKey:@"new"] intValue];
         if(status == AVPlayerItemStatusReadyToPlay){
-            //   NSLog(@"开始播放。。。。。。。。");
+            //     NSLog(@"开始播放。。。。。。。。");
             //            [self startPlayer:self.currentTime];
             [self.player play];
         }else if(status == AVPlayerItemStatusUnknown){
-            //   NSLog(@"%@",@"AVPlayerItemStatusUnknown");
+            //     NSLog(@"%@",@"AVPlayerItemStatusUnknown");
         }else if (status == AVPlayerItemStatusFailed){
-            //   NSLog(@"%@",@"AVPlayerItemStatusFailed");
-            //   NSLog(@"%@",self.player.currentItem.error);
+            //     NSLog(@"%@",@"AVPlayerItemStatusFailed");
+            //     NSLog(@"%@",self.player.currentItem.error);
         }
     }else if([keyPath isEqualToString:@"loadedTimeRanges"]){
         NSArray *array = playerItem.loadedTimeRanges;
@@ -258,11 +258,11 @@
         float startSeconds = CMTimeGetSeconds(timeRange.start);
         float durationSeconds = CMTimeGetSeconds(timeRange.duration);
         NSTimeInterval totalBuffer = startSeconds + durationSeconds;//缓冲总长度
-        //   NSLog(@"缓冲：%.2f",totalBuffer);
+        //     NSLog(@"缓冲：%.2f",totalBuffer);
     }else if ([keyPath isEqualToString:@"playbackBufferEmpty"]){
-        //   NSLog(@"playbackBufferEmpty");
+        //     NSLog(@"playbackBufferEmpty");
     }else if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]){
-        //   NSLog(@"playbackLikelyToKeepUp");
+        //     NSLog(@"playbackLikelyToKeepUp");
     }
 }
 

@@ -118,11 +118,11 @@
 }
 
 - (UIImage *)resizeImageWithModeCenter:(CGSize)size  imageSize:(CGSize)imgsize  bgFillColor:(UIColor *)bgcolor {
-//    //   NSLog(@"size =====width === %f =======height === %f", size.width, size.height);
+//    //     NSLog(@"size =====width === %f =======height === %f", size.width, size.height);
     CGFloat width = imgsize.width;
     CGFloat height = imgsize.height;
     
-//    //   NSLog(@"resizeImage =====width === %f =======height === %f", width, height);
+//    //     NSLog(@"resizeImage =====width === %f =======height === %f", width, height);
     CGFloat targetWidth = size.width;
     CGFloat targetHeight = size.height;
     

@@ -338,7 +338,7 @@ SPSingletonM(SPSwitchBar)
     cframe.size.height = ch;
     
     self.centerBtn.frame = cframe;
-    //    //   NSLog(@"centerBtn.cnetr ========== == %f   CGFloat cw ==  %f   cx ====== %f", self.centerBtn.center.x, cw, cx);
+    //    //     NSLog(@"centerBtn.cnetr ========== == %f   CGFloat cw ==  %f   cx ====== %f", self.centerBtn.center.x, cw, cx);
     //    self.centerBtn.layer.cornerRadius = cw / 2;
     //    self.centerBtn.layer.shadowOpacity = 0.8;
     //    self.centerBtn.layer.shadowColor =  [UIColor blackColor].CGColor;
@@ -371,7 +371,7 @@ SPSingletonM(SPSwitchBar)
     cbframe.size.height = cbh;
     self.centerBg.frame = cbframe;
     //    self.centerBg.backgroundColor = [UIColor redColor];
-    //    //   NSLog(@"centerBg.center == %f  cbw === %f", self.centerBg.center.x , cbw);
+    //    //     NSLog(@"centerBg.center == %f  cbw === %f", self.centerBg.center.x , cbw);
 }
 
 - (CGFloat)fixCenterBtnScale:(CGFloat)x baseWidth:(CGFloat)width {

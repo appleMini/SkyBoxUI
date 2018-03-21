@@ -67,7 +67,7 @@
 }
 
 - (IBAction)homeAction:(id)sender {
-    //   NSLog(@"go home...");
+    //     NSLog(@"go home...");
     _device = nil;
     [self.devices removeAllObjects];
     [self setupContentViews];
@@ -77,7 +77,7 @@
     [[SPDLANManager shareDLANManager] showDLANDevices];
 }
 - (IBAction)refreshAction:(id)sender {
-    //   NSLog(@"refresh...");
+    //     NSLog(@"refresh...");
     
     [[SPDLANManager shareDLANManager] refreshAction:_device];
 //                NSMutableArray *deviceArr = [NSMutableArray array];
