@@ -40,5 +40,7 @@ typedef enum : NSUInteger {
 @optional
 - (void)addDlanDevice:(SPCmdAddDevice *)device parentID:(NSString *)pid;
 - (void)browseDLNAFolder:(NSArray<SPCmdAddDevice *> *)folders parentID:(NSString *)pid;
+- (void)showDLNAServers:(NSArray<SPCmdAddDevice *> *)folders parentID:(NSString *)pid;
+
 @end
 

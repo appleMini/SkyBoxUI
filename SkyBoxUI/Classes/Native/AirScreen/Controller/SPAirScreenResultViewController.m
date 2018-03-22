@@ -238,11 +238,6 @@
     self.netStateBlock(status);
 }
 
-- (void)viewWillToChanged {
-    //添加topView
-    
-}
-
 - (void)dealloc {
     [_topView removeFromSuperview];
     [_maskView removeGestureRecognizer:_tapGesture];

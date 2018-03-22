@@ -114,10 +114,10 @@ static SPDLANManager *_manager = nil;
                 [self browseDLNAFolder:[dataManager.devices lastObject]];
             }else {
                 dataManager.devices = nil;
-                self.status = DLANBrowseFolderStatus;
-                if (self.delegate && [self.delegate respondsToSelector:@selector(browseDLNAFolder:parentID:)]) {
+                self.status = DLANAddDeviceStatus;
+                if (self.delegate && [self.delegate respondsToSelector:@selector(showDLNAServers:parentID:)]) {
                     // parentID 一定不能传 -1 , 会出现 addDlanDevice 回调 _dataArr 不会清空
-                    [self.delegate browseDLNAFolder:servers parentID:@"0"];
+                    [self.delegate showDLNAServers:servers parentID:@"0"];
                 }
             }
         }else {
