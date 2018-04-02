@@ -42,8 +42,8 @@
 #pragma -mark private - Methods
 - (NSArray *)initialImageArray {
     NSMutableArray *imageArray = [[NSMutableArray alloc] init];
-    for (int i = 1; i < 15; i++) {
-        NSString *imageName = [NSString stringWithFormat:@"Home_videos_album_loading_000%02d", (i*2 + 1)];
+    for (int i = 1; i < 30; i++) {
+        NSString *imageName = [NSString stringWithFormat:@"Home_videos_album_loading_000%02d", (i)];
         
         UIImage *image = [Commons getImageFromResource:imageName];
         if (image) {

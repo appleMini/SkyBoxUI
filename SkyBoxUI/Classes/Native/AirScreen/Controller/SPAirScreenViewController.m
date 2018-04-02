@@ -162,23 +162,85 @@ typedef enum : NSUInteger {
     [self resetViewsAndConstraints];
 }
 
+#pragma -mark privateMethod
+//获取这个字符串中的所有xxx的所在的index
+- (NSMutableArray *)getRangeStr:(NSString *)text findText:(NSString *)findText
+{
+    NSMutableArray *arrayRanges = [NSMutableArray arrayWithCapacity:2];
+    if (findText == nil && [findText isEqualToString:@""]) {
+        return nil;
+    }
+    
+    NSRange rang = [text rangeOfString:findText]; //获取第一次出现的range
+    if (rang.location != NSNotFound && rang.length != 0) {
+        [arrayRanges addObject:[NSNumber numberWithInteger:rang.location]];//将第一次的加入到数组中
+        NSRange rang1 = {0,0};
+        NSInteger location = 0;
+        NSInteger length = 0;
+        
+        for (int i = 0;; i++)
+        {
+            if (0 == i) {//去掉这个xxx
+                location = rang.location + rang.length;
+                length = text.length - rang.location - rang.length;
+                rang1 = NSMakeRange(location, length);
+            }else
+            {
+                location = rang1.location + rang1.length;
+                length = text.length - rang1.location - rang1.length;
+                rang1 = NSMakeRange(location, length);
+            }
+            
+            //在一个range范围内查找另一个字符串的range
+            rang1 = [text rangeOfString:findText options:NSCaseInsensitiveSearch range:rang1];
+            if (rang1.location == NSNotFound && rang1.length == 0) {
+                break;
+            }else//添加符合条件的location进数组
+                [arrayRanges addObject:[NSNumber numberWithInteger:rang1.location]];
+        }
+        
+        return arrayRanges;
+    }
+    
+    return nil;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSMutableAttributedString *instruction1Attr = [[NSMutableAttributedString alloc] initWithString:@"INSTALL SKYBOX FOR PC FROM SKYBOX.XYZ"];
+    NSMutableAttributedString *instruction1Attr = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"AirScreen_num1", @"INSTALL SKYBOX FOR PC FROM SKYBOX.XYZ")];
     
     UIFont *lightFont = [UIFont fontWithName:@"Calibri-Light" size:13.0];
     UIFont *boldFont = [UIFont fontWithName:@"Calibri-Bold" size:13.0];
-    [instruction1Attr addAttributes:@{NSFontAttributeName : lightFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]} range:NSMakeRange(0, 8)];
-    [instruction1Attr addAttributes:@{NSFontAttributeName : boldFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]} range:NSMakeRange(8, 6)];
-    [instruction1Attr addAttributes:@{NSFontAttributeName : lightFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]} range:NSMakeRange(14, 13)];
-    [instruction1Attr addAttributes:@{NSFontAttributeName : boldFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]} range:NSMakeRange(27, 10)];
+    
+    [instruction1Attr addAttributes:@{NSFontAttributeName : lightFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]} range:NSMakeRange(0, [[instruction1Attr string] length])];
+    
+    NSArray *arr = [self getRangeStr:[instruction1Attr string] findText:@"SKYBOX"];
+    for (NSNumber *indexNum in arr) {
+        NSInteger index = [indexNum integerValue];
+        
+        [instruction1Attr addAttributes:@{NSFontAttributeName : boldFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]} range:NSMakeRange(index, 6)];
+    }
+    
+    
+    NSArray *arr3 = [self getRangeStr:[instruction1Attr string] findText:@".XYZ"];
+    for (NSNumber *indexNum in arr3) {
+        NSInteger index = [indexNum integerValue];
+        
+        [instruction1Attr addAttributes:@{NSFontAttributeName : boldFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]} range:NSMakeRange(index, 4)];
+    }
     
     self.instruction1Label.attributedText = [instruction1Attr copy];
     
-    NSMutableAttributedString *instruction2Attr = [[NSMutableAttributedString alloc] initWithString:@"RUN SKYBOX FOR PC AND ADD VIDEOS TO IT"];
-    [instruction2Attr addAttributes:@{NSFontAttributeName : lightFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]} range:NSMakeRange(0, 4)];
-    [instruction2Attr addAttributes:@{NSFontAttributeName : boldFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]} range:NSMakeRange(4, 6)];
-    [instruction2Attr addAttributes:@{NSFontAttributeName : lightFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]} range:NSMakeRange(10, 28)];
+    NSMutableAttributedString *instruction2Attr = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"AirScreen_num2", @"OPEN SKYBOX FOR PC AND ADD VIDEOS TO IT")];
+    [instruction2Attr addAttributes:@{NSFontAttributeName : lightFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]} range:NSMakeRange(0, [[instruction2Attr string] length])];
+    
+    NSArray *arr2 = [self getRangeStr:[instruction2Attr string] findText:@"SKYBOX"];
+    for (NSNumber *indexNum in arr2) {
+        NSInteger index = [indexNum integerValue];
+        
+        [instruction2Attr addAttributes:@{NSFontAttributeName : boldFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]} range:NSMakeRange(index, 6)];
+    }
+    
     self.instruction2Label.attributedText = [instruction2Attr copy];
     
     self.searchLabel.text = @"SEARCHING...";
@@ -198,7 +260,7 @@ typedef enum : NSUInteger {
 }
 
 - (NSString *)titleOfLabelView {
-    return @"AIRSCREEN";
+    return NSLocalizedString(@"Menu_AirScreen", @"AIRSCREEN");
 }
 
 - (NSArray *)rightNaviItem {
@@ -208,7 +270,7 @@ typedef enum : NSUInteger {
 - (UIBarButtonItem *)helpItem {
     if (!_helpItem) {
         UIButton *helpBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [helpBtn setImage:[Commons getPdfImageFromResource:@"AirScreen_titlebar_button_help"] forState:UIControlStateNormal];
+        [helpBtn setImage:[Commons getImageFromResource:@"AirScreen_titlebar_button_help"] forState:UIControlStateNormal];
         helpBtn.backgroundColor = [UIColor clearColor];
         helpBtn.frame = CGRectMake(0, 0, 20, 20);
         [helpBtn addTarget:self action:@selector(helpItemClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -234,7 +296,7 @@ typedef enum : NSUInteger {
         self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
         [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#3c3f48"] forState:UIControlStateNormal];
         self.searchButton.backgroundColor = [SPColorUtil getHexColor:@"#ffde9e"];
-        [self.searchButton setTitle:@"SEARCH DEVICE" forState:UIControlStateNormal];
+        [self.searchButton setTitle:NSLocalizedString(@"AirScreen_search", @"SEARCH DEVICE") forState:UIControlStateNormal];
         self.searchButton.layer.cornerRadius = 21.0;//
         self.searchButton.layer.borderWidth = 0.0f;//设置边框颜色
         self.searchButton.layer.masksToBounds = YES;
@@ -248,7 +310,7 @@ typedef enum : NSUInteger {
         self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
         [self.searchButton setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
         self.searchButton.backgroundColor = [UIColor clearColor];
-        [self.searchButton setTitle:@"CANCEL" forState:UIControlStateNormal];
+        [self.searchButton setTitle:NSLocalizedString(@"AirScreen_cancel", @"CANCEL") forState:UIControlStateNormal];
         self.searchButton.layer.cornerRadius = 21.0;//
         self.searchButton.layer.borderColor = [UIColor whiteColor].CGColor;//设置边框颜色
         self.searchButton.layer.borderWidth = 2.0f;//设置边框颜色
@@ -282,7 +344,7 @@ typedef enum : NSUInteger {
             break;
         case AirScreenSearchStatus:
         {
-            self.searchLabel.text = @"SEARCHING...";
+            self.searchLabel.text = NSLocalizedString(@"AirScreen_searching", @"SEARCHING...");
             self.searchLabel.font = [UIFont fontWithName:@"Calibri-Light" size:14.0];
             self.searchLabel.textColor = [SPColorUtil getHexColor:@"#ffffff"];
             _pcImgVTopConstraint.constant = [SPDeviceUtil isiPhoneX] ? (160 - 34 - 44) : (160 - 64);
@@ -330,7 +392,7 @@ typedef enum : NSUInteger {
             self.refreshImgv.image = [Commons getImageFromResource:@"AirScreen_search_warning"];
             
             UIFont *lightFont = [UIFont fontWithName:@"Calibri-Light" size:14.0];
-            self.searchLabel.text = @"CANNOT FIND ANY DEVICES, PLEASE TRY AGAIN";
+            self.searchLabel.text = NSLocalizedString(@"AirScreen_empty", @"Cannot find any devices, please try again.");
             self.searchLabel.font = lightFont;
             self.searchLabel.textColor = [SPColorUtil getHexColor:@"#ffffff"];
             
@@ -352,8 +414,8 @@ typedef enum : NSUInteger {
 
 - (NSArray *)initialImageArray {
     NSMutableArray *imageArray = [[NSMutableArray alloc] init];
-    for (int i = 1; i < 15; i++) {
-        NSString *imageName = [NSString stringWithFormat:@"Home_videos_album_loading_000%02d", (i*2 + 1)];
+    for (int i = 1; i < 30; i++) {
+        NSString *imageName = [NSString stringWithFormat:@"Home_videos_album_loading_000%02d", (i)];
         
         UIImage *image = [Commons getImageFromResource:imageName];
         if (image) {
@@ -371,7 +433,6 @@ typedef enum : NSUInteger {
     self.refreshImgv.animationRepeatCount = MAXFLOAT;// 序列帧动画重复次数
     [self.refreshImgv startAnimating];//开始动画
 }
-
 
 - (void)releaseAction {
     [self.airScreenManager releaseAction];
@@ -430,8 +491,6 @@ void dispatchTimer(id target, double timeInterval,void (^handler)(dispatch_sourc
                         _timer = timer;
                         [self showResultView];
                     });
-                }else {
-                    dispatch_resume(_timer);
                 }
             });
         }
@@ -443,7 +502,8 @@ void dispatchTimer(id target, double timeInterval,void (^handler)(dispatch_sourc
             [self.airScreenManager stopSearch];
             
             if (_timer) {
-                dispatch_suspend(_timer);
+                dispatch_source_cancel(_timer);
+                _timer = nil;
             }
         }
             break;
@@ -453,7 +513,8 @@ void dispatchTimer(id target, double timeInterval,void (^handler)(dispatch_sourc
             
             [self.airScreenManager stopSearch];
             if (_timer) {
-                dispatch_suspend(_timer);
+                dispatch_source_cancel(_timer);
+                _timer = nil;
             }
         }
             break;
@@ -487,7 +548,7 @@ void dispatchTimer(id target, double timeInterval,void (^handler)(dispatch_sourc
         //        strongfy.dataArr = [arr subarrayWithRange:NSMakeRange(0, 5)];
         
         strongfy.devicesLabel.text = [NSString stringWithFormat:@"%lu DEVICES FOUND", (unsigned long)[strongfy.dataArr count]];
-        if (strongfy.dataArr.count == 0) {
+        if (_status == AirScreenResultStatus && strongfy.dataArr.count == 0) {
             _status = AirScreenResultEmptyStatus;
         }
         
@@ -616,7 +677,8 @@ static NSString *cellID = @"AIRSCREEN_CELLID";
     [self.airScreenManager stopSearch];
     
     if (_timer) {
-        dispatch_suspend(_timer);
+        dispatch_source_cancel(_timer);
+        _timer = nil;
     }
     
     _airscreen = air;

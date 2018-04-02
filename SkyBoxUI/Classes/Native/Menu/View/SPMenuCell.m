@@ -61,6 +61,7 @@
     _highlightedView = view;
     
     UIImageView *iconV = [[UIImageView alloc] initWithFrame:CGRectZero];
+    iconV.contentMode = UIViewContentModeScaleAspectFill;
     [self.contentView addSubview:iconV];
     [iconV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(22);
@@ -86,7 +87,7 @@
     self.label = label;
 
     UIImageView *accessV = [[UIImageView alloc] initWithFrame:CGRectZero];
-    accessV.image = [Commons getPdfImageFromResource:@"Channels_item_arrow"];
+    accessV.image = [Commons getImageFromResource:@"Channels_item_arrow"];
     [self.contentView addSubview:accessV];
     [accessV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(7);
@@ -122,18 +123,18 @@
     [super setSelected:selected animated:animated];
     if (selected) {
         self.label.textColor = [SPColorUtil getHexColor:@"#ffd570"];
-        self.iconV.image = [Commons getPdfImageFromResource:self.highlightIconName];
-        self.accessV.image = [Commons getPdfImageFromResource:@"Channels_item_arrow_active"];
+        self.iconV.image = [Commons getImageFromResource:self.highlightIconName];
+        self.accessV.image = [Commons getImageFromResource:@"Channels_item_arrow_active"];
     }else {
         self.label.textColor = [SPColorUtil getHexColor:@"#bcbcbd"];
-        self.iconV.image = [Commons getPdfImageFromResource:self.iconName];
-        self.accessV.image = [Commons getPdfImageFromResource:@"Channels_item_arrow"];
+        self.iconV.image = [Commons getImageFromResource:self.iconName];
+        self.accessV.image = [Commons getImageFromResource:@"Channels_item_arrow"];
     }
 }
 
 - (void)setIconName:(NSString *)iconName {
     _iconName = iconName;
-    self.iconV.image = [Commons getPdfImageFromResource:iconName];
+    self.iconV.image = [Commons getImageFromResource:iconName];
 }
 
 - (void)setItemName:(NSString *)itemName {

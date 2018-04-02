@@ -10,6 +10,7 @@
 @interface SPVideoCell()
 
 @property (nonatomic, strong) UIImageView *shadowImgV;
+@property (strong, nonatomic) UILongPressGestureRecognizer *longPress;
 @end
 
 @implementation SPVideoCell
@@ -43,6 +44,22 @@
     [self.videoView prepareForReuse];
 }
 
+- (UIGestureRecognizer *)longPress {
+    if (!_longPress) {
+        _longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
+        _longPress.minimumPressDuration = 1.0;
+    }
+    return _longPress;
+}
+
+- (void)longPressAction:(UIGestureRecognizer *)recognizer {
+    [self.videoView longPressAction:nil];
+}
+
+- (void)enableLongPressGestureRecognizer:(BOOL)enable {
+    enable ? [self.contentView addGestureRecognizer:self.longPress] : [self.contentView removeGestureRecognizer:self.longPress];
+}
+
 - (void)setupViews {
     SPVideoView *videoView = (SPVideoView *)[[[UINib nibWithNibName:@"SPVideoView" bundle:[Commons resourceBundle]] instantiateWithOwner:nil options:nil] firstObject];
     
@@ -57,22 +74,32 @@
         make.leading.mas_equalTo(18*kWSCALE);
         make.trailing.mas_equalTo(-18*kWSCALE);
         make.top.mas_equalTo(0);
-        make.bottom.mas_equalTo(-29);
+        
+        if ([SPDeviceUtil isiPhoneX]) {
+            make.bottom.mas_equalTo(-29);
+        }else {
+            make.bottom.mas_equalTo(-29*kHSCALE);
+        }
 //         make.edges.mas_equalTo(UIEdgeInsetsMake(0, 18*kWSCALE, 29, 18*kWSCALE));
     }];
     self.videoView = videoView;
     
     UIImageView *shadowImgV = [[UIImageView alloc] initWithFrame:CGRectZero];
-    shadowImgV.contentMode = UIViewContentModeScaleAspectFill;
+    shadowImgV.contentMode = UIViewContentModeScaleAspectFit;
     shadowImgV.image = [Commons getImageFromResource:@"Home_videos_album_shadow@2x"];
     
     [self.contentView insertSubview:shadowImgV belowSubview:self.videoView];
     _shadowImgV = shadowImgV;
     [shadowImgV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.mas_equalTo(16);
-        make.trailing.mas_equalTo(-16);
+        make.leading.mas_equalTo(4*kWSCALE);
+        make.trailing.mas_equalTo(-4*kWSCALE);
         make.top.mas_equalTo(0);
-        make.bottom.mas_equalTo(-25);
+        
+        if ([SPDeviceUtil isiPhoneX]) {
+            make.bottom.mas_equalTo(-10);
+        }else {
+            make.bottom.mas_equalTo(-10*kHSCALE);
+        }
 //        make.edges.mas_equalTo(UIEdgeInsetsMake(0, 16, 25, 16));
     }];
 }

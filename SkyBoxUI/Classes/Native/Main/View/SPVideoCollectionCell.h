@@ -10,8 +10,8 @@
 @class SPVideoCollectionView;
 @interface SPVideoCollectionCell : UICollectionViewCell
 
-@property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, strong) SPVideoCollectionView *videoView;
 
 - (void)hiddenShadow : (BOOL)isHidden;
+- (void)enableLongPressGestureRecognizer:(BOOL)enable;
 @end

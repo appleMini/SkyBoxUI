@@ -19,4 +19,6 @@ typedef enum : NSUInteger {
 @interface SPBackgrondView : UIView
 
 - (instancetype)initWithFrame:(CGRect)frame backgroundType:(SPBackgroundType)type;
+
+- (void)showOrHidden:(BOOL)isShow;
 @end

@@ -43,6 +43,17 @@
     
     //去掉透明后导航栏下边的黑边
     [self.navigationController.navigationBar setShadowImage:[[UIImage alloc] init]];
+    
+//    [self setStatusBarBackgroundColor:[UIColor clearColor]];
+}
+
+//设置状态栏颜色
+- (void)setStatusBarBackgroundColor:(UIColor *)color {
+    
+    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
+    if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
+        statusBar.backgroundColor = color;
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -73,6 +84,7 @@
     } else {
         self.automaticallyAdjustsScrollViewInsets = NO;
     }
+    
     self.view.backgroundColor = SPBgColor;
 
     NSString *til = [self titleOfLabelView];

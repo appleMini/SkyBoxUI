@@ -8,6 +8,9 @@
 #import "SPSwitchBar.h"
 #define LargeHeight      kWSCALE*94
 #define SmallItem        kWSCALE*94
+
+#define UnderLineItem    kWSCALE*60
+
 #define CBGItem          kWSCALE*94
 #define CSamllItem       kWSCALE*30
 #define WSpace           kWSCALE*80
@@ -17,6 +20,11 @@
 
 @interface SPSwitchBar() {
     BOOL _isHidden;
+    CGFloat _dx;
+    CGFloat _baseWidth;
+    
+    BOOL _hiddenLine;
+    CGFloat _lineAlpha;
 }
 
 @property (nonatomic, strong) UIButton *leftBtn;
@@ -28,7 +36,7 @@
 @property (nonatomic, strong) UIButton *centerBtn;
 @property (nonatomic, strong) UIButton   *centerVR;
 @property (nonatomic, strong) UIImageView   *centerBg;
-//@property (nonatomic, strong) UIView   *underLine;
+@property (nonatomic, strong) UIView   *underLine;
 
 @property (nonatomic, assign) BOOL    animation;
 @end
@@ -80,6 +88,7 @@ SPSingletonM(SPSwitchBar)
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         _animation = YES;
+        _lineAlpha = 0.25;
     }
     return self;
 }
@@ -102,14 +111,105 @@ SPSingletonM(SPSwitchBar)
         return;
     }
     
-    CGFloat y = [SPDeviceUtil isiPhoneX] ? (SCREEN_HEIGHT - 5 - LargeHeight) : (SCREEN_HEIGHT - LargeHeight);
+    CGFloat y = [SPDeviceUtil isiPhoneX] ? (SCREEN_HEIGHT - 20 - LargeHeight) : (SCREEN_HEIGHT - LargeHeight);
     self.frame = CGRectMake(0, y, SCREEN_WIDTH, LargeHeight);
+}
+
+- (CGFloat)fixBottomLine:(CGFloat)x baseWidth:(CGFloat)width {
+    CGFloat scale = 1.0 * (x / width);
+    return scale;
+}
+
+- (void)hiddenLine:(BOOL)isHidden {
+    _hiddenLine = isHidden;
+    
+    if (isHidden) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:0.5 animations:^{
+                if (_hiddenLine) {
+                    self.underLine.alpha = 0.0;
+                }
+            }];
+        });
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [UIView animateWithDuration:0.5 animations:^{
+//                if (_hiddenLine) {
+//                    self.underLine.alpha = 0.0;
+//                }
+//            }];
+//        });
+//        //开始一个新事物
+//        [CATransaction begin];
+//
+//        //设置动画时间持续到1秒钟
+//        [CATransaction setAnimationDuration:1.0];
+//        if (_hiddenLine) {
+//            self.underLine.backgroundColor = [UIColor yellowColor];
+//        }
+//        //提交事务
+//        [CATransaction commit];
+    }
+}
+
+- (void)showVRMode {
+    self.selectIndex = 1;
+    [self fixPosition:0 baseWidth:SCREEN_WIDTH / 2.0];
+}
+
+- (void)drawRect1:(CGRect)rect {
+    if (_hiddenLine || (_dx == 0 && _baseWidth == 0)) {
+        _lineAlpha = 0.25;
+        return;
+    }
+
+    if (fabs(_dx) == 0) {
+        _lineAlpha = 0;
+    }else if(fabs(_dx) == fabs(_baseWidth)){
+        [self hiddenLine:YES];
+    }else {
+        [self hiddenLine:NO];
+    }
+    
+    // 1.获取上下文
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextSaveGState(ctx);
+    // --------------------------直线
+    CGFloat mw = SmallItem / 2.0;
+    CGFloat rw = 0;
+    
+    CGFloat scale = [self fixBottomLine:_dx baseWidth:_baseWidth];
+    
+    CGFloat leftx = leadingSpace + SmallItem * 3.0 / 4.0 ;
+    CGFloat rx = _baseWidth / 2.0;
+    
+    CGFloat rwidth = SmallItem;
+    CGFloat rightx = self.frame.size.width - rwidth * 3 / 4.0 - leadingSpace - [self coordinate:_baseWidth baseWidth:_baseWidth];
+    
+    CGFloat lx = 0;
+    CGFloat lw = 0;
+    
+    lw = fabs((rw - mw) * scale);
+    if (_dx >= 0) {
+        lx = rx + (leftx - rx) * scale;
+    }else {
+        lx = rx + (rightx - rx) * -scale;
+    }
+    
+    CGFloat y = self.frame.size.height - 10;
+    CGContextMoveToPoint(ctx, lx,  y); // 起点
+    CGContextAddLineToPoint(ctx, (lx + lw),  y); //终点
+    [RGBACOLOR(0.0, 0.0, 0.0, _lineAlpha) set]; // 两种设置颜色的方式都可以
+    CGContextSetLineWidth(ctx, 3.0f); // 线的宽度
+    
+    (_lineAlpha == 0) ? nil : CGContextSetLineCap(ctx, kCGLineCapRound);
+    CGContextStrokePath(ctx); // 渲染（直线只能绘制空心的，不能调用CGContextFillPath(ctx);）
+    CGContextRestoreGState(ctx);
 }
 
 - (void)setupViews {
     UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [leftBtn setImage:[Commons getImageFromResource:@"Home_tabbar_button_channels"] forState:UIControlStateNormal];
-    [leftBtn setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_channels_shadow"] forState:UIControlStateNormal];
+//    [leftBtn setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_channels_shadow"] forState:UIControlStateNormal];
     leftBtn.imageView.contentMode = UIViewContentModeScaleAspectFill;
     //    leftBtn.frame = CGRectMake(0, LargeHeight-BottomSpace-SmallItem, SmallItem, SmallItem);
     leftBtn.frame = CGRectMake(0, 0, SmallItem, SmallItem);
@@ -122,7 +222,7 @@ SPSingletonM(SPSwitchBar)
     
     UIButton *leftBtn_active = [UIButton buttonWithType:UIButtonTypeCustom];
     [leftBtn_active setImage:[Commons getImageFromResource:@"Home_tabbar_button_channels_active"] forState:UIControlStateNormal];
-    [leftBtn_active setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_channels_shadow"] forState:UIControlStateNormal];
+//    [leftBtn_active setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_channels_shadow"] forState:UIControlStateNormal];
     leftBtn_active.imageView.contentMode = UIViewContentModeScaleAspectFill;
     //    leftBtn.frame = CGRectMake(0, LargeHeight-BottomSpace-SmallItem, SmallItem, SmallItem);
     leftBtn_active.frame = CGRectMake(0, 0, SmallItem, SmallItem);
@@ -145,7 +245,7 @@ SPSingletonM(SPSwitchBar)
     centerBtn.imageView.contentMode = UIViewContentModeScaleAspectFill;
     //    centerBtn.frame = CGRectMake(-100, LargeHeight-BottomSpace-CSamllItem, CSamllItem, CSamllItem);
     centerBtn.frame = CGRectMake(-100, 0, CSamllItem, CSamllItem);
-    [centerBtn setImage:[Commons getPdfImageFromResource:@"Home_tabbar_button_videos"] forState:UIControlStateNormal];
+    [centerBtn setImage:[Commons getImageFromResource:@"Home_tabbar_button_videos"] forState:UIControlStateNormal];
     //    [centerBtn setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_bg"] forState:UIControlStateNormal];
     centerBtn.backgroundColor = [UIColor clearColor];
     //    centerBtn.layer.cornerRadius = CSamllItem / 2;
@@ -162,7 +262,7 @@ SPSingletonM(SPSwitchBar)
     centerVR.imageView.contentMode = UIViewContentModeScaleAspectFill;
     centerVR.frame = CGRectMake(-100, 0, CSamllItem, CSamllItem);
     //    centerBg.backgroundColor = [UIColor blueColor];
-    [centerVR setImage:[Commons getPdfImageFromResource:@"Home_tabbar_button_VR"] forState:UIControlStateNormal];
+    [centerVR setImage:[Commons getImageFromResource:@"Home_tabbar_button_VR"] forState:UIControlStateNormal];
     [centerVR addTarget:self action:@selector(centerBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:centerVR];
     
@@ -170,7 +270,14 @@ SPSingletonM(SPSwitchBar)
     
     UIButton *rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     rightBtn.imageView.contentMode = UIViewContentModeScaleToFill;
-    [rightBtn setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_history_shadow"] forState:UIControlStateNormal];
+    
+    
+    
+    
+//    [rightBtn setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_history_shadow"] forState:UIControlStateNormal];
+    
+    
+    
     [rightBtn setImage:[Commons getImageFromResource:@"Home_tabbar_button_history"] forState:UIControlStateNormal];
     //    rightBtn.frame = CGRectMake(-100, LargeHeight-BottomSpace-SmallItem, SmallItem, SmallItem);
     rightBtn.frame = CGRectMake(-100, 0, SmallItem, SmallItem);
@@ -183,7 +290,12 @@ SPSingletonM(SPSwitchBar)
     
     UIButton *rightBtn_active = [UIButton buttonWithType:UIButtonTypeCustom];
     [rightBtn_active setImage:[Commons getImageFromResource:@"Home_tabbar_button_history_active"] forState:UIControlStateNormal];
-    [rightBtn_active setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_history_shadow"] forState:UIControlStateNormal];
+    
+    
+//    [rightBtn_active setBackgroundImage:[Commons getImageFromResource:@"Home_tabbar_button_history_shadow"] forState:UIControlStateNormal];
+    
+    
+    
     rightBtn_active.imageView.contentMode = UIViewContentModeScaleAspectFill;
     //    leftBtn.frame = CGRectMake(0, LargeHeight-BottomSpace-SmallItem, SmallItem, SmallItem);
     rightBtn_active.frame = CGRectMake(0, 0, SmallItem, SmallItem);
@@ -193,19 +305,67 @@ SPSingletonM(SPSwitchBar)
     [rightBtn_active addTarget:self action:@selector(rightBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:rightBtn_active];
     _rightBtn_active = rightBtn_active;
-    //    [self addSubview:self.underLine];
+    
+    if (!_underLine) {
+        [self addSubview:self.underLine];
+        [self bringSubviewToFront:self.underLine];
+    }
 }
 
-//- (UIView *)underLine {
-//    if (!_underLine) {
-//        UIView *underLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SmallItem, 4)];
-//        underLine.backgroundColor = [UIColor grayColor];
-//        underLine.layer.cornerRadius = 2;
-//        _underLine = underLine;
-//    }
-//
-//    return _underLine;
-//}
+- (UIView *)underLine {
+    if (!_underLine) {
+        UIView *underLine = [[UIView alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 10, UnderLineItem, 3.0)];
+        underLine.backgroundColor = [UIColor blackColor];
+        underLine.layer.cornerRadius = 1.5;
+        _underLine = underLine;
+    }
+
+    return _underLine;
+}
+
+- (void)moveUnderLineWithAnimation {
+    if (_hiddenLine || (_dx == 0 && _baseWidth == 0)) {
+        _lineAlpha = 0.25;
+        [self hiddenLine:NO];
+        return;
+    }
+    
+    if (fabs(_dx) == 0) {
+        _lineAlpha = 0.0;
+    }else if(fabs(_dx) == fabs(_baseWidth)){
+        [self hiddenLine:YES];
+    }else {
+        _lineAlpha = 0.25;
+        [self hiddenLine:NO];
+    }
+    
+    // --------------------------直线
+    CGFloat mw = UnderLineItem / 2.0;
+    CGFloat rw = 0;
+    
+    CGFloat scale = [self fixBottomLine:_dx baseWidth:_baseWidth];
+    
+   CGFloat leftx = leadingSpace + [self coordinate:fabs(_baseWidth) baseWidth:_baseWidth] + SmallItem / 2.0 - mw / 2.0;
+    CGFloat rx = _baseWidth / 2.0;
+    
+    CGFloat rwidth = SmallItem * fabs(scale);
+    CGFloat rightx = self.frame.size.width - rwidth - leadingSpace - [self coordinate:fabs(_baseWidth) baseWidth:_baseWidth] + SmallItem / 2.0 - mw / 2.0;
+    
+    CGFloat lx = 0;
+    CGFloat lw = 0;
+    
+    lw = fabs((rw - mw) * scale);
+    if (_dx >= 0) {
+        lx = rx + (leftx - rx) * scale;
+    }else {
+        lx = rx + (rightx - rx) * -scale;
+    }
+    
+    CGFloat y = self.frame.size.height - 10;
+    
+    self.underLine.alpha = _lineAlpha;
+    self.underLine.frame = CGRectMake(lx, y, lw, 3.0);
+}
 
 #pragma -mark event
 - (void)scale:(UIView *)view {
@@ -254,6 +414,8 @@ SPSingletonM(SPSwitchBar)
 }
 
 - (void)fixPosition:(CGFloat)dx baseWidth:(CGFloat)width {
+    _dx = dx;
+    _baseWidth = width;
     CGFloat fdx = fabs(dx);
     CGFloat alpha =  [self fixAlpha:fdx baseWidth:width];
     
@@ -274,8 +436,8 @@ SPSingletonM(SPSwitchBar)
         self.leftBtn.alpha = 1.0 - alpha;
     }
     
+    [self moveUnderLineWithAnimation];
     if (!_animation) {
-        
         return;
     }
     
@@ -436,9 +598,9 @@ SPSingletonM(SPSwitchBar)
     if (self.delegate && [self.delegate respondsToSelector:@selector(switchBar: selectIndex:)]) {
         [self.delegate switchBar:self selectIndex:1];
     }
-    
 }
 - (void)rightBtnClick:(UIButton *)btn {
+
     if (self.selectIndex == 2) {
         [self scale:self.rightBtn];
         [self scale:self.rightBtn_active];
@@ -453,8 +615,6 @@ SPSingletonM(SPSwitchBar)
     if (self.delegate && [self.delegate respondsToSelector:@selector(switchBar: selectIndex:)]) {
         [self.delegate switchBar:self selectIndex:2];
     }
-    
-    
 }
 
 //响应外部点击

@@ -8,9 +8,11 @@
 
 #import "TGRefreshOC.h"
 
-#define kBeginHeight 40.0
+#define kInsetOffsetYHeight 84.0
+#define kCircleHeight  40.0
+#define kBeginHeight (kCircleHeight)
 #define kDragHeight 90.0
-#define kCenter CGPointMake(self.bounds.size.width * 0.5, kBeginHeight * 0.5)
+#define kCenter CGPointMake(self.bounds.size.width * 0.5, kInsetOffsetYHeight + kCircleHeight * 0.5)
 #define kRadius 15.0
 #define kCoefficient 0.6
 #define kScreenH [UIScreen mainScreen].bounds.size.height
@@ -79,7 +81,7 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
         self.frame = CGRectMake(0,
                                 self.ignoreScrollViewContentInsetTop -height ? : -height-initInsetTop_,
                                 self.sv.bounds.size.width,
-                                height);
+                                height + kInsetOffsetYHeight);
         ////     NSLog(@"insetTop>%f  height>%f  Y>%f state>%ld",self.sv.contentInset.top,height,self.sv.contentOffset.y,(long)self.refreshState);
         
         switch (_kind) {
@@ -445,7 +447,7 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
     
     CGPoint startCenter = kCenter;
     
-    _deltaH = (_deltaH > (kDragHeight - kBeginHeight))? (kDragHeight - kBeginHeight) : _deltaH;
+    _deltaH = (_deltaH > (kDragHeight - kBeginHeight))? (kDragHeight - kBeginHeight) : (_deltaH);
     
     CGFloat radTop = kRadius - _deltaH * 0.1;
     CGFloat radBottom = kRadius - _deltaH * 0.2;

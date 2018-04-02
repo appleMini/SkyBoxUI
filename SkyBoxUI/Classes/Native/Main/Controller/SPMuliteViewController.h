@@ -12,16 +12,17 @@
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, copy) NSArray *dataArr;
+@property (nonatomic, assign) BOOL isRefreshing;
 
 - (instancetype)initWithDataSource:(NSArray *)data type:(DataSourceType)type displayType:(DisplayType)show;
 - (instancetype)initWithType:(DataSourceType)type displayType:(DisplayType)show;
 - (void)didFinishRequest:(NSArray *)arr;
 - (NSString *)cellIditify;
 
+- (void)updateVisiableCell;
 - (void)reload;
 - (void)doRefreshSenior;
 - (void)removeItemWithAnimation;
-- (void)updateVisiableCell;
 - (void)enableNavigationItems:(BOOL)enable;
 - (void)hiddenGradientLayer:(BOOL)isHidden;
 @end

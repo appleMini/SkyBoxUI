@@ -32,16 +32,48 @@
     return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (!_canDone) {
+            self.view.alpha = 0.0;
+            [UIView animateWithDuration:0.5 animations:^{
+                self.view.alpha = 1.0;
+            }];
+        }
+    });
+}
+
 - (instancetype)initWithSomething {
     self = [super initWithNibName:@"SPHelpRootViewController" bundle:[Commons resourceBundle]];
     if (self) {
-        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hasLocalVideosUpdate) name:UPDATELOCALVIDEOSNOTIFICATIONNAME object:nil];
     }
     return self;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UPDATELOCALVIDEOSNOTIFICATIONNAME object:nil];
+}
+
+- (void)hasLocalVideosUpdate {
+    if (!_canDone && self.isShow && self.viewLoaded && self.view.window) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSUInteger selectedIndex = -1;
+            NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:LocalFileMiddleVCType],
+                                     kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+                                     @"Done": @NO
+                                     };
+            
+            [self.view bubbleEventWithUserInfo:notify];
+        });
+        
+    }
+}
+
 - (NSString *)titleOfLabelView {
-    return @"ADD VIDEOS";
+    return NSLocalizedString(@"Menu_AddVideos", @"ADD VIDEOS");
 }
 
 - (NSArray *)rightNaviItem {
@@ -84,7 +116,7 @@
     adjustsScrollViewInsets(self.scrollView);
     self.scrollView.pagingEnabled = YES;
     self.scrollView.showsVerticalScrollIndicator = NO;
-    self.scrollView.showsHorizontalScrollIndicator = YES;
+    self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.bounces = NO;
     self.scrollView.contentSize = CGSizeMake(2 * self.view.width, 0);
     self.scrollView.delegate = self;

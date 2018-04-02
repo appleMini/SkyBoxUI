@@ -55,6 +55,7 @@ typedef enum : NSUInteger {
 + (NSURL *)getMovieFromResource:(NSString *)name extension:(NSString *)ext;
 + (UIImage *)getImageFromResource:(NSString *)name;
 + (UIImage *)getPdfImageFromResource:(NSString *)name;
++ (UIImage *)getPdfImageFromResource:(NSString *)name size:(CGSize)size;
 + (NSBundle *)resourceBundle;
 + (NSString *)durationText:(double)dur;
 @end

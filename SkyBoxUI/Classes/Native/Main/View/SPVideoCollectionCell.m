@@ -10,6 +10,8 @@
 
 @interface SPVideoCollectionCell()
 @property (strong, nonatomic)UIImageView *shadowImgV;
+
+@property (strong, nonatomic) UILongPressGestureRecognizer *longPress;
 @end
 
 @implementation SPVideoCollectionCell
@@ -29,6 +31,8 @@
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         [self setupViews];
+        
+        [self.contentView addGestureRecognizer:self.longPress];
     }
     return self;
 }
@@ -49,7 +53,7 @@
     self.videoView = itemView;
     
     UIImageView *shadowImgV = [[UIImageView alloc] initWithFrame:CGRectZero];
-    shadowImgV.contentMode = UIViewContentModeScaleAspectFill;
+    shadowImgV.contentMode = UIViewContentModeScaleAspectFit;
     shadowImgV.image = [Commons getImageFromResource:@"Home_videos_album_shadow_small@2x"];
     
 //    shadowImgV.backgroundColor = [UIColor redColor];
@@ -57,16 +61,37 @@
     
     _shadowImgV = shadowImgV;
     [shadowImgV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.mas_equalTo(-12);
-        make.trailing.mas_equalTo(12);
+        make.leading.mas_equalTo(-13*kWSCALE);
+        make.trailing.mas_equalTo(13*kWSCALE);
         make.top.mas_equalTo(0);
-        make.height.mas_equalTo(208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324 + 14);
+        if ([SPDeviceUtil isiPhoneX]) {
+            make.height.mas_equalTo(208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324 + 12);
+        }else {
+            make.height.mas_equalTo(208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324 + 12*kHSCALE);
+        }
     }];
     
 }
 
 - (void)hiddenShadow : (BOOL)isHidden {
     self.shadowImgV.hidden = isHidden;
+}
+
+- (UIGestureRecognizer *)longPress {
+    if (!_longPress) {
+        _longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
+        _longPress.minimumPressDuration = 1.0;
+    }
+    return _longPress;
+}
+
+- (void)longPressAction:(UIGestureRecognizer *)recognizer {
+    NSLog(@"longPressAction:(UIGestureRecognizer *)recognizer");
+    [self.videoView longPressAction:nil];
+}
+
+- (void)enableLongPressGestureRecognizer:(BOOL)enable {
+    enable ? [self.contentView addGestureRecognizer:self.longPress] : [self.contentView removeGestureRecognizer:self.longPress];
 }
 
 - (void)setHighlighted:(BOOL)highlighted {

@@ -35,7 +35,13 @@
     [super awakeFromNib];
     
     _titleLabelMaxWidthConstraint.constant = 1.0 * 280 * kWSCALE;
-    _imgvHeightConstraint.constant = 1.0 * 155 *kHSCALE;
+    
+    if ([SPDeviceUtil isiPhoneX]) {
+        _imgvHeightConstraint.constant = 1.0 * 155;
+    }else {
+        _imgvHeightConstraint.constant = 1.0 * 155 *kHSCALE;
+    }
+    
     _status = CommomStatus;
     _deleteV.hidden = YES;
 }
@@ -56,8 +62,18 @@
     if (!_darkView) {
         _darkView = [[DarkMaskButton alloc] initWithFrame:self.imgv.frame];
         _darkView.backgroundColor = [UIColor blackColor];
+        _darkView.layer.cornerRadius = 5.0;
+        _darkView.layer.masksToBounds = YES;
+        _darkView.clipsToBounds = YES;
         [_darkView addTarget:self action:@selector(singleTapAction:) forControlEvents:UIControlEventTouchUpInside];
         [self insertSubview:_darkView aboveSubview:self.imgv];
+        
+        [_darkView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.mas_equalTo(self.imgv.mas_width);
+            make.height.mas_equalTo(self.imgv.mas_height);
+            make.top.mas_equalTo(self.imgv.mas_top);
+            make.left.mas_equalTo(self.imgv.mas_left);
+        }];
     }
     
     _darkView.hidden = NO;
@@ -69,6 +85,8 @@
     if (video.thumbnail_uri && ![video.thumbnail_uri hasPrefix:@"file://"] && ![video.thumbnail_uri hasPrefix:@"http://"] && ![video.thumbnail_uri hasPrefix:@"https://"]) {
         video.thumbnail_uri = [NSString stringWithFormat:@"file://%@", video.thumbnail_uri];
     }
+    
+    self.imgv.clipsToBounds = YES;
     self.imgv.contentMode = UIViewContentModeScaleAspectFill;
     UIImage *placeholderImage = [Commons getImageFromResource:@"Home_videos_album_list_default"];
     
@@ -91,15 +109,22 @@
     
     if (_status == CommomStatus && (video.dataSource == LocalFilesType || video.dataSource == VRVideosType || video.dataSource == FavoriteVideosType)) {
         self.favButton.hidden = NO;
-        _deleteV.hidden = YES;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:0.3 animations:^{
+                _deleteV.alpha = 0.0;
+            } completion:^(BOOL finished) {
+                _deleteV.hidden = YES;
+            }];
+        });
+        
         [self removeDarkView];
         
         if (video.isFavourite) {
             self.favButton.selected = YES;
-            [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
+            [self.favButton setImage:[Commons getImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
         }else{
             self.favButton.selected = NO;
-            [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+            [self.favButton setImage:[Commons getImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
         }
     }else {
         self.favButton.hidden = YES;
@@ -107,7 +132,12 @@
         if (_status == DeleteStatus) {
             _deleteV.hidden = NO;
             [self bringSubviewToFront:_deleteV];
-            _deleteV.alpha = 1.0;
+            _deleteV.alpha = 0.0;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIView animateWithDuration:0.3 animations:^{
+                    _deleteV.alpha = 1.0;
+                }];
+            });
             if (_video.isDelete) {
                 self.darkView.alpha = 0.4;
                 _deleteV.image = [Commons getImageFromResource:@"Home_videos_selected"];
@@ -116,7 +146,13 @@
                 _deleteV.image = [Commons getImageFromResource:@"Home_videos_unselect"];
             }
         }else {
-            _deleteV.hidden = YES;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIView animateWithDuration:0.3 animations:^{
+                    _deleteV.alpha = 0.0;
+                } completion:^(BOOL finished) {
+                    _deleteV.hidden = YES;
+                }];
+            });
             [self removeDarkView];
         }
     }
@@ -129,9 +165,9 @@
     }
     
     if (_status == CommomStatus && (video.dataSource == LocalFilesType || video.dataSource == VRVideosType || video.dataSource == HistoryVideosType)) {
-        [self.imgv addGestureRecognizer:self.longPress];
+//        [self.imgv addGestureRecognizer:self.longPress];
     }else {
-        [self.imgv removeGestureRecognizer:self.longPress];
+//        [self.imgv removeGestureRecognizer:self.longPress];
     }
 }
 
@@ -173,14 +209,14 @@
     
     sender.selected = !sender.isSelected;
     if (sender.isSelected) {
-        [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
+        [self.favButton setImage:[Commons getImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
     }else{
-        [self.favButton setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+        [self.favButton setImage:[Commons getImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
     }
     
     self.video.isFavourite = sender.selected;
     if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoView:favStateChanged:)]) {
-        [self.delegate SPVideoView:self.video favStateChanged:sender.selected];
+        [self.delegate SPVideoView:self favStateChanged:sender.selected];
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"SetFavAction", @"video" : [self.video mj_JSONString]}];
@@ -200,7 +236,7 @@
         }
         
         if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoView: deleteAction:)]) {
-            [self.delegate SPVideoView:self.video deleteAction:_video.isDelete];
+            [self.delegate SPVideoView:self deleteAction:_video.isDelete];
         }
         return;
     }
@@ -216,10 +252,9 @@
 
 - (void)longPressAction:(UIGestureRecognizer *)recognizer {
     if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoView: changeToDeleteStyle:)]) {
-        _video.isDelete = YES;
         self.darkView.selected = YES;
         self.darkView.alpha = 0.4;
-        [self.delegate SPVideoView:self.video changeToDeleteStyle:YES];
+        [self.delegate SPVideoView:self changeToDeleteStyle:YES];
     }
 }
 @end

@@ -25,7 +25,7 @@
 }
 
 - (NSString *)titleOfLabelView {
-    return @"MY VIDEOS";
+    return NSLocalizedString(@"Menu_LocalFiles", @"LOCAL FILES");
 }
 
 - (NSString *)cellIditify {
@@ -44,7 +44,7 @@
 - (UIBarButtonItem *)addItem {
     if (!_addItem) {
         UIButton *addItem = [UIButton buttonWithType:UIButtonTypeCustom];
-        [addItem setImage:[Commons getPdfImageFromResource:@"Home_titlebar_button_add"] forState:UIControlStateNormal];
+        [addItem setImage:[Commons getImageFromResource:@"Home_titlebar_button_add"] forState:UIControlStateNormal];
         addItem.backgroundColor = [UIColor clearColor];
         addItem.userInteractionEnabled = NO;
         addItem.frame = CGRectMake(0, 0, 20, 20);

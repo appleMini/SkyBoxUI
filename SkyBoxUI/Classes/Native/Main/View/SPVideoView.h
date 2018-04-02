@@ -11,20 +11,22 @@
 @protocol SPVideoViewDelegate;
 @interface SPVideoView : UIView
 
+//@property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, weak) id<SPVideoViewDelegate> delegate;
 @property (nonatomic, assign) SPCellStatus status;
 @property (nonatomic, strong) SPVideo *video;
 
 - (void)prepareForReuse;
 - (void)setHighlighted:(BOOL)highlighted;
+- (void)longPressAction:(UIGestureRecognizer *)recognizer;
 @end
 
 @protocol SPVideoViewDelegate <NSObject>
 
 @optional
-- (void)SPVideoView:(SPVideo *)video changeToDeleteStyle:(BOOL)state;
-- (void)SPVideoView:(SPVideo *)video deleteAction:(BOOL)state;
-- (void)SPVideoView:(SPVideo *)video favStateChanged:(BOOL)state;
+- (void)SPVideoView:(SPVideoView *)videoView changeToDeleteStyle:(BOOL)state;
+- (void)SPVideoView:(SPVideoView *)videoView deleteAction:(BOOL)state;
+- (void)SPVideoView:(SPVideoView *)videoView favStateChanged:(BOOL)state;
 @end
 
 @interface DarkMaskButton : UIButton

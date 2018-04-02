@@ -14,6 +14,9 @@
 #import "SPWaterFallLayout.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVFoundation.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+
+#define TopInset 84.0
 
 //UIScrollViewDelegate
 @interface SPMuliteViewController ()<UITableViewDelegate, UITableViewDataSource,UICollectionViewDelegate, UICollectionViewDataSource, SPWaterFallLayoutDelegate, SPVideoViewDelegate, SPVideoCollectionViewDelegate>{
@@ -25,6 +28,8 @@
     
     BOOL _autoRefresh;
     BOOL _unAutoRefresh;
+    
+    BOOL _isRefreshing;
 }
 
 @property (nonatomic, strong) NSMutableArray *selectArr;
@@ -42,6 +47,7 @@
 @property (nonatomic, strong) UIButton *delBtn;
 
 @property (nonatomic, strong) UIImage *snapshot;
+@property (nonatomic, strong)  UIImageView *bottomGradientV;
 
 @end
 
@@ -63,6 +69,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateThumbnail) name:UPDATETHUMBNAIL_NOTIFICATION object:nil];
         
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hasLocalVideosUpdate) name:UPDATELOCALVIDEOSNOTIFICATIONNAME object:nil];
 //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeDispalyType:) name:CHANGEDISPALYTYPENOTIFICATIONNAME object:nil];
     }
     return self;
@@ -128,13 +135,26 @@
     return [NSString stringWithFormat:@"%d / %d", _selectCount, (int)_dataArr.count];
 }
 #pragma -mark private
+
+- (void)hasLocalVideosUpdate {
+    if (self.isShow && self.viewLoaded && self.view.window) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self refresh];
+        });
+    }
+}
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UPDATETHUMBNAIL_NOTIFICATION object:nil];
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UPDATELOCALVIDEOSNOTIFICATIONNAME object:nil];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:CHANGEDISPALYTYPENOTIFICATIONNAME object:nil];
 }
 - (void)updateThumbnail {
+    if (_type == HistoryVideosType || _status == DeleteStatus) {
+        return;
+    }
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         if (!self.isShow || !self.isViewLoaded || !self.view.window) {
             _autoRefresh = YES;
@@ -156,6 +176,15 @@
     video.dataSource = _type;
     SPVideoCollectionCell *cell = (SPVideoCollectionCell *)[collectionView cellForItemAtIndexPath:indexPath];
     cell.videoView.status = _status;
+    if (_status == DeleteStatus) {
+        [cell enableLongPressGestureRecognizer:NO];
+    }else {
+        if (_type == AirScreenType) {
+            [cell enableLongPressGestureRecognizer:NO];
+        }else {
+            [cell enableLongPressGestureRecognizer:YES];
+        }
+    }
     cell.videoView.video = video;
     
     if (_status == CommomStatus && video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
@@ -165,7 +194,7 @@
     }
 }
 
-- (void)updateVisiableCellAfterDelete {
+- (void)updateVisiableCell {
     NSArray *visibleCells = nil;
     if (_showType == TableViewType) {
         UITableView *tableView = (UITableView *)self.scrollView;
@@ -177,6 +206,16 @@
             SPVideoCell *cell = (SPVideoCell *)[tableView cellForRowAtIndexPath:indexPath];
             cell.videoView.status = _status;
             cell.videoView.video = video;
+            
+            if (_status == DeleteStatus) {
+                [cell enableLongPressGestureRecognizer:NO];
+            }else {
+                if (_type == AirScreenType) {
+                    [cell enableLongPressGestureRecognizer:NO];
+                }else {
+                    [cell enableLongPressGestureRecognizer:YES];
+                }
+            }
             
             if (_status == CommomStatus && video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
                 cell.userInteractionEnabled = NO;
@@ -188,65 +227,10 @@
         UICollectionView *collectionView = (UICollectionView *)self.scrollView;
        
         visibleCells = collectionView.indexPathsForVisibleItems;
-
-//        NSInteger minIndex = -1;
-//        NSInteger maxIndex = -1;
         for (NSIndexPath *indexPath in visibleCells) {
-//            if (minIndex == -1) {
-//                minIndex = maxIndex = indexPath.item;
-//            }else {
-//                if (minIndex > indexPath.item) {
-//                    minIndex = indexPath.item;
-//                }
-//
-//                if (maxIndex < indexPath.item) {
-//                    maxIndex = indexPath.item;
-//                }
-//            }
-
             [self resetCollectionViewCellForIndexpath:indexPath];
         }
-//        //上下刷新两个
-//        NSIndexPath *firstIndexPath = [NSIndexPath indexPathForItem:(minIndex-1) inSection:0];
-//        NSIndexPath *secondIndexPath = [NSIndexPath indexPathForItem:(minIndex-2) inSection:0];
-//        NSIndexPath *thirdIndexPath = [NSIndexPath indexPathForItem:(maxIndex+1) inSection:0];
-//        NSIndexPath *fourthIndexPath = [NSIndexPath indexPathForItem:(maxIndex+2) inSection:0];
-//        NSArray *willDisplayIndexPaths = @[firstIndexPath, secondIndexPath, thirdIndexPath, fourthIndexPath];
-//
-//        for (NSIndexPath *indexPath in willDisplayIndexPaths) {
-//            if (indexPath.item < 0 || indexPath.item >= _dataArr.count) {
-//                continue;
-//            }
-//
-//            [self resetCollectionViewCellForIndexpath:indexPath];
-//        }
     }
-}
-
-- (void)updateVisiableCell {
-    //     NSLog(@"当前线程 1====  %@", [[NSThread currentThread] name]);
-    NSArray *visibleCells = nil;
-    if (_showType == TableViewType) {
-        UITableView *tableView = (UITableView *)self.scrollView;
-        visibleCells = tableView.indexPathsForVisibleRows;
-        
-        for (NSIndexPath *indexPath in visibleCells) {
-            SPVideo *video = _dataArr[indexPath.row];
-            video.dataSource = _type;
-            SPVideoCell *cell = (SPVideoCell *)[tableView cellForRowAtIndexPath:indexPath];
-            cell.videoView.status = _status;
-            cell.videoView.video = video;
-            
-            if (_status == CommomStatus && video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
-                cell.userInteractionEnabled = NO;
-            }else {
-                cell.userInteractionEnabled = YES;
-            }
-        }
-    }else {
-        UICollectionView *collectionView = (UICollectionView *)self.scrollView;
-        [collectionView reloadData];
-   }
 }
 
 - (void)resetTitleView: (BOOL)isDelete  {
@@ -265,7 +249,7 @@
 - (UIBarButtonItem *)deleteItem {
     if (!_deleteItem) {
         UIButton *deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [deleteBtn setImage:[Commons getPdfImageFromResource:@"History_titlebar_button_delete"] forState:UIControlStateNormal];
+        [deleteBtn setImage:[Commons getImageFromResource:@"History_titlebar_button_delete"] forState:UIControlStateNormal];
         deleteBtn.backgroundColor = [UIColor clearColor];
         deleteBtn.userInteractionEnabled = NO;
         //        deleteItem.frame = CGRectMake(0, 0, 20, 20);
@@ -279,7 +263,7 @@
 }
 
 - (void)deleteItem:(UIButton *)item {
-    SPAlertViewController *alterVC = [SPAlertViewController alertControllerWithTitle:@"Delete history" message:@"Are you sure you want to delete selected history?"
+    SPAlertViewController *alterVC = [SPAlertViewController alertControllerWithTitle:NSLocalizedString(@"Notice_DeleteHistory", @"Delete history") message:NSLocalizedString(@"Notice_DeleteHistory_all_msg", @"Are you sure you want to delete all history?")
                                                               preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [alterVC dismissViewControllerAnimated:YES completion:nil];
@@ -307,7 +291,7 @@
 - (UIBarButtonItem *)cancleItem {
     if (!_cancleItem) {
         UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [cancelBtn setTitle:@"Cancel" forState:UIControlStateNormal];
+        [cancelBtn setTitle:NSLocalizedString(@"Notice_Cancel", @"Cancel") forState:UIControlStateNormal];
         cancelBtn.titleLabel.font = [UIFont fontWithName:@"Calibri" size:19];
         [cancelBtn setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
         cancelBtn.backgroundColor = [UIColor clearColor];
@@ -339,7 +323,7 @@
 - (UIBarButtonItem *)delItem {
     if (!_delItem) {
         UIButton *deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [deleteBtn setTitle:@"Delete" forState:UIControlStateNormal];
+        [deleteBtn setTitle:NSLocalizedString(@"Notice_Delete", @"Delete") forState:UIControlStateNormal];
         deleteBtn.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:19];
         [deleteBtn setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
         deleteBtn.backgroundColor = [UIColor clearColor];
@@ -370,40 +354,45 @@
     NSString *title = nil;
     NSString *msg = nil;
     if (_type == HistoryVideosType) {
-        title = @"Delete history";
-        msg = @"Are you sure you want to delete selected history?";
+        title = NSLocalizedString(@"Notice_DeleteHistory", @"Delete history");
+        msg = NSLocalizedString(@"Notice_DeleteHistory_msg", @"Are you sure you want to delete selected history?");
     }else {
-        title = @"Delete video";
-        msg = @"Are you sure you want to delete selected videos?";
+        title = NSLocalizedString(@"Notice_DeleteVideos", @"Delete videos");
+        msg = NSLocalizedString(@"Notice_DeleteVideos_msg", @"Are you sure you want to delete selected videos?");
     }
     SPAlertViewController *alterVC = [SPAlertViewController alertControllerWithTitle:title message:msg
                                                               preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Notice_Delete", @"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         _status = CommomStatus;
         NSMutableArray <NSString *>*deleteArr = [NSMutableArray array];
         for (SPVideo *video in _selectArr) {
             [deleteArr addObject:video.path];
         }
         
+        self.view.userInteractionEnabled = NO;
+        [self removeItemWithAnimation];
+        
+//        //test
+//        self.view.userInteractionEnabled = YES;
+//        return ;
         __weak typeof(self) ws = self;
         self.completeBlock = ^{
-            __strong typeof(ws) strongfy = ws;
-            NSUInteger jumpToVC = (_type == HistoryVideosType) ? CommonHistoryType : CommonLoaclVideosType;
-            NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:jumpToVC]
-                                     };
-            
-            [strongfy.view bubbleEventWithUserInfo:notify];
-            
-            [strongfy removeItemWithAnimation];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                __strong typeof(ws) strongfy = ws;
+
+                NSUInteger jumpToVC = (_type == HistoryVideosType) ? CommonHistoryType : CommonLoaclVideosType;
+                NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:jumpToVC]
+                                         };
+                [strongfy.view bubbleEventWithUserInfo:notify];
+            });
         };
         
         NSString *method = (_type == HistoryVideosType) ? @"DeleteHistory" : @"DeleteLocalVideos";
         [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : method, @"deleteArr" : [deleteArr copy], @"resultBlock" : self.completeBlock}];
-        self.view.userInteractionEnabled = NO;
     }];
 
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Notice_Cancel", @"Cancel") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
 //        [self runtime:alterVC];
         [alterVC dismissViewControllerAnimated:YES completion:^{
             
@@ -442,24 +431,38 @@
 
 - (void)removeItemWithAnimation {
     dispatch_async(dispatch_get_main_queue(), ^{
+        self.view.userInteractionEnabled = NO;
+        [self updateVisiableCell];
+        
+        NSUInteger count = _dataArr.count;
         NSMutableArray *resultArr = [NSMutableArray arrayWithArray:_dataArr];
-        NSMutableArray *indexPaths = [NSMutableArray array];
-        for (int index = 0; index < _dataArr.count ; index++) {
+        NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:2];
+        //有 bug 最后一个删除不掉
+//        [resultArr enumerateObjectsUsingBlock:^(SPVideo *video, NSUInteger idx, BOOL * _Nonnull stop) {
+//            if (video.isDelete) {
+//                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+//                [indexPaths addObject:indexPath];
+//                [resultArr removeObject:video];
+//            }
+//        }];
+        for (int index = 0; index < count; index ++) {
             SPVideo *video = _dataArr[index];
             if (video.isDelete) {
-                [resultArr removeObject:video];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
                 [indexPaths addObject:indexPath];
+
+                [resultArr removeObject:video];
             }
-        }
+       }
         
-        [self updateVisiableCellAfterDelete];
-        
-        _dataArr = [resultArr copy];
         if (_showType == TableViewType) {
             UITableView *tableView = (UITableView *)self.scrollView;
+            _dataArr = resultArr;
+            [tableView beginUpdates];
             [tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationLeft];
+            [tableView  endUpdates];
         }else {
+            _dataArr = resultArr;
             UICollectionView *collectionView = (UICollectionView *)self.scrollView;
             [collectionView deleteItemsAtIndexPaths:indexPaths];
         }
@@ -467,16 +470,16 @@
         _selectArr = nil;
         self.view.userInteractionEnabled = YES;
         if (_dataArr.count <= 0) {
-            UIView *bgview = [self setBackgroundView];
-            if (bgview) {
-                [_scrollView setValue:bgview forKeyPath:@"_backgroundView"];
+            SPBackgrondView *backgroundView = [_scrollView valueForKeyPath:@"_backgroundView"];
+            if (backgroundView) {
+                [backgroundView showOrHidden:YES];
             }
-            
+
             [self enableNavigationItems:NO];
         }else {
             [self enableNavigationItems:YES];
         }
-        
+
         [self configRefresh];
     });
 }
@@ -507,12 +510,12 @@
     switch (_showType) {
         case TableViewType:
         {
-            [self.menuBtn setImage:[Commons getPdfImageFromResource:@"Home_titlebar_button_grid"] forState:UIControlStateNormal];
+            [self.menuBtn setImage:[Commons getImageFromResource:@"Home_titlebar_button_grid"] forState:UIControlStateNormal];
         }
             break;
         case CollectionViewType:
         {
-            [self.menuBtn setImage:[Commons getPdfImageFromResource:@"Home_titlebar_button_list"] forState:UIControlStateNormal];
+            [self.menuBtn setImage:[Commons getImageFromResource:@"Home_titlebar_button_list"] forState:UIControlStateNormal];
         }
             break;
         default:
@@ -524,11 +527,38 @@
     [super viewDidLoad];
     
     [self setupScrollView];
+    
+    [self setupBottomGradientLayer];
+}
+
+- (void)setupBottomGradientLayer {
+    if (_bottomGradientV) {
+        return;
+    }
+    
+    UIImageView *imgv = [[UIImageView alloc] initWithFrame:CGRectZero];
+    //    imgv.backgroundColor = [UIColor redColor];
+    UIImage *image = [Commons getImageFromResource:@"Network_list_mask@2x"];
+    CGImageRef imgref = [image CGImage];
+    UIImage *newImage = [UIImage imageWithCGImage:imgref scale:image.scale orientation:UIImageOrientationDown];
+    
+    imgv.image = newImage;
+    [self.view addSubview:imgv];
+    _bottomGradientV = imgv;
+    _bottomGradientV.alpha = 0.5;
+    _bottomGradientV.hidden = NO;
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    _bottomGradientV.frame = CGRectMake(0, SCREEN_HEIGHT - 100 * kHSCALE - 84, SCREEN_WIDTH, 100 * kHSCALE);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+//    //清除缓存
+//    [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
+//    [[SDImageCache sharedImageCache] clearMemory];
     //    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     //    CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
     //    gradient.frame = rect;
@@ -546,8 +576,10 @@
 - (void)setupScrollView {
     [self.view addSubview:self.scrollView];
     
+    [self.view bringSubviewToFront:_bottomGradientV];
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.mas_equalTo(self.view);
+//        make.edges.mas_equalTo(self.view);
+        make.edges.mas_equalTo(UIEdgeInsetsMake(-TopInset, 0, 0, 0));
     }];
     
     self.scrollView.delegate = self;
@@ -573,7 +605,10 @@
                 SPWaterFallLayout *layout = [[SPWaterFallLayout alloc] init];
                 // 设置代理
                 layout.delegate = self;
-                _scrollView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+                
+                UICollectionViewFlowLayout *flowLayout= [[UICollectionViewFlowLayout alloc] init];
+                _scrollView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
+//                _scrollView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
                 [(UICollectionView *)_scrollView registerClass:[SPVideoCollectionCell class] forCellWithReuseIdentifier:[self cellIditify]];
                 ((UICollectionView *)_scrollView).backgroundColor = [UIColor clearColor];
                 adjustsScrollViewInsets(_scrollView);
@@ -585,9 +620,10 @@
                 break;
         }
         
-        UIView *bgview = [self setBackgroundView];
-        if (bgview) {
+        SPBackgrondView *bgview = [self setBackgroundView];
+        if (_type != AirScreenType && bgview) {
             [_scrollView setValue:bgview forKeyPath:@"_backgroundView"];
+            [bgview showOrHidden:YES];
         }
         
         [self configRefresh];
@@ -623,6 +659,7 @@
             break;
         case AirScreenType:
         {
+            backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoAirScreenResult];
         }
             break;
         default:
@@ -739,14 +776,16 @@
 }
 
 - (void)gradientLayer:(CGFloat)Height {
-    CGRect rect = CGRectMake(0, -64, self.view.frame.size.width, self.view.frame.size.height + 64);
+//    CGRect rect = CGRectMake(0, -64, self.view.frame.size.width, self.view.frame.size.height + 64);
+    CGRect rect = CGRectMake(0, -130, self.view.frame.size.width, self.view.frame.size.height + 180);
     CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
     gradient.frame = rect;
     
-    UIColor *bgColor = SPBgColor;
+//    UIColor *bgColor = SPBgColor;
+    UIColor *bgColor = [UIColor blackColor];
     
     gradient.colors = @[(__bridge id)[bgColor colorWithAlphaComponent:0.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor];
-    gradient.locations = @[@(1.0 * Height / rect.size.height), @(1.0 * (Height + 64) / rect.size.height), @1.0];
+    gradient.locations = @[@(1.0 * Height / rect.size.height), @(1.0 * (Height + 180) / rect.size.height), @1.0];
     gradient.startPoint = CGPointMake(0.5, 0);
     gradient.endPoint = CGPointMake(0.5, 1.0);
     
@@ -832,6 +871,10 @@
 }
 
 - (void)refresh {
+    if (_isRefreshing) {
+        return;
+    }
+    
     [self enableNavigationItems:YES];
     //    dispatch_async(dispatch_get_main_queue(), ^{
     //        [_scrollView.tg_header beginRefreshing];
@@ -863,10 +906,10 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [_scrollView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
         
-        BOOL isHidden = YES;
+        __block  BOOL _isHidden = NO;
         [self enableNavigationItems:NO];
         if(!_dataArr || _dataArr.count <= 0) {
-            isHidden = NO;
+            _isHidden = NO;
             [UIView animateWithDuration:0.2 animations:^{
                 self.menuBtn.alpha = 0.4;
                 self.menuBtn.enabled = NO;
@@ -875,38 +918,37 @@
                 self.deleteBtn.enabled = NO;
             }];
             
-            [_emptyView removeFromSuperview];
-            _emptyView = nil;
-            SPBackgrondView *backgroundView = nil;
-            switch (_type) {
-                case LocalFilesType:
-                {
-                    NSUInteger selectedIndex = -1;
-                    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:HomeHelpMiddleVCType],
-                                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
-                                             @"Done": @NO
-                                             };
-                    
-                    [self.view bubbleEventWithUserInfo:notify];
-                    
-                    return;
+                switch (_type) {
+                    case LocalFilesType:
+                    {
+                        NSUInteger selectedIndex = -1;
+                        NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:HomeHelpMiddleVCType],
+                                                 kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+                                                 @"Done": @NO
+                                                 };
+                        
+                        [self.view bubbleEventWithUserInfo:notify];
+                        
+                        return;
+                    }
+                        break;
+                    case AirScreenType:
+                    {
+                        SPBackgrondView *backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoAirScreenResult];
+                        
+                        if (!_emptyView) {
+                            [self.view insertSubview:backgroundView aboveSubview:self.scrollView];
+                        }
+                        _emptyView = backgroundView;
+                    }
+                        break;
+                    default:
+                        break;
                 }
-                    break;
-                case AirScreenType:
-                {
-                    backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoAirScreenResult];
-                }
-                    break;
-                default:
-                    backgroundView = [self setBackgroundView];
-                    break;
-            }
+                
             
-            [self.view insertSubview:backgroundView aboveSubview:self.scrollView];
-            
-            _emptyView = backgroundView;
         }else{
-            isHidden = YES;
+            _isHidden = YES;
             [UIView animateWithDuration:0.2 animations:^{
                 self.menuBtn.alpha = 1.0;
                 self.menuBtn.enabled = YES;
@@ -916,15 +958,13 @@
             }];
             [_emptyView removeFromSuperview];
             _emptyView = nil;
-            
         }
     
         switch (_showType) {
             case TableViewType:
             {
                 UITableView *tableView = (UITableView *)self.scrollView;
-                tableView.backgroundView.hidden = isHidden;
-                
+                tableView.backgroundView.hidden = _isHidden;
                 if (_showIndexpath) {
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         [UIView animateWithDuration:0.02 animations:^{
@@ -938,6 +978,7 @@
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         [UIScrollView animateWithDuration:0.02 animations:^{
                             self.scrollView.contentOffset = CGPointMake(0, 0);
+                            self.scrollView.alpha = 1.0;
                          } completion:^(BOOL finished) {
                             [self enableNavigationItems:YES];
                         }];
@@ -962,8 +1003,7 @@
             case CollectionViewType:
             {
                 UICollectionView *collectionView = (UICollectionView *)self.scrollView;
-                collectionView.backgroundView.hidden = isHidden;
-                
+                collectionView.backgroundView.hidden = _isHidden;
                 if (_showIndexpath) {
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                             [UIView animateWithDuration:0.02 animations:^{
@@ -982,6 +1022,7 @@
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         [UIScrollView animateWithDuration:0.02 animations:^{
                             self.scrollView.contentOffset = CGPointMake(0, 0);
+                            self.scrollView.alpha = 1.0;
                         } completion:^(BOOL finished) {
                             [self enableNavigationItems:YES];
                         }];
@@ -1026,20 +1067,28 @@
             refresh = YES;
             [dataManager setCacheWithDataSource:_type dataSourceString:newHash];
         }
-        
     }
     
+//    //test
+//    refresh = YES;
+//
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         //        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
         [_scrollView.tg_header endRefreshing];
         _dataArr = array;
         (refresh || !_dataArr || _dataArr.count == 0) ? [self reload] : nil;
+        
+        if (!refresh && _type == HistoryVideosType) {
+            [self updateVisiableCell];
+        }
     });
 }
 
 - (void)doRefreshSenior {
+    _isRefreshing = YES;
     __weak typeof(self) ws = self;
     self.refreshBlock = ^(NSString *dataStr){
+        _isRefreshing = NO;
         //     NSLog(@"dataStr === %@", dataStr);
         NSArray *arr = [NSJSONSerialization JSONObjectWithData:[dataStr mj_JSONData] options:NSJSONReadingAllowFragments error:nil];
         
@@ -1092,22 +1141,68 @@
     return _dataArr.count;
 }
 
+////设定横向滑动时是否出现删除按扭,（阻止第一行出现）
+//-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return UITableViewCellEditingStyleDelete;
+//}
+//
+////自定义划动时delete按钮内容
+//- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath{
+//    return @"删除";
+//}
+//
+//- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+//    if(editingStyle == UITableViewCellEditingStyleDelete)
+//    {
+//        NSMutableArray *resultArr = [NSMutableArray arrayWithArray:_dataArr];
+//        SPVideo *video = _dataArr[indexPath.row];
+//        if (!video) {
+//            return;
+//        }
+//
+//        [resultArr removeObject:video];
+//        _dataArr = resultArr;
+//        [tableView beginUpdates];
+//        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+//        [tableView  endUpdates];
+//    }
+//}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SPVideoCell *cell = [tableView dequeueReusableCellWithIdentifier:[self cellIditify]];
     
     if (!cell) {
         cell = [[SPVideoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[self cellIditify]];
     }
+    
+    if (_status == CommomStatus && _type != HistoryVideosType && indexPath.row == 0) {
+        cell.alpha = 0.0;
+        [UIView animateWithDuration:0.3 animations:^{
+            cell.alpha = 1.0;
+        }];
+    }
+    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     SPVideo *video =  _dataArr[indexPath.row];
     video.dataSource = _type;
     cell.videoView.status = _status;
+//    cell.videoView.indexPath = indexPath;
     if (_status == CommomStatus) {
         video.isDelete = NO;
     }
     cell.videoView.video = video;
     cell.videoView.delegate = self;
-//    cell.indexPath = indexPath;
+    
+    if (_status == DeleteStatus) {
+        [cell enableLongPressGestureRecognizer:NO];
+    }else {
+        if (_type == AirScreenType) {
+            [cell enableLongPressGestureRecognizer:NO];
+        }else {
+            [cell enableLongPressGestureRecognizer:YES];
+        }
+    }
     
     if(_status == CommomStatus && [video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         cell.userInteractionEnabled = NO;
@@ -1119,12 +1214,21 @@
     return cell;
 }
 
+- (nullable UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectZero];
+    headerView.backgroundColor = [UIColor clearColor];
+    return headerView;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return TopInset;
+}
 //- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 //    return 1.0 * 208 / (324 / SCREEN_WIDTH);
 //}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return kWSCALE*94 - 29;
+    return  [SPDeviceUtil isiPhoneX] ?  kWSCALE*94 - 29 + 34 : kWSCALE*94 - 29;
 }
 
 - (nullable UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
@@ -1138,16 +1242,43 @@
     return _dataArr.count;
 }
 
+//这个不是必须的方法 是Cell 将要显示
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    cell.layer.transform = CATransform3DMakeScale(1, 1, 1);//缩放比例
+    [UIView animateWithDuration:0.01 animations:^{
+        cell.layer.transform = CATransform3DMakeScale(1, 1, 1);//还原为1
+    } completion:^(BOOL finished) {
+        [self resetCollectionViewCellForIndexpath:indexPath];
+    }];
+}
+
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     SPVideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[self cellIditify] forIndexPath:indexPath];
+    
+    if (_status == CommomStatus && _type != HistoryVideosType && indexPath.row == 0) {
+        cell.alpha = 0.0;
+        [UIView animateWithDuration:0.3 animations:^{
+            cell.alpha = 1.0;
+        }];
+    }
     SPVideo *video =  _dataArr[indexPath.row];
     video.dataSource = _type;
     cell.videoView.status = _status;
+//    cell.videoView.indexPath = indexPath;
+    if (_status == DeleteStatus) {
+        [cell enableLongPressGestureRecognizer:NO];
+    }else {
+        if (_type == AirScreenType) {
+            [cell enableLongPressGestureRecognizer:NO];
+        }else {
+            [cell enableLongPressGestureRecognizer:YES];
+        }
+    }
     
     cell.videoView.video = video;
     
     cell.videoView.delegate = self;
-    cell.indexPath = indexPath;
     
     if(_status == CommomStatus && [video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         cell.userInteractionEnabled = NO;
@@ -1157,6 +1288,27 @@
         [cell hiddenShadow:NO];
     }
     return cell;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(height == 0) {
+        NSAttributedString *attriStr = [[NSAttributedString alloc] initWithString:@"labelHeight" attributes:@{NSFontAttributeName : [UIFont fontWithName:@"Calibri-Bold" size:15]}];
+        CGFloat labelHeight = [attriStr boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingTruncatesLastVisibleLine)  context:nil].size.height;
+        
+        NSAttributedString *attriStr1 = [[NSAttributedString alloc] initWithString:@"durationLabelHeight" attributes:@{NSFontAttributeName : [UIFont fontWithName:@"Calibri-light" size:12]}];
+        CGFloat durationLabelHeight = [attriStr1 boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingTruncatesLastVisibleLine)  context:nil].size.height;
+        
+        CGFloat imgvHeight = 208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324;
+        height = labelHeight + durationLabelHeight + imgvHeight + 8 + 8;
+    }
+    
+   return CGSizeMake((SCREEN_WIDTH / 2 - 17 * 3 / 2), height);
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return UIEdgeInsetsMake(TopInset, 17, [SPDeviceUtil isiPhoneX] ?  kWSCALE*94 - 29 + 34 : kWSCALE*94 - 29, 17);
 }
 
 #pragma mark - <SPWaterFallLayoutDelegate>
@@ -1197,12 +1349,12 @@ static CGFloat height = 0;
 
 - (UIEdgeInsets)edgeInsetsOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
 {
-    return UIEdgeInsetsMake(0, 17, kWSCALE*94 - 29, 17);
+    return UIEdgeInsetsMake(0, 17, [SPDeviceUtil isiPhoneX] ?  kWSCALE*94 - 29 + 34 : kWSCALE*94 - 29, 17);
 }
 
 
 #pragma -mark SPVideoViewDelegate
-- (void)SPVideoView:(SPVideo *)video favStateChanged:(BOOL)state {
+- (void)SPVideoView:(SPVideoView *)videoView favStateChanged:(BOOL)state {
     return;
     
     if (_type == FavoriteVideosType) {
@@ -1264,8 +1416,18 @@ static CGFloat height = 0;
     }
 }
 
-- (void)SPVideoView:(SPVideo *)video changeToDeleteStyle:(BOOL)state {
+- (void)SPVideoView:(SPVideoView *)videoView changeToDeleteStyle:(BOOL)state {
+//    SPVideo *video = _dataArr[videoView.indexPath.row];
+    SPVideo *video = videoView.video;
+    video.isDelete = YES;
     if (_status == DeleteStatus) {
+        for (SPVideo *_video in _selectArr) {
+            if ([video.path hash] == [_video.path hash]) {
+                video.isDelete = YES;
+            }else {
+                video.isDelete = NO;
+            }
+        }
         return;
     }
     
@@ -1289,20 +1451,32 @@ static CGFloat height = 0;
     [self.view bubbleEventWithUserInfo:notify];
 }
 
-- (void)SPVideoView:(SPVideo *)video deleteAction:(BOOL)state {
+- (void)SPVideoView:(SPVideoView *)videoView deleteAction:(BOOL)state {
+//    SPVideo *video = _dataArr[videoView.indexPath.row];
+    SPVideo *video = videoView.video;
     state ? [_selectArr addObject:video] : [_selectArr removeObject:video];
     [self resetTitleView:state];
 }
 
-- (void)SPVideoCollectionView:(SPVideo *)video changeToDeleteStyle:(BOOL)state {
+- (void)SPVideoCollectionView:(SPVideoCollectionView *)videoView changeToDeleteStyle:(BOOL)state {
+//    SPVideo *video = _dataArr[videoView.indexPath.item];
+    SPVideo *video = videoView.video;
+    video.isDelete = YES;
     if (_status == DeleteStatus) {
+        for (SPVideo *_video in _selectArr) {
+            if ([video.path hash] == [_video.path hash]) {
+                video.isDelete = YES;
+            }else {
+                video.isDelete = NO;
+            }
+        }
         return;
     }
     
+    _status = DeleteStatus;
     [self configRefresh];
     _selectArr = [[NSMutableArray alloc] init];
     [_selectArr addObject:video];
-    _status = DeleteStatus;
     _selectCount = 1;
     
     self.delBtn.enabled = YES;
@@ -1318,12 +1492,14 @@ static CGFloat height = 0;
     [self.view bubbleEventWithUserInfo:notify];
 }
 
-- (void)SPVideoCollectionView:(SPVideo *)video deleteAction:(BOOL)state {
+- (void)SPVideoCollectionView:(SPVideoCollectionView *)videoView deleteAction:(BOOL)state {
+//    SPVideo *video = _dataArr[videoView.indexPath.item];
+    SPVideo *video = videoView.video;
     state ? [_selectArr addObject:video] : [_selectArr removeObject:video];
     [self resetTitleView:state];
 }
 
-- (void)SPVideoCollectionView:(SPVideo *)video favStateChanged:(BOOL)state {
+- (void)SPVideoCollectionView:(SPVideoCollectionView *)videoView favStateChanged:(BOOL)state {
     return;
     
     if (_type == FavoriteVideosType) {

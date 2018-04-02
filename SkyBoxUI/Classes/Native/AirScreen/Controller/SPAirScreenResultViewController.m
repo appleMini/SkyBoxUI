@@ -13,6 +13,7 @@
 
 @interface SPAirScreenResultViewController () {
     BOOL _showDisconnect;
+    BOOL _isFaild;
 }
 
 @property (nonatomic, strong) SPHighlightedButton *disconnBtn;
@@ -61,36 +62,56 @@
     [self.serverBtn setTitle:[_airscreen computerName] forState:UIControlStateNormal];
 }
 
+- (void)viewWillToChanged {
+    if (_isFaild) {
+        [self showFaildConnected];
+    }
+}
+
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [_topView removeFromSuperview];
     _topView = nil;
 }
 
+- (void)showFaildConnected {
+    //连接失败,退回搜索界面
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:NSLocalizedString(@"Notice_Connection_timeout", @"Connection timed out") preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Notice_OK", @"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [alertVC dismissViewControllerAnimated:YES completion:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self disconnection:nil];
+            });
+        }];
+        
+        [alertVC addAction:cancelAction];
+        
+        [self presentViewController:alertVC animated:YES completion:nil];
+    });
+}
+
 - (void)receiveMessage:(NSNotification *)notify {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [MBProgressHUD hideHUDForView:KEYWINDOW animated:YES];
+        [MBProgressHUD hideHUDForView:self.scrollView animated:YES];
     });
     
+    self.isRefreshing = NO;
     NSDictionary *dict = [notify userInfo];
     NSString *jsonStr = dict[@"JsonResult"];
     
     if ([dict[@"method"] hash] == [@"showResult" hash]) {
         if ([dict[@"connenct"] hash] == [@"false" hash]) {
-            //连接失败,退回搜索界面
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self showHUDProgressWithMessage:@"Faild connect to PC!"];
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [self hideHUDCompletion:^{
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self disconnection:nil];
-                        });
-                    }];
-                });
-            });
+            if (!self.isShow || !self.isViewLoaded || !self.view.window) {
+                _isFaild = YES;
+                return;
+            }
+            
+            [self showFaildConnected];
             return;
         }
         
+        _isFaild = NO;
         if (!jsonStr) {
             //     NSLog(@"mediaListResult is none....");
             self.dataArr = nil;
@@ -227,7 +248,13 @@
                 
                 ws.emptyView = backgroundView;
             }else {
-                [ws enableNavigationItems:YES];
+                if (!ws) {
+                    return ;
+                }
+
+                if (!ws.isRefreshing) {
+                    [ws enableNavigationItems:YES];
+                }
                 [ws hiddenGradientLayer:NO];
                 ws.topView.userInteractionEnabled = YES;
                 [ws.emptyView removeFromSuperview];
@@ -340,6 +367,11 @@
 
 - (void)doRefreshSenior {
     //     NSLog(@"doRefreshSenior");
+    if (self.isRefreshing) {
+        return;
+    }
+    self.isRefreshing = YES;
+    
     [self enableNavigationItems:NO];
 //    _airscreen.ip = @"asdasfsfs";
 //    _airscreen.ips = @[@"asfafdsfsasda"];
@@ -348,6 +380,7 @@
     if (status == -1 || status == 0 || status == 1) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             //        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
+            self.isRefreshing = NO;
             [self.scrollView.tg_header endRefreshing];
             [self enableNavigationItems:YES];
         });
@@ -355,13 +388,8 @@
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIWindow *keyWindow = KEYWINDOW;
-        if (!keyWindow) {
-            return ;
-        }
-        
         if (!self.scrollView.tg_header.isRefreshing) {
-            [MBProgressHUD showHUDAddedTo:KEYWINDOW animated:YES];
+            [MBProgressHUD showHUDAddedTo:self.scrollView animated:YES];
         }
     });
     [[SPAirScreenManager shareAirScreenManager] connectServer:_airscreen complete:^(NSArray *listResult, NSString *resultStr) {

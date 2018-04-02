@@ -71,9 +71,18 @@
 
 - (UIView *)darkView {
     if (!_darkView) {
-        _darkView = [[UIView alloc] initWithFrame:self.imgv.frame];
+        _darkView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 162.5, 104)];
         _darkView.backgroundColor = [UIColor blackColor];
+        _darkView.layer.cornerRadius = 5.0;
+        _darkView.layer.masksToBounds = YES;
+        _darkView.clipsToBounds = YES;
         [self insertSubview:_darkView aboveSubview:self.imgv];
+        [_darkView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.mas_equalTo(self.imgv.mas_width);
+            make.height.mas_equalTo(self.imgv.mas_height);
+            make.top.mas_equalTo(self.imgv.mas_top);
+            make.left.mas_equalTo(self.imgv.mas_left);
+        }];
     }
     
     _darkView.hidden = NO;
@@ -104,6 +113,7 @@
     
     self.imgv.layer.cornerRadius = 5.0;
     self.imgv.layer.masksToBounds = YES;
+    self.imgv.clipsToBounds = YES;
 //    self.imgv.layer.shouldRasterize = YES;
 //    self.imgv.layer.allowsEdgeAntialiasing = YES;
 
@@ -117,20 +127,33 @@
     
     if (_status == CommomStatus && (video.dataSource == LocalFilesType || video.dataSource == VRVideosType || video.dataSource == FavoriteVideosType)) {
         self.favBtn.hidden = NO;
-        _deleteV.hidden = YES;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:0.3 animations:^{
+                _deleteV.alpha = 0.0;
+            } completion:^(BOOL finished) {
+                _deleteV.hidden = YES;
+            }];
+        });
         [self removeDarkView];
         
         if (video.isFavourite) {
             self.favBtn.selected = YES;
-            [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
+            [self.favBtn setImage:[Commons getImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
         }else{
             self.favBtn.selected = NO;
-            [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+            [self.favBtn setImage:[Commons getImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
         }
     }else {
         self.favBtn.hidden = YES;
         if (_status == DeleteStatus) {
             _deleteV.hidden = NO;
+            _deleteV.alpha = 0.0;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIView animateWithDuration:0.3 animations:^{
+                    _deleteV.alpha = 1.0;
+                }];
+            });
+            
             [self bringSubviewToFront:_deleteV];
             
             if (_video.isDelete) {
@@ -141,7 +164,15 @@
                 _deleteV.image = [Commons getImageFromResource:@"Home_videos_unselect"];
             }
         }else {
-            _deleteV.hidden = YES;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIView animateWithDuration:0.3 animations:^{
+                    _deleteV.alpha = 0.0;
+                } completion:^(BOOL finished) {
+                    _deleteV.hidden = YES;
+                }];
+            });
+            
             [self removeDarkView];
         }
     }
@@ -155,9 +186,9 @@
     
     if (_status == CommomStatus && (video.dataSource == LocalFilesType || video.dataSource == VRVideosType || video.dataSource == HistoryVideosType)) {
         self.imgv.userInteractionEnabled = YES;
-        [self.imgv addGestureRecognizer:self.longPress];
+//        [self.imgv addGestureRecognizer:self.longPress];
     }else {
-        [self.imgv removeGestureRecognizer:self.longPress];
+//        [self.imgv removeGestureRecognizer:self.longPress];
     }
 }
 
@@ -172,10 +203,10 @@
 }
 
 - (void)longPressAction:(UIGestureRecognizer *)recognizer {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoCollectionView: changeToDeleteStyle:)]) {
-        _video.isDelete = YES;
+    //if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoCollectionView: changeToDeleteStyle:)])
+    if (self.delegate) {
         self.darkView.alpha = 0.4;
-        [self.delegate SPVideoCollectionView:self.video changeToDeleteStyle:YES];
+        [self.delegate SPVideoCollectionView:self changeToDeleteStyle:YES];
     }
 }
 
@@ -184,7 +215,6 @@
         _longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
         _longPress.minimumPressDuration = 1.0;
     }
-    
     return _longPress;
 }
 
@@ -200,7 +230,7 @@
         }
         
         if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoCollectionView: deleteAction:)]) {
-            [self.delegate SPVideoCollectionView:self.video deleteAction:_video.isDelete];
+            [self.delegate SPVideoCollectionView:self deleteAction:_video.isDelete];
         }
         return;
     }
@@ -227,15 +257,15 @@
     
     sender.selected = !sender.isSelected;
     if (sender.isSelected) {
-        [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
+        [self.favBtn setImage:[Commons getImageFromResource:@"Channels_icon_favorites_active"] forState:UIControlStateNormal];
     }else{
-        [self.favBtn setImage:[Commons getPdfImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
+        [self.favBtn setImage:[Commons getImageFromResource:@"Channels_icon_favorites"] forState:UIControlStateNormal];
     }
     
     self.video.isFavourite = sender.selected;
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoCollectionView:favStateChanged:)]) {
-        [self.delegate SPVideoCollectionView:self.video favStateChanged:sender.selected];
+        [self.delegate SPVideoCollectionView:self favStateChanged:sender.selected];
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"SetFavAction", @"video" : [self.video mj_JSONString]}];

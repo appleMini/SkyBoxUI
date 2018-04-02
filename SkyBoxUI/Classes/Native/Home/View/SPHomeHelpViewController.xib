@@ -47,7 +47,7 @@
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Open iTunes and select your iPhone." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YTf-Zb-n6S">
-                            <rect key="frame" x="28" y="0.0" width="237" height="36"/>
+                            <rect key="frame" x="28" y="2" width="237" height="36"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -58,7 +58,7 @@
                         <constraint firstItem="lok-td-d3Y" firstAttribute="leading" secondItem="qyT-Rh-rNO" secondAttribute="leading" id="2TP-bs-amE"/>
                         <constraint firstAttribute="height" constant="45" id="9Vd-aO-FUK"/>
                         <constraint firstItem="lok-td-d3Y" firstAttribute="top" secondItem="qyT-Rh-rNO" secondAttribute="top" id="VBj-mq-oxf"/>
-                        <constraint firstItem="YTf-Zb-n6S" firstAttribute="top" secondItem="lok-td-d3Y" secondAttribute="top" id="ZYi-Ss-Fjj"/>
+                        <constraint firstItem="YTf-Zb-n6S" firstAttribute="top" secondItem="lok-td-d3Y" secondAttribute="top" constant="2" id="ZYi-Ss-Fjj"/>
                         <constraint firstAttribute="trailing" secondItem="YTf-Zb-n6S" secondAttribute="trailing" constant="5" id="hGl-Px-wfU"/>
                     </constraints>
                 </view>
@@ -72,8 +72,8 @@
                                 <constraint firstAttribute="height" constant="18" id="xwG-Az-vVV"/>
                             </constraints>
                         </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connect your iPhone to your computer using the USB cable." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dfJ-Wz-uTw">
-                            <rect key="frame" x="28" y="0.0" width="237" height="36"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Connect your iPhone to your computer using the USB cable." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dfJ-Wz-uTw">
+                            <rect key="frame" x="28" y="1" width="237" height="36"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -85,7 +85,7 @@
                         <constraint firstItem="vNW-Ar-dDt" firstAttribute="leading" secondItem="JlT-br-7As" secondAttribute="leading" id="YfJ-co-DoU"/>
                         <constraint firstItem="vNW-Ar-dDt" firstAttribute="top" secondItem="JlT-br-7As" secondAttribute="top" id="b2g-Hg-RZs"/>
                         <constraint firstItem="dfJ-Wz-uTw" firstAttribute="leading" secondItem="vNW-Ar-dDt" secondAttribute="trailing" constant="10" id="hpg-0V-1m3"/>
-                        <constraint firstItem="dfJ-Wz-uTw" firstAttribute="top" secondItem="vNW-Ar-dDt" secondAttribute="top" id="k3V-29-hdR"/>
+                        <constraint firstItem="dfJ-Wz-uTw" firstAttribute="top" secondItem="vNW-Ar-dDt" secondAttribute="top" constant="2" id="k3V-29-hdR"/>
                         <constraint firstAttribute="width" constant="270" id="wz2-Jn-l0M"/>
                     </constraints>
                 </view>

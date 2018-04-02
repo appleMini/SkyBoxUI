@@ -46,7 +46,7 @@
 }
 
 - (NSString *)titleOfLabelView {
-    return @"Online Stream";
+    return NSLocalizedString(@"Menu_OnlineStream", @"Online Stream");
 }
 
 - (NSString *)cellIditify {

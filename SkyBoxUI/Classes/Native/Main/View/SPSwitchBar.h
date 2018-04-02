@@ -16,6 +16,7 @@ SPSingletonH(SPSwitchBar)
 @property (nonatomic, assign) NSInteger selectIndex;
 @property (nonatomic, weak) id<SPSwitchBarProtocol> delegate;
 
+- (void)showVRMode;
 - (BOOL)isHidden;
 - (void)hiddenWithAnimation;
 - (void)showWithAnimation;

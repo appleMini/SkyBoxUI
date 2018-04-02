@@ -26,7 +26,7 @@
 }
 
 - (NSString *)titleOfLabelView {
-    return @"FAVORITE";
+    return NSLocalizedString(@"Menu_Favorite", @"FAVORITES");
 }
 
 - (NSString *)cellIditify {

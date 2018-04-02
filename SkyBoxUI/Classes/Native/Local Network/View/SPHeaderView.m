@@ -47,6 +47,7 @@
     self.contentView.backgroundColor = [UIColor clearColor];
     
     [self.homeBtn setBackgroundImage:[Commons getPdfImageFromResource:@"Network_navigator_home_bg"] forState:UIControlStateNormal];
+
     [self.homeBtn setImage:[Commons getPdfImageFromResource:@"Network_navigator_home"] forState:UIControlStateNormal];
     self.homeBtn.backgroundColor = [UIColor clearColor];
     self.homeBtnWidthConstraint.constant = 50 * kWSCALE;
@@ -146,8 +147,8 @@
     CGFloat width = (SCREEN_WIDTH - 20 - 28*kWSCALE - 50*kWSCALE)/4;
     CGFloat x = -7 + width * index;
     SPDeviceButton *button = [[SPDeviceButton alloc] initWithFrame:CGRectMake(x, 0, width+7, 28*kWSCALE)];
-    UIImage *bgImg = [Commons getPdfImageFromResource:@"Network_navigator_path_bg"];
     
+    UIImage *bgImg = [Commons getPdfImageFromResource:@"Network_navigator_path_bg"];
     //    button.backgroundColor  = randomColor;
     [button setContentMode:UIViewContentModeScaleAspectFill];
     button.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:13.0];

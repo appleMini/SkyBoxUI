@@ -74,7 +74,7 @@
         
         NSString *dlanPath =  [libraryPath stringByAppendingPathComponent:@"Caches/DLAN"];
         
-        NSURL *iconURL = [NSURL fileURLWithPath:[dlanPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lud.png", (unsigned long)[video.deviceName hash]]]];
+        NSURL *iconURL = [NSURL fileURLWithPath:[dlanPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%lud.png", (unsigned long)[video.videoUrl hash]]]];
         
         self.iconV.contentMode = UIViewContentModeScaleAspectFill;
         
@@ -214,10 +214,15 @@
     [self.contentView insertSubview:shadowImgV belowSubview:self.dlanView];
     
     [shadowImgV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.leading.mas_equalTo(-12);
-        make.trailing.mas_equalTo(12);
+        make.leading.mas_equalTo(-13);
+        make.trailing.mas_equalTo(13);
         make.top.mas_equalTo(0);
-        make.height.mas_equalTo(208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324 + 14);
+        
+        if ([SPDeviceUtil isiPhoneX]) {
+            make.height.mas_equalTo(208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324 + 12);
+        }else {
+            make.height.mas_equalTo(208 * (SCREEN_WIDTH - 17 * 3) / 2 / 324 + 12*kHSCALE);
+        }
     }];
 }
 

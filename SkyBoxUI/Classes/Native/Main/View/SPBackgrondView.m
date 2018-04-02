@@ -37,7 +37,7 @@
 }
 
 - (void)setupViews {
-    self.iconVCenterYConstraint.constant = [SPDeviceUtil isiPhoneX] ? -(34 + 88 + 15 + 20)/2.0 : -(84 + 15 + 20) / 2.0;
+    self.iconVCenterYConstraint.constant = [SPDeviceUtil isiPhoneX] ? -(34 + 15 + 20)/2.0 : -(15 + 20) / 2.0;
     
     self.noticeLabel.font = [UIFont fontWithName:@"Calibri" size:15];
     self.noticeLabel.textColor = [SPColorUtil getHexColor:@"#6a6c75"];
@@ -47,15 +47,17 @@
             self.iconV.image = [Commons getPdfImageFromResource:@"Empty_icon_VRvideos"];
             self.iconVWidthConstraint.constant = 153;
             self.iconVHeightConstraint.constant = 113;
-            self.noticeLabel.text = @"NO VR VIDEOS";
+            self.noticeLabel.text =  NSLocalizedString(@"Empty_NoVideos", @"No Videos");
         }
             break;
         case NoWifi:
         {
+            self.iconVCenterYConstraint.constant = [SPDeviceUtil isiPhoneX] ? -(34 + 15 + 20)/2.0 - 84.0 / 2.0 : -(15 + 20) / 2.0 - 84.0 / 2.0;
+            
             self.iconV.image = [Commons getPdfImageFromResource:@"Empty_icon_connection"];
             self.iconVWidthConstraint.constant = 158;
             self.iconVHeightConstraint.constant = 118;
-            self.noticeLabel.text = @"NO CONNECTIONS";
+            self.noticeLabel.text = NSLocalizedString(@"Empty_NoConnection", @"NO CONNECTIONS");
         }
             break;
         case NoFiles:
@@ -63,7 +65,7 @@
             self.iconV.image = [Commons getPdfImageFromResource:@"Empty_icon_file"];
             self.iconVWidthConstraint.constant = 170;
             self.iconVHeightConstraint.constant = 116;
-            self.noticeLabel.text = @"NO FILES";
+            self.noticeLabel.text = NSLocalizedString(@"Empty_NoVideos", @"NO VIDEOS");
         }
             break;
         case NoHistory:
@@ -71,7 +73,7 @@
             self.iconV.image = [Commons getPdfImageFromResource:@"Empty_icon_history"];
             self.iconVWidthConstraint.constant = 150;
             self.iconVHeightConstraint.constant = 150;
-            self.noticeLabel.text = @"NO HISTORY";
+            self.noticeLabel.text = NSLocalizedString(@"Empty_NoHistory", @"NO HISTORY");
         }
             break;
         case NoFavorite:
@@ -79,7 +81,7 @@
             self.iconV.image = [Commons getPdfImageFromResource:@"Empty_icon_favorite"];
             self.iconVWidthConstraint.constant = 166;
             self.iconVHeightConstraint.constant = 139;
-            self.noticeLabel.text = @"NO FAVORITES";
+            self.noticeLabel.text = NSLocalizedString(@"Empty_NoFavorites", @"NO FAVORITES");
         }
             break;
         case NoLocalMediaServers:
@@ -87,7 +89,7 @@
             self.iconV.image = [Commons getPdfImageFromResource:@"Empty_icon_server"];
             self.iconVWidthConstraint.constant = 150;
             self.iconVHeightConstraint.constant = 125;
-            self.noticeLabel.text = @"NO LOCAL MEDIA SERVERS";
+            self.noticeLabel.text = NSLocalizedString(@"Empty_NoLocalMedia", @"NO LOCAL MEDIA SERVERS");
         }
             break;
         case NoAirScreenResult:
@@ -102,14 +104,24 @@
             UIFont *boldFont = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
             UIFont *regularFont = [UIFont fontWithName:@"Calibri" size:15.0];
             NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] init];
-            [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@"ADD VIDEOS TO " attributes:@{NSFontAttributeName : regularFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]}]];
-            [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@"SKYBOX" attributes:@{NSFontAttributeName : boldFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]}]];
-            [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@" ON YOUR COMPUTER" attributes:@{NSFontAttributeName : regularFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]}]];
+            [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Empty_AddVideos_1", @"ADD VIDEOS TO ") attributes:@{NSFontAttributeName : regularFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]}]];
+            [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Empty_AddVideos_2", @"SKYBOX") attributes:@{NSFontAttributeName : boldFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#ffffff"]}]];
+            [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Empty_AddVideos_3", @"ON YOUR COMPUTER") attributes:@{NSFontAttributeName : regularFont, NSForegroundColorAttributeName:[SPColorUtil getHexColor:@"#cccccc"]}]];
             self.noticeLabel.attributedText = [attributedString copy];
         }
             break;
         default:
             break;
+    }
+}
+
+- (void)showOrHidden:(BOOL)isShow {
+    if (isShow) {
+        self.noticeLabel.hidden = !isShow;
+        self.iconV.hidden = !isShow;
+    }else {
+        self.noticeLabel.hidden = isShow;
+        self.iconV.hidden = isShow;
     }
 }
 

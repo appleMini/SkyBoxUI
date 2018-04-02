@@ -22,7 +22,7 @@
 }
 
 - (NSString *)titleOfLabelView {
-    return @"HISTORY";
+    return NSLocalizedString(@"Menu_History", @"HISTORY");
 }
 
 - (NSString *)cellIditify {

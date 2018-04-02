@@ -25,7 +25,7 @@
 }
 
 - (NSString *)titleOfLabelView {
-    return @"VR VIDEOS";
+    return NSLocalizedString(@"Menu_VRVideos", @"VR VIDEOS");
 }
 
 - (NSString *)cellIditify {

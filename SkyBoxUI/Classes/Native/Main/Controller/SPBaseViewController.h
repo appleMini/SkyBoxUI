@@ -38,6 +38,9 @@ _Pragma("clang diagnostic pop")\
     #define  UPDATETHUMBNAIL_NOTIFICATION  @"UpdateThumbnailNotify_UI_UTIL"
 #endif
 
+#ifndef  UPDATELOCALVIDEOSNOTIFICATIONNAME
+#define  UPDATELOCALVIDEOSNOTIFICATIONNAME  @"UpdateLocalVideosNativeNotify_UI"
+#endif
 typedef enum : NSUInteger {
     TableViewType,
     CollectionViewType,

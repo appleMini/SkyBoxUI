@@ -7,7 +7,7 @@
 
 #import "SPDLANManager.h"
 #import <KissXML/KissXML.h>
-#import "UIView+SPLoading.h"
+//#import "UIView+SPLoading.h"
 #import "SPDataManager.h"
 
 @interface SPDLANManager() <NSXMLParserDelegate>
@@ -52,7 +52,7 @@ static SPDLANManager *_manager = nil;
 - (void)emptyServers {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         UIViewController *vc = (UIViewController *)self.delegate;
-        [vc.view hideLoading];
+        [MBProgressHUD hideHUDForView:vc.view animated:YES];
     });
     
     [self.timeoutTimer invalidate];
@@ -102,7 +102,8 @@ static SPDLANManager *_manager = nil;
 - (void)showDLANDevices {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *vc = (UIViewController *)self.delegate;
-        [vc.view showLoadingAndUserInteractionEnabled:NO];
+        [MBProgressHUD hideHUDForView:vc.view animated:YES];
+        [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
     });
     
     SPDataManager *dataManager = [SPDataManager shareSPDataManager];
@@ -136,7 +137,8 @@ static SPDLANManager *_manager = nil;
     [self openDLAN];
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *vc = (UIViewController *)self.delegate;
-        [vc.view showLoadingAndUserInteractionEnabled:NO];
+        [MBProgressHUD hideHUDForView:vc.view animated:YES];
+        [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
     });
     
     self.status = DLANAddDeviceStatus;
@@ -271,7 +273,8 @@ static SPDLANManager *_manager = nil;
 - (void)refreshAction:(SPCmdAddDevice *)device {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *vc = (UIViewController *)self.delegate;
-        [vc.view showLoadingAndUserInteractionEnabled:NO];
+        [MBProgressHUD hideHUDForView:vc.view animated:YES];
+        [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
     });
     
     if (device) {
@@ -284,7 +287,7 @@ static SPDLANManager *_manager = nil;
 }
 
 - (void)releaseAction {
-    _manager.delegate = nil;
+//    _manager.delegate = nil;
 }
 
 - (void)dealloc {

@@ -7,6 +7,7 @@
 
 #import "Commons.h"
 #import <YHPDFImageLoader/UIImage+YHPDFIcon.h>
+#import "UIImage+Vector.h"
 
 @implementation Commons
 
@@ -41,6 +42,12 @@
     NSURL *imgUrl = [[Commons resourceBundle] URLForResource:name withExtension:@"pdf"];
     return [UIImage yh_imageWithPDFFileURL:imgUrl];
 }
+
++ (UIImage *)getPdfImageFromResource:(NSString *)name size:(CGSize)size {
+    NSURL *imgUrl = [[Commons resourceBundle] URLForResource:name withExtension:@"pdf"];
+    return [UIImage vectorImageWithURL:imgUrl size:size];
+}
+
 + (NSBundle *)resourceBundle {
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     NSURL *bundleURL = [bundle URLForResource:@"SkyBoxUI" withExtension:@"bundle"];

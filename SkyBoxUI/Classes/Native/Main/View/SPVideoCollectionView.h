@@ -11,18 +11,20 @@
 @protocol SPVideoCollectionViewDelegate;
 @interface SPVideoCollectionView : UIView
 
+//@property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, weak) id<SPVideoCollectionViewDelegate> delegate;
 @property (nonatomic, assign) SPCellStatus status;
 @property (nonatomic, strong) SPVideo *video;
 
 - (void)prepareForReuse;
 - (void)setHighlighted:(BOOL)highlighted;
+- (void)longPressAction:(UIGestureRecognizer *)recognizer;
 @end
 
 @protocol SPVideoCollectionViewDelegate <NSObject>
 
 @optional
-- (void)SPVideoCollectionView:(SPVideo *)video changeToDeleteStyle:(BOOL)state;
-- (void)SPVideoCollectionView:(SPVideo *)video deleteAction:(BOOL)state;
-- (void)SPVideoCollectionView:(SPVideo *)video favStateChanged:(BOOL)state;
+- (void)SPVideoCollectionView:(SPVideoCollectionView *)videoView changeToDeleteStyle:(BOOL)state;
+- (void)SPVideoCollectionView:(SPVideoCollectionView *)videoView deleteAction:(BOOL)state;
+- (void)SPVideoCollectionView:(SPVideoCollectionView *)videoView favStateChanged:(BOOL)state;
 @end

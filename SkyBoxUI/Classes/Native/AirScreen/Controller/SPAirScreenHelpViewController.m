@@ -10,12 +10,13 @@
 #import "DismissAnimationController.h"
 #import "SPDeviceUtil.h"
 #import "UILabel+SPAttri.h"
+#import "BorderTextLabel.h"
 
 @interface SPAirScreenHelpViewController ()<UIViewControllerTransitioningDelegate>
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet UIView *topView;
-@property (weak, nonatomic) IBOutlet UILabel *helpLabel;
+@property (weak, nonatomic) IBOutlet BorderTextLabel *helpLabel;
 @property (weak, nonatomic) IBOutlet UILabel *topLabel;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *helpLabelTopConstraint;
 
@@ -85,9 +86,23 @@
     self.topView.backgroundColor = [SPColorUtil getHexColor:@"#838a96"];
     self.helpLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:19.0];
     self.helpLabel.textColor = [SPColorUtil getHexColor:@"#ffffff"];
+    [self.helpLabel setShadowText:NSLocalizedString(@"AirScreen_Help", @"HELP")];
     
     self.topLabel.font = [UIFont fontWithName:@"Calibri" size:15.0];
     self.topLabel.textColor = [SPColorUtil getHexColor:@"#d3d5d9"];
+    self.topLabel.text = NSLocalizedString(@"AirScreen_Help_title", @"Use AirScreen to stream videos from PC to your mobile devices.");
+    
+    
+    self.help1TitleLabel.text = NSLocalizedString(@"AirScreen_Help_num1", @"1. INSTALL SKYBOX FOR PC");
+    self.help2TitleLabel.text = NSLocalizedString(@"AirScreen_Help_num2", @"2. ADD VIDEOS");
+    self.help3TitleLabel.text = NSLocalizedString(@"AirScreen_Help_num3", @"3. ESTABLISH CONNECTION");
+    self.help4TitleLabel.text = NSLocalizedString(@"AirScreen_Help_num4", @"4. ENJOY IT");
+    
+    self.help1ContentLabel.text = NSLocalizedString(@"AirScreen_Help_num1_content", @"Open SKYBOX.xyz from your PC, download and install SKYBOX for PC.");
+    self.help2ContentLabel.text = NSLocalizedString(@"AirScreen_Help_num2_content", @"Open SKYBOX for PC and add videos onto it.");
+    self.help3ContentLabel.text = NSLocalizedString(@"AirScreen_Help_num3_content", @"Search and connect to your PC client from your phone on the same Wi-Fi");
+    self.help4ContentLabel.text = NSLocalizedString(@"AirScreen_Help_num4_content", @"Tap the video you want to play and put your phone into your VR glasses.");
+    
     
     CGFloat limitHelpLabelWidth = SCREEN_WIDTH - 88 * kWSCALE - 20 - 20;
     CGFloat helpLabelHeight = [self.helpLabel labelSizeWithAttributes:@{NSFontAttributeName : [UIFont fontWithName:@"Calibri-Bold" size:19.0]} boundSize:CGSizeMake(limitHelpLabelWidth, CGFLOAT_MAX)].height;

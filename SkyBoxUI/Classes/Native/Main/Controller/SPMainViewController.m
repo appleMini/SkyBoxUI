@@ -116,6 +116,8 @@
     
     SPHomeViewController *homeVC = [[SPHomeViewController alloc] initWithSomething];
     _homeVC = homeVC;
+    _homeVC.refreshEnable = YES;
+    _homeVC.mainVC = self;
     
     NSArray <UIViewController *>*childVCs = @[self.menuVC, homeVC, self.historyVC];
     [self setUpWithChildVCs:childVCs];
@@ -131,7 +133,6 @@
     [super viewWillAppear:animated];
     //设置打开抽屉模式
     [self.mm_drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModePanningNavigationBar];
-    
     [self.view bringSubviewToFront:[SPSwitchBar shareSPSwitchBar]];
     
     //清除缓存
@@ -144,7 +145,14 @@
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        [self.menuVC selectMenuItem:0 jump:YES];
+        _selectMenuIndex = 0;
+        [self.menuVC selectMenuItem:0 jump:NO];
+        [[SPSwitchBar shareSPSwitchBar] showVRMode];
+        [UIView animateWithDuration:0.01 animations:^{
+            [self.contentView setContentOffset:CGPointMake(1 * self.contentView.width, 0) animated:NO];
+        } completion:^(BOOL finished) {
+            self.homeVC.isShow = YES;
+        }];
     });
 }
 
@@ -171,11 +179,12 @@
         contentView.delegate = self;
         contentView.pagingEnabled = YES;
         contentView.showsVerticalScrollIndicator = NO;
-        contentView.showsHorizontalScrollIndicator = YES;
+        contentView.showsHorizontalScrollIndicator = NO;
         contentView.bounces = NO;
         [self.view addSubview:contentView];
         contentView.backgroundColor = [UIColor clearColor];
         _contentView = contentView;
+        _contentView.clipsToBounds = NO;
     }
     return _contentView;
 }
@@ -421,7 +430,7 @@
             }else {
                 VC = self.airscreenResultVC;
                 self.airscreenResultVC.airscreen = airscreen;
-                refresh = NO;
+                refresh = YES;
             }
         }
     }else if ([ctrS hash] == [NSStringFromClass([SPFavoriteViewController class]) hash]) {
@@ -454,8 +463,17 @@
         return;
     }
     SPBaseViewController *vc = self.childViewControllers[1];
+    
     if ((_selectMenuIndex == index) && [vc isMemberOfClass:[SPAirScreenViewController class]]) {
-        [self showChildVCViewAtIndex:1 shouldRefresh:NO];
+        SPAirscreen *airscreen = [SPDataManager shareSPDataManager].airscreen;
+        if (airscreen) {
+            //缓存VC
+            [self cacheMidleVC:vc];
+            [self jumpViewController:@"SPAirScreenViewController"];
+        }else {
+            [self showChildVCViewAtIndex:1 shouldRefresh:NO];
+        }
+        
         return;
     }
     
@@ -536,8 +554,20 @@
             break;
         case LocalFileMiddleVCType:
         {
-            SPBaseViewController *vc = [[SPHomeViewController alloc] initWithSomething];
-            [self changeMiddleContentView:vc shouldRefresh:YES];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                SPBaseViewController *oldvc = self.childViewControllers[1];
+                oldvc.view.alpha = 1.0;
+                [UIView animateWithDuration:0.5 animations:^{
+                    oldvc.view.alpha = 0.0;
+                } completion:^(BOOL finished) {
+                    SPBaseViewController *vc = [[SPHomeViewController alloc] initWithSomething];
+                    [self changeMiddleContentView:vc shouldRefresh:YES];
+                    vc.view.alpha = 0.0;
+                    [UIView animateWithDuration:1.5 animations:^{
+                        vc.view.alpha = 1.0;
+                    }];
+                }];
+            });
         }
             break;
         case DeleteLoaclVideosType:
@@ -604,6 +634,9 @@
     }else if(_selectMenuIndex == 5) {
 //        mediaTab = @"favourite";
 //         mediaTab = @"onlineStream";
+        mediaTab = @"gallery";
+    }else {
+        mediaTab = @"gallery";
     }
     
     if (self.childViewControllers.count < 3) {

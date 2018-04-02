@@ -13,7 +13,8 @@
 #import "SPDLANManager.h"
 #import "SPWaterFallLayout.h"
 #import "SPDataManager.h"
-#import "UIView+SPLoading.h"
+//#import "UIView+SPLoading.h"
+#import "UIViewController+MBPHUD.h"
 
 @interface SPNetworkViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, SPDLANManagerDelegate, SPWaterFallLayoutDelegate> {
     NSMutableArray *_dataArr;
@@ -31,6 +32,7 @@
 
 @property (nonatomic, strong) NSString          *currentDeviceID;
 @property (nonatomic, strong)  UIImageView *gradientV;
+@property (nonatomic, strong)  UIImageView *bottomGradientV;
 @end
 
 @implementation SPNetworkViewController
@@ -129,6 +131,8 @@
     [self setupMaskView];
     [self setupGradientLayer];
     
+    [self setupBottomGradientLayer];
+    
     [self.view bringSubviewToFront:self.headerView];
     [self monitorNetWorkState];
     
@@ -155,8 +159,31 @@
     _gradientV.hidden = YES;
 }
 
+- (void)setupBottomGradientLayer {
+    if (_bottomGradientV) {
+        return;
+    }
+    
+    UIImageView *imgv = [[UIImageView alloc] initWithFrame:CGRectZero];
+//    imgv.backgroundColor = [UIColor redColor];
+    UIImage *image = [Commons getImageFromResource:@"Network_list_mask@2x"];
+    CGImageRef imgref = [image CGImage];
+    UIImage *newImage = [UIImage imageWithCGImage:imgref scale:image.scale orientation:UIImageOrientationDown];
+    
+    imgv.image = newImage;
+    [self.view addSubview:imgv];
+    _bottomGradientV = imgv;
+    _bottomGradientV.alpha = 0.5;
+    _bottomGradientV.hidden = NO;
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    _bottomGradientV.frame = CGRectMake(0, SCREEN_HEIGHT - 100 * kHSCALE - 84, SCREEN_WIDTH, 100 * kHSCALE);
+}
+
 - (NSString *)titleOfLabelView {
-    return @"Local Network";
+    return NSLocalizedString(@"Menu_LocalNetwork", @"LOCAL NETWORK");
 }
 
 - (NSString *)cellIditify {
@@ -260,6 +287,13 @@
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     SPDLANCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[self cellIditify] forIndexPath:indexPath];
     cell.dlanView.device = _dataArr[indexPath.row];
+    
+    if ([[SPDLANManager shareDLANManager] status] == DLANAddDeviceStatus && indexPath.row == (_dataArr.count -1)){
+        cell.alpha = 0.0;
+        [UIView animateWithDuration:0.3 animations:^{
+            cell.alpha = 1.0;
+        }];
+    }
     return cell;
 }
 
@@ -301,7 +335,7 @@ static CGFloat height = 0;
 
 - (UIEdgeInsets)edgeInsetsOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
 {
-    return UIEdgeInsetsMake(0, 17, kWSCALE*94 - 29, 17);
+    return UIEdgeInsetsMake(0, 17, [SPDeviceUtil isiPhoneX] ?  kWSCALE*94 - 29 + 34 : kWSCALE*94 - 29, 17);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -322,11 +356,11 @@ static CGFloat height = 0;
 }
 #pragma -mark SPDLANManagerDelegate
 - (void)addDlanDevice:(SPCmdAddDevice *)device parentID:(NSString *)pid {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.view hideLoading];
-    });
-    
     if(!device) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+        });
+        
         _dataArr = nil;
         [self reload];
         return;
@@ -335,6 +369,10 @@ static CGFloat height = 0;
     if ([[SPDLANManager shareDLANManager] status] != DLANAddDeviceStatus) {
         return;
     }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    });
     if (_level != [pid integerValue]) {
         _dataArr = [NSMutableArray array];
         _level = [pid integerValue];
@@ -354,14 +392,13 @@ static CGFloat height = 0;
 }
 
 - (void)showDLNAServers:(NSArray<SPCmdAddDevice *> *)folders parentID:(NSString *)pid {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.view hideLoading];
-    });
-    
     if ([[SPDLANManager shareDLANManager] status] != DLANAddDeviceStatus) {
         return;
     }
     
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    });
     _level = [pid integerValue];
     _dataArr = [NSMutableArray array];
     
@@ -371,13 +408,14 @@ static CGFloat height = 0;
 }
 
 - (void)browseDLNAFolder:(NSArray<SPCmdAddDevice *> *)folders parentID:(NSString *)pid {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.view hideLoading];
-    });
     
     if ([[SPDLANManager shareDLANManager] status] != DLANBrowseFolderStatus) {
         return;
     }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    });
     
     _level = [pid integerValue];
     _dataArr = [NSMutableArray array];
