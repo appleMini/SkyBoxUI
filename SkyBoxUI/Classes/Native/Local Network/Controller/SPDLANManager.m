@@ -103,7 +103,8 @@ static SPDLANManager *_manager = nil;
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *vc = (UIViewController *)self.delegate;
         [MBProgressHUD hideHUDForView:vc.view animated:YES];
-        [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
+        UIView *hud = [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
+        [vc.view bringSubviewToFront:hud];
     });
     
     SPDataManager *dataManager = [SPDataManager shareSPDataManager];
@@ -138,7 +139,8 @@ static SPDLANManager *_manager = nil;
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *vc = (UIViewController *)self.delegate;
         [MBProgressHUD hideHUDForView:vc.view animated:YES];
-        [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
+        UIView *hud = [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
+        [vc.view bringSubviewToFront:hud];
     });
     
     self.status = DLANAddDeviceStatus;
@@ -163,7 +165,7 @@ static SPDLANManager *_manager = nil;
     self.timeoutTimer = nil;
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(addDlanDevice: parentID:)]) {
-        [self.delegate addDlanDevice:device parentID:@"-1"];
+        [self.delegate addDlanDevice:device parentID:@"0"];
     }
 }
 
@@ -274,14 +276,18 @@ static SPDLANManager *_manager = nil;
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *vc = (UIViewController *)self.delegate;
         [MBProgressHUD hideHUDForView:vc.view animated:YES];
-        [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
+        UIView *hud = [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
+        [vc.view bringSubviewToFront:hud];
     });
     
     if (device) {
         [self browseDLNAFolder:device];
+        self.status = DLANBrowseFolderStatus;
     }else {
         SPDataManager *dataManger = [SPDataManager shareSPDataManager];
         dataManger.devices = nil;
+//        [dataManger removeAllServers];
+        self.status = DLANAddDeviceStatus;
         [self showDLANDevices];
     }
 }
@@ -302,6 +308,14 @@ static SPDLANManager *_manager = nil;
     if (!device) {
         return;
     }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIViewController *vc = (UIViewController *)self.delegate;
+        [MBProgressHUD hideHUDForView:vc.view animated:YES];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:vc.view animated:YES];
+        [vc.view bringSubviewToFront:hud];
+    });
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"BrowseDLNAFolder", @"device" : device}];
     self.status = DLANBrowseFolderStatus;
 }

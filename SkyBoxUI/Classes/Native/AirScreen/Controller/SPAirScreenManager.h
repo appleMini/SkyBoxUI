@@ -19,4 +19,7 @@ typedef void (^ResultBlock) (NSArray *listResult, NSString *resultStr);
 - (void)connectServer:(SPAirscreen *)airscreen  complete:(ResultBlock)block;
 - (void)disConnectServer;
 - (void)releaseAction;
+
+- (void)applicationDidBecomeActive:(UIApplication *)application;
+- (void)applicationDidEnterBackground:(UIApplication *)application;
 @end

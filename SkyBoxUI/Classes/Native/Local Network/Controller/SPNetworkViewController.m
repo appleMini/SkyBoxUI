@@ -59,7 +59,7 @@
 - (instancetype)initWithDataSource:(NSArray *)data  displayType:(DisplayType)show {
     self = [self initWithDisplayType:show];
     if (self) {
-        _dataArr = [data copy];
+        _dataArr = [NSMutableArray arrayWithArray:data];
     }
     return self;
 }
@@ -110,10 +110,12 @@
             
             ws.emptyView = backgroundView;
             
+            ws.collectionView.hidden = YES;
             [ws.headerView cleanHeadViews];
             [ws.dlanManager releaseAction];
             ws.dlanManager = nil;
         }else {
+            ws.collectionView.hidden = NO;
             [ws.emptyView removeFromSuperview];
             [ws reloadDevice];
         }
@@ -344,7 +346,8 @@ static CGFloat height = 0;
         NSUInteger selectedIndex = -1;
         NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:NativeToUnityType],
                                  kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
-                                 @"path" : ((SPCmdVideoDevice *)device).videoUrl
+                                 @"path" : ((SPCmdVideoDevice *)device).videoUrl,
+                                 @"mediaType" : @"DLAN"
                                  };
         
         [self bubbleEventWithUserInfo:notify];
@@ -357,7 +360,7 @@ static CGFloat height = 0;
 #pragma -mark SPDLANManagerDelegate
 - (void)addDlanDevice:(SPCmdAddDevice *)device parentID:(NSString *)pid {
     if(!device) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [MBProgressHUD hideHUDForView:self.view animated:YES];
         });
         
@@ -370,7 +373,7 @@ static CGFloat height = 0;
         return;
     }
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [MBProgressHUD hideHUDForView:self.view animated:YES];
     });
     if (_level != [pid integerValue]) {
@@ -396,13 +399,11 @@ static CGFloat height = 0;
         return;
     }
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [MBProgressHUD hideHUDForView:self.view animated:YES];
     });
     _level = [pid integerValue];
-    _dataArr = [NSMutableArray array];
-    
-    _dataArr = [folders copy];
+    _dataArr = [NSMutableArray arrayWithArray:folders];
     [self reload];
     _currentDeviceID = pid;
 }
@@ -413,14 +414,12 @@ static CGFloat height = 0;
         return;
     }
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [MBProgressHUD hideHUDForView:self.view animated:YES];
     });
     
     _level = [pid integerValue];
-    _dataArr = [NSMutableArray array];
-    
-    _dataArr = [folders copy];
+    _dataArr = [NSMutableArray arrayWithArray:folders];
     [self reload];
     _currentDeviceID = pid;
 }

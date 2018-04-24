@@ -62,6 +62,8 @@ IMP KWForwardingImplementationForMethodEncoding(const char* encoding) {
     const NSUInteger stretLengthThreshold = 4;
 #elif TARGET_CPU_X86
     const NSUInteger stretLengthThreshold = 8;
+#elif TARGET_CPU_X86_64
+    const NSUInteger stretLengthThreshold = 16;
 #else
     // TODO: This just makes an assumption right now. Expand to support all
     // official architectures correctly.
@@ -71,7 +73,7 @@ IMP KWForwardingImplementationForMethodEncoding(const char* encoding) {
     NSMethodSignature *signature = [NSMethodSignature signatureWithObjCTypes:encoding];
 
     if (*[signature methodReturnType] == '{' && [signature methodReturnLength] > stretLengthThreshold) {
-        //   NSLog(@"Warning: The Objective-C runtime appears to have bugs when forwarding messages with certain struct layouts as return types, so if a crash occurs this could be the culprit");
+        NSLog(@"Warning: The Objective-C runtime appears to have bugs when forwarding messages with certain struct layouts as return types, so if a crash occurs this could be the culprit");
         return KWStretForwardingImplementation();
     } else {
         return KWRegularForwardingImplementation();

@@ -52,7 +52,7 @@
             break;
         case NoWifi:
         {
-            self.iconVCenterYConstraint.constant = [SPDeviceUtil isiPhoneX] ? -(34 + 15 + 20)/2.0 - 84.0 / 2.0 : -(15 + 20) / 2.0 - 84.0 / 2.0;
+            self.iconVCenterYConstraint.constant = [SPDeviceUtil isiPhoneX] ? -(34 + 15 + 20)/2.0 : -(15 + 20) / 2.0;
             
             self.iconV.image = [Commons getPdfImageFromResource:@"Empty_icon_connection"];
             self.iconVWidthConstraint.constant = 158;
@@ -119,6 +119,8 @@
     if (isShow) {
         self.noticeLabel.hidden = !isShow;
         self.iconV.hidden = !isShow;
+        
+        [self setNeedsLayout];
     }else {
         self.noticeLabel.hidden = isShow;
         self.iconV.hidden = isShow;
@@ -148,8 +150,12 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
+    CGRect frame = self.superview.frame;
+    self.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
+//    self.backgroundColor = [UIColor redColor];
+    CGFloat topInset = (self.frame.size.height - SCREEN_HEIGHT) / 2.0;
     if (_player) {
-        CGFloat y = (self.frame.size.height - (20 + 15)) / 2 + 84/2 - SCREEN_WIDTH * (1.0 * 360 / 750);
+        CGFloat y = (self.frame.size.height - (20 + 15)) / 2 + 84 - SCREEN_WIDTH * (1.0 * 360 / 750) + topInset;
         CGRect frame = self.playerLayer.frame;
         frame.origin.y = y;
         self.playerLayer.frame = frame;
@@ -157,6 +163,13 @@
         frame = self.noticeLabel.frame;
         frame.origin.y = self.playerLayer.frame.origin.y + self.playerLayer.frame.size.height + 20;
         self.noticeLabel.frame = frame;
+    }else {
+        CGRect iconVFrame = self.iconV.frame;
+        iconVFrame.origin.y += topInset;
+        self.iconV.frame = iconVFrame;
+        CGRect noticeFrame = self.noticeLabel.frame;
+        noticeFrame.origin.y += topInset;
+        self.noticeLabel.frame = noticeFrame;
     }
 }
 

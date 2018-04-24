@@ -93,6 +93,13 @@
     CGSize newsize = CGSizeMake(SCREEN_WIDTH - 36 * kWSCALE, _imgvHeightConstraint.constant);
     placeholderImage = [placeholderImage resizeImageWithModeCenter:newsize imageSize:CGSizeMake(43 , 48) bgFillColor:[UIColor clearColor]];
     [self.imgv sd_setImageWithURL:[NSURL URLWithString:video.thumbnail_uri] placeholderImage:placeholderImage options:SDWebImageRetryFailed];
+//    UIImage *img = [UIImage imageWithContentsOfFile:[[NSURL URLWithString:video.thumbnail_uri] path]];
+//    if (img) {
+//        self.imgv.image = img;
+//    }else {
+//        self.imgv.image = placeholderImage;
+//    }
+    
     
     self.imgv.userInteractionEnabled = YES;
     //为图片添加手势
@@ -157,7 +164,7 @@
         }
     }
     
-    if ([video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
+    if (_video.dataSource == HistoryVideosType && [video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         self.alpha = 0.4;
         self.durationLabel.text = @"Disconnected";
     }else {
@@ -244,7 +251,8 @@
     NSUInteger selectedIndex = -1;
     NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:NativeToUnityType],
                              kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
-                             @"path" : self.video.path
+                             @"path" : self.video.path,
+                             @"mediaType" : self.video.type
                              };
     
     [self.imgv bubbleEventWithUserInfo:notify];
@@ -252,6 +260,7 @@
 
 - (void)longPressAction:(UIGestureRecognizer *)recognizer {
     if (self.delegate && [self.delegate respondsToSelector:@selector(SPVideoView: changeToDeleteStyle:)]) {
+        _video.isDelete = YES;
         self.darkView.selected = YES;
         self.darkView.alpha = 0.4;
         [self.delegate SPVideoView:self changeToDeleteStyle:YES];

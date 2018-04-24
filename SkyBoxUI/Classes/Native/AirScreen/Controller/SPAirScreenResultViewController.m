@@ -14,6 +14,7 @@
 @interface SPAirScreenResultViewController () {
     BOOL _showDisconnect;
     BOOL _isFaild;
+    BOOL _intoBackground;
 }
 
 @property (nonatomic, strong) SPHighlightedButton *disconnBtn;
@@ -46,6 +47,23 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self monitorNetWorkState];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+}
+
+#pragma -mark UIApplicationDelegate
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    self.isRefreshing = NO;
+    if (_intoBackground) {
+        [self doRefreshSenior];
+    }
+    
+    _intoBackground = NO;
+}
+
+- (void)applicationDidEnterBackground:(UIApplication*)application {
+    _intoBackground = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -63,6 +81,7 @@
 }
 
 - (void)viewWillToChanged {
+    [super viewWillToChanged];
     if (_isFaild) {
         [self showFaildConnected];
     }
@@ -97,12 +116,13 @@
     });
     
     self.isRefreshing = NO;
+    self.topView.userInteractionEnabled = YES;
     NSDictionary *dict = [notify userInfo];
     NSString *jsonStr = dict[@"JsonResult"];
     
     if ([dict[@"method"] hash] == [@"showResult" hash]) {
         if ([dict[@"connenct"] hash] == [@"false" hash]) {
-            if (!self.isShow || !self.isViewLoaded || !self.view.window) {
+            if (!self.isShow) {
                 _isFaild = YES;
                 return;
             }
@@ -127,6 +147,7 @@
             SPVideo *video = [[SPVideo alloc] init];
             video.dataSource = AirScreenType;
             video.mid = media.mid;
+            video.type = @"Airscreen";
             video.path = media.url;
             video.title = media.name;
             video.videoWidth = [NSString stringWithFormat:@"%d", media.width];
@@ -154,6 +175,7 @@
             SPVideo *video = [[SPVideo alloc] init];
             video.dataSource = AirScreenType;
             video.mid = media.mid;
+            video.type = @"Airscreen";
             video.path = media.url;
             video.title = media.name;
             video.videoWidth = [NSString stringWithFormat:@"%d", media.width];
@@ -178,6 +200,7 @@
             if ([media.mid hash] == [video.mid hash]) {
                 video.dataSource = AirScreenType;
                 video.mid = media.mid;
+                video.type = @"Airscreen";
                 video.path = media.url;
                 video.title = media.name;
                 video.videoWidth = [NSString stringWithFormat:@"%d", media.width];
@@ -190,7 +213,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self updateVisiableCell];
-        }); 
+        });
     }else if ([dict[@"method"] hash] == [@"activeDisconnect" hash]) {
         [self disconnection:nil];
     }else if ([dict[@"method"] hash] == [@"deleteMedia" hash]) {
@@ -236,28 +259,39 @@
     self.netStateBlock = ^(AFNetworkReachabilityStatus status) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (status == -1 || status == 0 || status == 1) {
+                ws.isRefreshing = NO;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD hideHUDForView:ws.scrollView animated:YES];
+                });
                 [ws enableNavigationItems:NO];
                 ws.topView.userInteractionEnabled = NO;
                 [ws hiddenGradientLayer:YES];
+                ws.scrollView.hidden = YES;
                 
                 SPBackgrondView *backgroundView = [[SPBackgrondView alloc] initWithFrame:ws.view.bounds
                                                                           backgroundType:NoWifi];
                 backgroundView.backgroundColor = SPBgColor;
                 [ws.view addSubview:backgroundView];
                 [ws.view bringSubviewToFront:backgroundView];
-                
+                [backgroundView showOrHidden:YES];
+    
                 ws.emptyView = backgroundView;
+                ws.emptyView.hidden = NO;
             }else {
                 if (!ws) {
                     return ;
                 }
-
+                
                 if (!ws.isRefreshing) {
                     [ws enableNavigationItems:YES];
                 }
                 [ws hiddenGradientLayer:NO];
                 ws.topView.userInteractionEnabled = YES;
+                ws.scrollView.hidden = NO;
+                ws.topView.alpha = 1.0;
+                [ws.emptyView showOrHidden:NO];
                 [ws.emptyView removeFromSuperview];
+                ws.emptyView = nil;
             }
         });
     };
@@ -271,6 +305,8 @@
     [_maskView removeFromSuperview];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UNITYTOUINOTIFICATIONNAME object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 
 //- (UIWindow *)keyWindow {
@@ -367,34 +403,41 @@
 
 - (void)doRefreshSenior {
     //     NSLog(@"doRefreshSenior");
-    if (self.isRefreshing) {
-        return;
-    }
-    self.isRefreshing = YES;
-    
-    [self enableNavigationItems:NO];
-//    _airscreen.ip = @"asdasfsfs";
-//    _airscreen.ips = @[@"asfafdsfsasda"];
-    AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
-    AFNetworkReachabilityStatus status = [manager networkReachabilityStatus];
-    if (status == -1 || status == 0 || status == 1) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            //        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
-            self.isRefreshing = NO;
-            [self.scrollView.tg_header endRefreshing];
-            [self enableNavigationItems:YES];
-        });
-        return;
-    }
-    
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (!self.scrollView.tg_header.isRefreshing) {
-            [MBProgressHUD showHUDAddedTo:self.scrollView animated:YES];
+        if (!self.isShow || !self.viewLoaded || self.isRefreshing) {
+            return;
         }
-    });
-    [[SPAirScreenManager shareAirScreenManager] connectServer:_airscreen complete:^(NSArray *listResult, NSString *resultStr) {
+        self.isRefreshing = YES;
         
-    }];
+        [self enableNavigationItems:NO];
+        self.topView.userInteractionEnabled = NO;
+        //    _airscreen.ip = @"asdasfsfs";
+        //    _airscreen.ips = @[@"asfafdsfsasda"];
+        AFNetworkReachabilityManager *manager = [AFNetworkReachabilityManager sharedManager];
+        AFNetworkReachabilityStatus status = [manager networkReachabilityStatus];
+        if (status == -1 || status == 0 || status == 1) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                //        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
+                [self.scrollView.tg_header endRefreshing];
+                self.isRefreshing = NO;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD hideHUDForView:self.scrollView animated:YES];
+                });
+            });
+            return;
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!self.scrollView.tg_header.isRefreshing) {
+                [MBProgressHUD hideHUDForView:self.scrollView animated:YES];
+                UIView *hud = [MBProgressHUD showHUDAddedTo:self.scrollView animated:YES];
+                [self.scrollView bringSubviewToFront:hud];
+            }
+        });
+        [[SPAirScreenManager shareAirScreenManager] connectServer:_airscreen complete:^(NSArray *listResult, NSString *resultStr) {
+            
+        }];
+    });
 }
 
 - (void)releaseAction {

@@ -8,6 +8,7 @@
 #import "SPHelpRootViewController.h"
 #import "SPHomeHelpViewController.h"
 #import "UIView+SPSwitchBar.h"
+#import "UILabel+SPAttri.h"
 
 @interface SPHelpRootViewController () <UIScrollViewDelegate> {
     BOOL _canDone;
@@ -58,18 +59,17 @@
 }
 
 - (void)hasLocalVideosUpdate {
-    if (!_canDone && self.isShow && self.viewLoaded && self.view.window) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSUInteger selectedIndex = -1;
-            NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:LocalFileMiddleVCType],
-                                     kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
-                                     @"Done": @NO
-                                     };
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (!_canDone && self.isShow && self.viewLoaded && self.view.window) {
+                NSUInteger selectedIndex = -1;
+                NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:LocalFileMiddleVCType],
+                                         kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+                                         @"Done": @NO
+                                         };
             
-            [self.view bubbleEventWithUserInfo:notify];
-        });
-        
-    }
+                [self.view bubbleEventWithUserInfo:notify];
+        }
+   });
 }
 
 - (NSString *)titleOfLabelView {
@@ -82,27 +82,37 @@
 
 - (UIBarButtonItem *)doneItem {
     if (!_doneItem) {
-        UIButton *doneItem = [UIButton buttonWithType:UIButtonTypeCustom];
-        [doneItem setTitle:@"Done" forState:UIControlStateNormal];
-        doneItem.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:19];
-        doneItem.titleLabel.textColor = [SPColorUtil getHexColor:@"#ffffff"];
-        doneItem.backgroundColor = [UIColor clearColor];
-        doneItem.frame = CGRectMake(0, 0, 20, 20);
-        [doneItem addTarget:self action:@selector(doneClick:) forControlEvents:UIControlEventTouchUpInside];
+        UIButton *doneBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [doneBtn setTitle:NSLocalizedString(@"Notice_Done", @"Done") forState:UIControlStateNormal];
         
-        _doneItem = [[UIBarButtonItem alloc] initWithCustomView:doneItem];
+        UIFont *boldFont = [UIFont fontWithName:@"Calibri-Bold" size:19];
+        doneBtn.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:19];
+        
+        doneBtn.titleLabel.textColor = [SPColorUtil getHexColor:@"#ffffff"];
+        doneBtn.backgroundColor = [UIColor clearColor];
+        
+        if (SYSTEM_VERSION_LESS_THAN(@"11.0")) {
+            CGSize labelSize = [doneBtn.titleLabel labelSizeWithAttributes:@{NSFontAttributeName : boldFont}];
+            doneBtn.frame = CGRectMake(0, 0, labelSize.width, labelSize.height);
+        }else {
+            doneBtn.frame = CGRectMake(0, 0, 20, 20);
+        }
+        
+        [doneBtn addTarget:self action:@selector(doneClick:) forControlEvents:UIControlEventTouchUpInside];
+        
+        _doneItem = [[UIBarButtonItem alloc] initWithCustomView:doneBtn];
     }
     
     return _doneItem;
 }
 
 - (void)doneClick:(UIButton *)item {
-//    NSUInteger selectedIndex = -1;
-//    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:LocalFileMiddleVCType],
-//                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
-//                             };
-//
-//    [self.view bubbleEventWithUserInfo:notify];
+    //    NSUInteger selectedIndex = -1;
+    //    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:LocalFileMiddleVCType],
+    //                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex]
+    //                             };
+    //
+    //    [self.view bubbleEventWithUserInfo:notify];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -121,7 +131,7 @@
     self.scrollView.contentSize = CGSizeMake(2 * self.view.width, 0);
     self.scrollView.delegate = self;
     [self setupViews];
-
+    
     [self.pageControl addTarget:self action:@selector(pageChange:) forControlEvents:UIControlEventValueChanged];
 }
 

@@ -85,43 +85,48 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
         ////     NSLog(@"insetTop>%f  height>%f  Y>%f state>%ld",self.sv.contentInset.top,height,self.sv.contentOffset.y,(long)self.refreshState);
         
         switch (_kind) {
-            case RefreshKindQQ:{
-                if (_animating || _refreshing || self.refreshState == RefreshStateRefresh) {//动画中 刷新中 已经在计时缩小过程中 已经在刷新状态
-                    //                    if (_deltaH>0){
-                    //                        //     NSLog(@"_deltaH %f",_deltaH);
-                    //                    }
-                    return;
-                }
-                _deltaH = fmaxf(0, -point.y - kBeginHeight - initInsetTop_);
-                self.innerImageView.hidden = NO;
-                [self setNeedsDisplay];
-                if ((-point.y > kDragHeight + initInsetTop_) && !self.sv.dragging) {
-                    _refreshing = YES;
-                    [self beginRefreshing];
-                }
-            }
-                break;
-            case RefreshKindNormal:{
-                if (self.refreshState == RefreshStateRefresh){
-                    return;
-                }else if (self.sv.dragging) {
-                    if ((height > kBeginHeight) && (self.refreshState == RefreshStateNormal)){
-                        self.refreshState = RefreshStatePulling;
-                    }else if ((height <= kBeginHeight) && (self.refreshState == RefreshStatePulling)){
-                        self.refreshState = RefreshStateNormal;
-                    }else if (height <= kBeginHeight){
-                        self.refreshState = RefreshStateNormal;
+                case RefreshKindQQ:{
+                    if (_animating || _refreshing || self.refreshState == RefreshStateRefresh) {//动画中 刷新中 已经在计时缩小过程中 已经在刷新状态
+                        //                    if (_deltaH>0){
+                        //                        //     NSLog(@"_deltaH %f",_deltaH);
+                        //                    }
+                        return;
                     }
-                }else{
-                    if (self.refreshState == RefreshStatePulling){
+                    if (self.sv.dragging && self.refreshState == RefreshStateNormal) {
+                        self.refreshState = RefreshStatePulling;
+                    }
+                    
+                    _deltaH = fmaxf(0, -point.y - kBeginHeight - initInsetTop_);
+                    self.innerImageView.hidden = NO;
+                    [self setNeedsDisplay];
+                    if ((-point.y > kDragHeight + initInsetTop_) && !self.sv.dragging) {
+                        
+                        _refreshing = YES;
                         [self beginRefreshing];
                     }
                 }
-                self.tipLabel.alpha = self.automaticallyChangeAlpha ? (height/kBeginHeight) :
-                (self.verticalAlignment == TGRefreshAlignmentTop ? (height/kBeginHeight) : 1);
-                self.tipIcon.alpha = self.tipLabel.alpha;
-                [self setNeedsDisplay];
-            }
+                break;
+                case RefreshKindNormal:{
+                    if (self.refreshState == RefreshStateRefresh){
+                        return;
+                    }else if (self.sv.dragging) {
+                        if ((height > kBeginHeight) && (self.refreshState == RefreshStateNormal)){
+                            self.refreshState = RefreshStatePulling;
+                        }else if ((height <= kBeginHeight) && (self.refreshState == RefreshStatePulling)){
+                            self.refreshState = RefreshStateNormal;
+                        }else if (height <= kBeginHeight){
+                            self.refreshState = RefreshStateNormal;
+                        }
+                    }else{
+                        if (self.refreshState == RefreshStatePulling){
+                            [self beginRefreshing];
+                        }
+                    }
+                    self.tipLabel.alpha = self.automaticallyChangeAlpha ? (height/kBeginHeight) :
+                    (self.verticalAlignment == TGRefreshAlignmentTop ? (height/kBeginHeight) : 1);
+                    self.tipIcon.alpha = self.tipLabel.alpha;
+                    [self setNeedsDisplay];
+                }
                 break;
             default:
                 break;
@@ -133,11 +138,11 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
 -(void) setRefreshState:(TGRefreshState)refreshState{
     _refreshState = refreshState;
     switch (_kind) {
-        case RefreshKindNormal:
+            case RefreshKindNormal:
             
             [self normal:refreshState];
             break;
-        case RefreshKindQQ:
+            case RefreshKindQQ:
             
             break;
         default:
@@ -149,26 +154,26 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
     self.tipIcon.image = [self getImage:@"normal@2x"];
     [self.tipIcon sizeToFit];
     switch (refreshState) {
-        case RefreshStateNormal:{
-            self.tipIcon.hidden = NO;
-            self.tipLabel.hidden = NO;
-            [self.activityIndicatorView stopAnimating];
-            self.tipLabel.text = self.refreshNormalStr;
-            [UIView animateWithDuration:0.25 animations:^{
-                self.tipIcon.transform =  CGAffineTransformIdentity;
-            }];
-        }
+            case RefreshStateNormal:{
+                self.tipIcon.hidden = NO;
+                self.tipLabel.hidden = NO;
+                [self.activityIndicatorView stopAnimating];
+                self.tipLabel.text = self.refreshNormalStr;
+                [UIView animateWithDuration:0.25 animations:^{
+                    self.tipIcon.transform =  CGAffineTransformIdentity;
+                }];
+            }
             break;
-        case RefreshStatePulling:{
-            self.tipIcon.hidden = NO;
-            self.tipLabel.hidden = NO;
-            self.tipLabel.text = self.refreshPullingStr;
-            [UIView animateWithDuration:0.25 animations:^{
-                self.tipIcon.transform = CGAffineTransformRotate(self.transform, M_PI + 0.001);
-            }];
-        }
+            case RefreshStatePulling:{
+                self.tipIcon.hidden = NO;
+                self.tipLabel.hidden = NO;
+                self.tipLabel.text = self.refreshPullingStr;
+                [UIView animateWithDuration:0.25 animations:^{
+                    self.tipIcon.transform = CGAffineTransformRotate(self.transform, M_PI + 0.001);
+                }];
+            }
             break;
-        case RefreshStateRefresh:
+            case RefreshStateRefresh:
             self.tipLabel.hidden = NO;
             self.tipLabel.text = self.refreshingStr;
             self.tipIcon.hidden = YES;
@@ -188,6 +193,8 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
     if (self.refreshState == RefreshStateRefresh){
         return;
     }
+    
+    self.sv.userInteractionEnabled = NO;
     self.refreshState = RefreshStateRefresh;
     [UIView animateWithDuration:0.25 animations:^{
         UIEdgeInsets insets = self.sv.contentInset;
@@ -197,26 +204,26 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
         
     }];
     switch (_kind) {
-        case RefreshKindQQ:{
-            if (!_animating){
-                _animating = YES;
-                [UIView animateWithDuration:0.25 animations:^{
-                    _deltaH = -kScreenH;
-                    [self setNeedsDisplay];
-                } completion:^(BOOL finished) {
-                    self.sv.contentOffset = CGPointMake(0, -(kBeginHeight + initInsetTop_));
-                    _animating = NO;
-                    _refreshing = YES;
-                    [self.activityIndicatorView startAnimating];
-                    _innerImageView.hidden = YES;
-                }];
+            case RefreshKindQQ:{
+                if (!_animating){
+                    _animating = YES;
+                    [UIView animateWithDuration:0.25 animations:^{
+                        _deltaH = -kScreenH;
+                        [self setNeedsDisplay];
+                    } completion:^(BOOL finished) {
+                        self.sv.contentOffset = CGPointMake(0, -(kBeginHeight + initInsetTop_));
+                        _animating = NO;
+                        _refreshing = YES;
+                        [self.activityIndicatorView startAnimating];
+                        _innerImageView.hidden = YES;
+                    }];
+                    [self sendActionsForControlEvents:UIControlEventValueChanged];
+                }
+            }
+            break;
+            case RefreshKindNormal:{
                 [self sendActionsForControlEvents:UIControlEventValueChanged];
             }
-        }
-            break;
-        case RefreshKindNormal:{
-            [self sendActionsForControlEvents:UIControlEventValueChanged];
-        }
             break;
         default:
             break;
@@ -227,22 +234,22 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
     [super layoutSubviews];
     [self.tipLabel sizeToFit];
     switch (_kind) {
-        case RefreshKindQQ:
+            case RefreshKindQQ:
             self.alpha = self.frame.size.height/kBeginHeight;
             //            self.activityIndicatorView.center = CGPointMake(kCenter.x, initInsetTop_ > 0 ? -kCenter.y : kCenter.y);
             self.activityIndicatorView.center = kCenter;
             break;
-        case RefreshKindNormal:
+            case RefreshKindNormal:
             switch (_verticalAlignment) {
-                case TGRefreshAlignmentTop:
+                    case TGRefreshAlignmentTop:
                     //                    self.tipLabel.center = kCenter;
                     self.tipLabel.center = CGPointMake(self.bounds.size.width * 0.5,initInsetTop_ + kBeginHeight * 0.5);
                     break;
-                case TGRefreshAlignmentMidden:
+                    case TGRefreshAlignmentMidden:
                     //                    self.tipLabel.center = CGPointMake(self.bounds.size.width * 0.5,fabs(self.frame.origin.y*0.5));
                     self.tipLabel.center = CGPointMake(self.bounds.size.width * 0.5,initInsetTop_ + (fabs(self.frame.origin.y) - initInsetTop_)* 0.5);
                     break;
-                case TGRefreshAlignmentBottom:
+                    case TGRefreshAlignmentBottom:
                     self.tipLabel.center = CGPointMake(self.bounds.size.width * 0.5,fabs(self.frame.origin.y) - kBeginHeight * 0.5 );
                     break;
                 default:
@@ -259,8 +266,9 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
     }
 }
 
--(void)endRefreshing{
+-(void)endRefreshing {
     if (self.refreshState == RefreshStateNormal) {
+        self.sv.userInteractionEnabled = YES;
         return;
     }
     self.tipIcon.transform =  CGAffineTransformIdentity;
@@ -288,7 +296,8 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
             self.tipLabel.hidden = YES;
             UIEdgeInsets inset = self.sv.contentInset;
             inset.top -= kBeginHeight;
-            self.sv.contentInset = inset;
+            //            self.sv.contentInset = inset;
+            self.sv.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
         } completion:^(BOOL finished) {
             if (self.refreshResultStr.length>0){
                 self.resultLabel.alpha = 0.5;
@@ -304,11 +313,13 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
                         self.resultLabel.alpha = 0;
                         _refreshState = RefreshStateNormal;
                         _refreshResultStr = @"";
+                        self.sv.userInteractionEnabled = YES;
                     }];
                 }];
             }else{
                 _refreshState = RefreshStateNormal;
                 _refreshResultStr = @"";
+                self.sv.userInteractionEnabled = YES;
             }
         }];
     }];
@@ -427,11 +438,14 @@ typedef NS_ENUM(NSInteger, TGRefreshState) {
 
 #pragma mark : - 控件相关
 -(void)drawRect:(CGRect)rect{
+    if (self.refreshState == RefreshStateNormal) {
+        return;
+    }
     if (!_innerImageView){
         return;
     }
     switch (_kind) {
-        case RefreshKindQQ:
+            case RefreshKindQQ:
             
             break;
             

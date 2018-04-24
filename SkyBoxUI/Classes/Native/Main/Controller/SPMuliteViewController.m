@@ -16,6 +16,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 
+#import "SPVerticalScrollCollectionView.h"
+
 #define TopInset 84.0
 
 //UIScrollViewDelegate
@@ -30,6 +32,7 @@
     BOOL _unAutoRefresh;
     
     BOOL _isRefreshing;
+    BOOL _showFirstWithAnimation;
 }
 
 @property (nonatomic, strong) NSMutableArray *selectArr;
@@ -47,12 +50,14 @@
 @property (nonatomic, strong) UIButton *delBtn;
 
 @property (nonatomic, strong) UIImage *snapshot;
-@property (nonatomic, strong)  UIImageView *bottomGradientV;
+@property (nonatomic, strong) UIImageView *bottomGradientV;
+@property (nonatomic, strong) SPBackgrondView *bgview;
 
 @end
 
 @implementation SPMuliteViewController
-@synthesize emptyView = _emptyView;
+
+@synthesize isShow = _isShow;
 
 - (instancetype)initWithType:(DataSourceType)type displayType:(DisplayType)show
 {
@@ -60,8 +65,8 @@
     if (self) {
         _status = CommomStatus;
         _type = type;
-//        DisplayType willDisplayType = [[SPDataManager shareSPDataManager] getDisplayType:type];
-//        _showType = (willDisplayType == UnknownType) ? show : willDisplayType;
+        //        DisplayType willDisplayType = [[SPDataManager shareSPDataManager] getDisplayType:type];
+        //        _showType = (willDisplayType == UnknownType) ? show : willDisplayType;
         NSNumber *display = [[NSUserDefaults standardUserDefaults] objectForKey:@"DisplayType"];
         DisplayType willDisplayType = [display unsignedIntegerValue];
         _showType = willDisplayType;
@@ -70,7 +75,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateThumbnail) name:UPDATETHUMBNAIL_NOTIFICATION object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hasLocalVideosUpdate) name:UPDATELOCALVIDEOSNOTIFICATIONNAME object:nil];
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeDispalyType:) name:CHANGEDISPALYTYPENOTIFICATIONNAME object:nil];
+        //        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeDispalyType:) name:CHANGEDISPALYTYPENOTIFICATIONNAME object:nil];
     }
     return self;
 }
@@ -90,6 +95,7 @@
 - (UIBarButtonItem *)menuItem {
     if (!_menuItem) {
         UIButton *menuItem = [UIButton buttonWithType:UIButtonTypeCustom];
+        menuItem.frame = CGRectMake(0, 0, 20, 20);
         //        menuItem.backgroundColor = [UIColor redColor];
         [menuItem addTarget:self action:@selector(menuClick:) forControlEvents:UIControlEventTouchUpInside];
         menuItem.userInteractionEnabled = NO;
@@ -113,7 +119,7 @@
     if (_status == CommomStatus) {
         return @[self.menuItem];
     }else {
-       return @[self.cancleItem];
+        return @[self.cancleItem];
     }
 }
 
@@ -123,7 +129,7 @@
     }else if (_status == DeleteStatus) {
         return @[self.delItem];
     }
-
+    
     return nil;
 }
 
@@ -137,21 +143,21 @@
 #pragma -mark private
 
 - (void)hasLocalVideosUpdate {
-    if (self.isShow && self.viewLoaded && self.view.window) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self refresh];
-        });
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (!_isRefreshing && self.isShow && self.viewLoaded && self.view.window) {
+           [self refresh];
+        }
+    });
 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:SCANOVERUITOUNITYNOTIFICATIONNAME object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UPDATETHUMBNAIL_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UPDATELOCALVIDEOSNOTIFICATIONNAME object:nil];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:CHANGEDISPALYTYPENOTIFICATIONNAME object:nil];
+    //    [[NSNotificationCenter defaultCenter] removeObserver:self name:CHANGEDISPALYTYPENOTIFICATIONNAME object:nil];
 }
 - (void)updateThumbnail {
-    if (_type == HistoryVideosType || _status == DeleteStatus) {
+    if (!_isShow || _isRefreshing || _type == HistoryVideosType || _status == DeleteStatus) {
         return;
     }
     
@@ -166,17 +172,27 @@
             return;
         }
         
-        [self updateVisiableCell];
+        if (_type == VRVideosType) {
+            [self refresh];
+        }else {
+            [self updateVisiableCell];
+        }
     });
 }
 
 - (void)resetCollectionViewCellForIndexpath:(NSIndexPath *) indexPath {
-    UICollectionView *collectionView = (UICollectionView *)self.scrollView;
+    UICollectionView *collectionView = ((SPVerticalScrollCollectionView *)self.scrollView).collectionView;
     SPVideo *video = _dataArr[indexPath.item];
     video.dataSource = _type;
     SPVideoCollectionCell *cell = (SPVideoCollectionCell *)[collectionView cellForItemAtIndexPath:indexPath];
     cell.videoView.status = _status;
     if (_status == DeleteStatus) {
+        for (SPVideo *sVideo in _selectArr) {
+            if ([sVideo.path hash] == [video.path hash]) {
+                video.isDelete = YES;
+                break;
+            }
+        }
         [cell enableLongPressGestureRecognizer:NO];
     }else {
         if (_type == AirScreenType) {
@@ -185,13 +201,16 @@
             [cell enableLongPressGestureRecognizer:YES];
         }
     }
-    cell.videoView.video = video;
     
-    if (_status == CommomStatus && video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
+    if(_status == CommomStatus && _type == HistoryVideosType && [video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         cell.userInteractionEnabled = NO;
+        [cell hiddenShadow:YES];
     }else {
         cell.userInteractionEnabled = YES;
+        [cell hiddenShadow:NO];
     }
+    
+    cell.videoView.video = video;
 }
 
 - (void)updateVisiableCell {
@@ -205,9 +224,14 @@
             video.dataSource = _type;
             SPVideoCell *cell = (SPVideoCell *)[tableView cellForRowAtIndexPath:indexPath];
             cell.videoView.status = _status;
-            cell.videoView.video = video;
             
             if (_status == DeleteStatus) {
+                for (SPVideo *sVideo in _selectArr) {
+                    if ([sVideo.path hash] == [video.path hash]) {
+                        video.isDelete = YES;
+                        break;
+                    }
+                }
                 [cell enableLongPressGestureRecognizer:NO];
             }else {
                 if (_type == AirScreenType) {
@@ -217,15 +241,19 @@
                 }
             }
             
-            if (_status == CommomStatus && video.remote_id && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
+            if(_status == CommomStatus && _type == HistoryVideosType && [video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
                 cell.userInteractionEnabled = NO;
+                [cell hiddenShadow:YES];
             }else {
                 cell.userInteractionEnabled = YES;
+                [cell hiddenShadow:NO];
             }
+            
+            cell.videoView.video = video;
         }
     }else {
-        UICollectionView *collectionView = (UICollectionView *)self.scrollView;
-       
+        UICollectionView *collectionView = ((SPVerticalScrollCollectionView *)self.scrollView).collectionView;
+        
         visibleCells = collectionView.indexPathsForVisibleItems;
         for (NSIndexPath *indexPath in visibleCells) {
             [self resetCollectionViewCellForIndexpath:indexPath];
@@ -252,7 +280,7 @@
         [deleteBtn setImage:[Commons getImageFromResource:@"History_titlebar_button_delete"] forState:UIControlStateNormal];
         deleteBtn.backgroundColor = [UIColor clearColor];
         deleteBtn.userInteractionEnabled = NO;
-        //        deleteItem.frame = CGRectMake(0, 0, 20, 20);
+        deleteBtn.frame = CGRectMake(0, 0, 20, 20);
         [deleteBtn addTarget:self action:@selector(deleteItem:) forControlEvents:UIControlEventTouchUpInside];
         
         _deleteItem = [[UIBarButtonItem alloc] initWithCustomView:deleteBtn];
@@ -264,13 +292,13 @@
 
 - (void)deleteItem:(UIButton *)item {
     SPAlertViewController *alterVC = [SPAlertViewController alertControllerWithTitle:NSLocalizedString(@"Notice_DeleteHistory", @"Delete history") message:NSLocalizedString(@"Notice_DeleteHistory_all_msg", @"Are you sure you want to delete all history?")
-                                                              preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Notice_Cancel", @"Cancel") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [alterVC dismissViewControllerAnimated:YES completion:nil];
     }];
-    
+
     __weak typeof(self) ws = self;
-    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Notice_Delete", @"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         //
         [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"DeleteAllHistory"}];
         [alterVC dismissViewControllerAnimated:YES completion:nil];
@@ -291,6 +319,7 @@
 - (UIBarButtonItem *)cancleItem {
     if (!_cancleItem) {
         UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        cancelBtn.frame = CGRectMake(0, 0, 20, 20);
         [cancelBtn setTitle:NSLocalizedString(@"Notice_Cancel", @"Cancel") forState:UIControlStateNormal];
         cancelBtn.titleLabel.font = [UIFont fontWithName:@"Calibri" size:19];
         [cancelBtn setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
@@ -323,6 +352,7 @@
 - (UIBarButtonItem *)delItem {
     if (!_delItem) {
         UIButton *deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        deleteBtn.frame = CGRectMake(0, 0, 20, 20);
         [deleteBtn setTitle:NSLocalizedString(@"Notice_Delete", @"Delete") forState:UIControlStateNormal];
         deleteBtn.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:19];
         [deleteBtn setTitleColor:[SPColorUtil getHexColor:@"#ffffff"] forState:UIControlStateNormal];
@@ -361,7 +391,7 @@
         msg = NSLocalizedString(@"Notice_DeleteVideos_msg", @"Are you sure you want to delete selected videos?");
     }
     SPAlertViewController *alterVC = [SPAlertViewController alertControllerWithTitle:title message:msg
-                                                              preferredStyle:UIAlertControllerStyleAlert];
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Notice_Delete", @"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         _status = CommomStatus;
@@ -370,17 +400,16 @@
             [deleteArr addObject:video.path];
         }
         
-        self.view.userInteractionEnabled = NO;
         [self removeItemWithAnimation];
         
-//        //test
-//        self.view.userInteractionEnabled = YES;
-//        return ;
+        ////        //test
+        //        self.view.userInteractionEnabled = YES;
+        //        return ;
         __weak typeof(self) ws = self;
         self.completeBlock = ^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 __strong typeof(ws) strongfy = ws;
-
+                
                 NSUInteger jumpToVC = (_type == HistoryVideosType) ? CommonHistoryType : CommonLoaclVideosType;
                 NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:jumpToVC]
                                          };
@@ -391,9 +420,9 @@
         NSString *method = (_type == HistoryVideosType) ? @"DeleteHistory" : @"DeleteLocalVideos";
         [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : method, @"deleteArr" : [deleteArr copy], @"resultBlock" : self.completeBlock}];
     }];
-
+    
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Notice_Cancel", @"Cancel") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        [self runtime:alterVC];
+        //        [self runtime:alterVC];
         [alterVC dismissViewControllerAnimated:YES completion:^{
             
         }];
@@ -410,23 +439,35 @@
 }
 
 - (void)enableNavigationItems:(BOOL)enable {
-    NSArray *leftItems = [self leftNaviItem];
-    for (UIBarButtonItem *barBtnItem in leftItems) {
-        UIView *view = barBtnItem.customView;
-        view.alpha = enable ? 1.0 : 0.4;
-        view.userInteractionEnabled = enable;
-    }
-    
-    if (_showType == LocalFilesType && !enable) {
-        return;
-    }
-    
-    NSArray *rightItems = [self rightNaviItem];
-    for (UIBarButtonItem *barBtnItem in rightItems) {
-        UIView *view = barBtnItem.customView;
-        view.alpha = enable ? 1.0 : 0.4;
-        view.userInteractionEnabled = enable;
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+            NSArray *leftItems = [self leftNaviItem];
+            for (UIBarButtonItem *barBtnItem in leftItems) {
+                UIView *view = barBtnItem.customView;
+                BOOL userInteractionEnabled = YES;
+                if ([view isKindOfClass:[UIButton class]]) {
+                    UIButton *btn = (UIButton *)view;
+                    userInteractionEnabled = btn.isEnabled;
+                }
+                view.alpha = (enable && userInteractionEnabled) ? 1.0 : 0.4;
+                view.userInteractionEnabled = enable;
+            }
+        
+            if (_showType == LocalFilesType && !enable) {
+                return;
+            }
+        
+            NSArray *rightItems = [self rightNaviItem];
+            for (UIBarButtonItem *barBtnItem in rightItems) {
+                UIView *view = barBtnItem.customView;
+                BOOL userInteractionEnabled = YES;
+                if ([view isKindOfClass:[UIButton class]]) {
+                    UIButton *btn = (UIButton *)view;
+                    userInteractionEnabled = btn.isEnabled;
+                }
+                view.alpha = (enable && userInteractionEnabled) ? 1.0 : 0.4;
+                view.userInteractionEnabled = enable;
+            }
+    });
 }
 
 - (void)removeItemWithAnimation {
@@ -438,22 +479,22 @@
         NSMutableArray *resultArr = [NSMutableArray arrayWithArray:_dataArr];
         NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:2];
         //有 bug 最后一个删除不掉
-//        [resultArr enumerateObjectsUsingBlock:^(SPVideo *video, NSUInteger idx, BOOL * _Nonnull stop) {
-//            if (video.isDelete) {
-//                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
-//                [indexPaths addObject:indexPath];
-//                [resultArr removeObject:video];
-//            }
-//        }];
+        //        [resultArr enumerateObjectsUsingBlock:^(SPVideo *video, NSUInteger idx, BOOL * _Nonnull stop) {
+        //            if (video.isDelete) {
+        //                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+        //                [indexPaths addObject:indexPath];
+        //                [resultArr removeObject:video];
+        //            }
+        //        }];
         for (int index = 0; index < count; index ++) {
             SPVideo *video = _dataArr[index];
             if (video.isDelete) {
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
                 [indexPaths addObject:indexPath];
-
+                
                 [resultArr removeObject:video];
             }
-       }
+        }
         
         if (_showType == TableViewType) {
             UITableView *tableView = (UITableView *)self.scrollView;
@@ -463,23 +504,20 @@
             [tableView  endUpdates];
         }else {
             _dataArr = resultArr;
-            UICollectionView *collectionView = (UICollectionView *)self.scrollView;
+            UICollectionView *collectionView = ((SPVerticalScrollCollectionView *)self.scrollView).collectionView;
             [collectionView deleteItemsAtIndexPaths:indexPaths];
         }
         
         _selectArr = nil;
         self.view.userInteractionEnabled = YES;
         if (_dataArr.count <= 0) {
-            SPBackgrondView *backgroundView = [_scrollView valueForKeyPath:@"_backgroundView"];
-            if (backgroundView) {
-                [backgroundView showOrHidden:YES];
-            }
-
+            [self showOrHiddenBackgrondView:YES];
+            
             [self enableNavigationItems:NO];
         }else {
             [self enableNavigationItems:YES];
         }
-
+        
         [self configRefresh];
     });
 }
@@ -529,6 +567,14 @@
     [self setupScrollView];
     
     [self setupBottomGradientLayer];
+    
+    [self.view addSubview:self.bgview];
+    if (_type == AirScreenType) {
+        _bgview.hidden = YES;
+        [_bgview showOrHidden:NO];
+    }
+    
+    [self.view bringSubviewToFront:self.scrollView];
 }
 
 - (void)setupBottomGradientLayer {
@@ -552,13 +598,23 @@
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     _bottomGradientV.frame = CGRectMake(0, SCREEN_HEIGHT - 100 * kHSCALE - 84, SCREEN_WIDTH, 100 * kHSCALE);
+    
+    [self.scrollView setNeedsLayout];
+    //    UIView *view = [self.scrollView viewWithTag:9999];
+    //    if (!view) {
+    //        self.collectionView.tag = 9999;
+    //        [self.scrollView addSubview:self.collectionView];
+    //    }
+    //
+    //    CGRect frame = self.scrollView.bounds;
+    //    view.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-//    //清除缓存
-//    [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
-//    [[SDImageCache sharedImageCache] clearMemory];
+    //    //清除缓存
+    //    [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
+    //    [[SDImageCache sharedImageCache] clearMemory];
     //    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     //    CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
     //    gradient.frame = rect;
@@ -578,11 +634,20 @@
     
     [self.view bringSubviewToFront:_bottomGradientV];
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.edges.mas_equalTo(self.view);
+        //        make.edges.mas_equalTo(self.view);
         make.edges.mas_equalTo(UIEdgeInsetsMake(-TopInset, 0, 0, 0));
     }];
     
     self.scrollView.delegate = self;
+}
+
+- (SPBackgrondView *)bgview {
+    if (!_bgview) {
+        _bgview = [self setBackgroundView];
+        [self.view addSubview:_bgview];
+    }
+    
+    return _bgview;
 }
 
 - (UIScrollView *)scrollView {
@@ -597,34 +662,37 @@
                 ((UITableView *)_scrollView).dataSource = self;
                 ((UITableView *)_scrollView).separatorStyle = UITableViewCellSeparatorStyleNone;
                 [((UITableView *)_scrollView) registerClass:[SPVideoCell class] forCellReuseIdentifier:[self cellIditify]];
+                
+                _scrollView.scrollEnabled = YES;
             }
                 break;
             case CollectionViewType:
             {
+                //UICollectionViewFlowLayout *flowLayout= [[UICollectionViewFlowLayout alloc] init];
+                //flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
                 // 创建瀑布流layout
                 SPWaterFallLayout *layout = [[SPWaterFallLayout alloc] init];
                 // 设置代理
                 layout.delegate = self;
+                _scrollView = [[SPVerticalScrollCollectionView alloc] initWithFrame:CGRectZero];
+                [((SPVerticalScrollCollectionView *)_scrollView) setCollectionViewLayout:layout];
+                [((SPVerticalScrollCollectionView *)_scrollView) registerClass:[SPVideoCollectionCell class] forCellWithReuseIdentifier:[self cellIditify]];
+                ((SPVerticalScrollCollectionView *)_scrollView).cDelegate = self;
+                ((SPVerticalScrollCollectionView *)_scrollView).dataSource = self;
+                ((SPVerticalScrollCollectionView *)_scrollView).backgroundColor = [UIColor clearColor];
                 
-                UICollectionViewFlowLayout *flowLayout= [[UICollectionViewFlowLayout alloc] init];
-                _scrollView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
-//                _scrollView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
-                [(UICollectionView *)_scrollView registerClass:[SPVideoCollectionCell class] forCellWithReuseIdentifier:[self cellIditify]];
-                ((UICollectionView *)_scrollView).backgroundColor = [UIColor clearColor];
-                adjustsScrollViewInsets(_scrollView);
-                ((UICollectionView *)_scrollView).delegate = self;
-                ((UICollectionView *)_scrollView).dataSource = self;
+                _scrollView.scrollEnabled = YES;
             }
                 break;
             default:
                 break;
         }
         
-        SPBackgrondView *bgview = [self setBackgroundView];
-        if (_type != AirScreenType && bgview) {
-            [_scrollView setValue:bgview forKeyPath:@"_backgroundView"];
-            [bgview showOrHidden:YES];
-        }
+        //        SPBackgrondView *bgview = [self setBackgroundView];
+        //        if (_type != AirScreenType && bgview) {
+        //            [_scrollView setValue:bgview forKeyPath:@"_backgroundView"];
+        //            [bgview showOrHidden:YES];
+        //        }
         
         [self configRefresh];
         
@@ -635,31 +703,33 @@
 }
 
 - (SPBackgrondView *)setBackgroundView {
+    CGRect frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    
     SPBackgrondView *backgroundView = nil;
     switch (_type) {
         case LocalFilesType:
         {
-            backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoVideos];
+            backgroundView = [[SPBackgrondView alloc] initWithFrame:frame backgroundType:NoVideos];
         }
             break;
         case VRVideosType:
         {
-            backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoVideos];
+            backgroundView = [[SPBackgrondView alloc] initWithFrame:frame backgroundType:NoVideos];
         }
             break;
         case FavoriteVideosType:
         {
-            backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoFavorite];
+            backgroundView = [[SPBackgrondView alloc] initWithFrame:frame backgroundType:NoFavorite];
         }
             break;
         case HistoryVideosType:
         {
-            backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoHistory];
+            backgroundView = [[SPBackgrondView alloc] initWithFrame:frame backgroundType:NoHistory];
         }
             break;
         case AirScreenType:
         {
-            backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoAirScreenResult];
+            backgroundView = [[SPBackgrondView alloc] initWithFrame:frame backgroundType:NoAirScreenResult];
         }
             break;
         default:
@@ -669,7 +739,7 @@
     return backgroundView;
 }
 
-- (void)handleScroll{
+- (void)handleScroll {
     switch (_showType) {
         case TableViewType:
         {
@@ -695,15 +765,15 @@
             }
             
             //     NSLog(@"finnalIndexPath  === %ld", (long)finnalIndexPath.row);
-//            _showIndexpath = [NSIndexPath indexPathForItem:finnalCell.indexPath.row inSection:0];
+            //            _showIndexpath = [NSIndexPath indexPathForItem:finnalCell.indexPath.row inSection:0];
             _showIndexpath = [NSIndexPath indexPathForItem:finnalIndexPath.row inSection:0];
         }
             break;
         case CollectionViewType:
         {
-            UICollectionView *collectionView = (UICollectionView *)self.scrollView;
+            UICollectionView *collectionView = ((SPVerticalScrollCollectionView *)self.scrollView).collectionView;
             NSIndexPath *finnalIndexPath = nil;
-            NSArray *visibleArr = collectionView.indexPathsForVisibleItems;
+            NSArray *visibleArr = [(SPVerticalScrollCollectionView *)self.scrollView indexPathsForVisibleItems];
             
             if (!visibleArr || visibleArr.count <= 0) {
                 _showIndexpath = nil;
@@ -720,7 +790,6 @@
                 }
             }
             
-            //     NSLog(@"CollectionViewType finnalIndexPath  === %ld", (long)finnalIndexPath.item);
             _showIndexpath = [NSIndexPath indexPathForRow:finnalIndexPath.item inSection:0];
         }
             break;
@@ -734,7 +803,7 @@
     switch (_showType) {
         case TableViewType:
         {
-//            CGFloat cellHeight = 1.0 * 155 *kHSCALE + 60 + 29;
+            //            CGFloat cellHeight = 1.0 * 155 *kHSCALE + 60 + 29;
             UITableView *tableView = (UITableView *)self.scrollView;
             NSArray *visibleArr = tableView.indexPathsForVisibleRows;
             
@@ -776,12 +845,12 @@
 }
 
 - (void)gradientLayer:(CGFloat)Height {
-//    CGRect rect = CGRectMake(0, -64, self.view.frame.size.width, self.view.frame.size.height + 64);
+    //    CGRect rect = CGRectMake(0, -64, self.view.frame.size.width, self.view.frame.size.height + 64);
     CGRect rect = CGRectMake(0, -130, self.view.frame.size.width, self.view.frame.size.height + 180);
     CAGradientLayer *gradient = [[CAGradientLayer alloc] init];
     gradient.frame = rect;
     
-//    UIColor *bgColor = SPBgColor;
+    //    UIColor *bgColor = SPBgColor;
     UIColor *bgColor = [UIColor blackColor];
     
     gradient.colors = @[(__bridge id)[bgColor colorWithAlphaComponent:0.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor, (__bridge id)[bgColor colorWithAlphaComponent:1.0].CGColor];
@@ -834,27 +903,27 @@
 
 - (void)changeDispalyType:(DisplayType)showType {
     dispatch_async(dispatch_get_main_queue(), ^{
-            //     NSLog(@"当前线程 ====  %@", [[NSThread currentThread] name]);
-            _animation = YES;
-            [self handleScroll];
-            _showType = showType;
-            [self enableNavigationItems:NO];
+        //     NSLog(@"当前线程 ====  %@", [[NSThread currentThread] name]);
+        _animation = YES;
+        [self handleScroll];
+        _showType = showType;
+        [self enableNavigationItems:NO];
         
-
-            [UIView animateWithDuration:0.2 animations:^{
-                _unAutoRefresh = YES;
-                self.scrollView.alpha = 0.0;
-            } completion:^(BOOL finished) {
-                [self gradientLayer:0.0];
-                [self setupMenuImage];
-                [_scrollView removeFromSuperview];
-                _scrollView = nil;
-                [self setupScrollView];
-                
-                self.scrollView.alpha = 0.0;
-                [self reload];
-                _unAutoRefresh = NO;
-            }];
+        
+        [UIView animateWithDuration:0.2 animations:^{
+            _unAutoRefresh = YES;
+            self.scrollView.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            [self gradientLayer:0.0];
+            [self setupMenuImage];
+            [_scrollView removeFromSuperview];
+            _scrollView = nil;
+            [self setupScrollView];
+            
+            self.scrollView.alpha = 0.0;
+            [self reload];
+            _unAutoRefresh = NO;
+        }];
         
     });
 }
@@ -864,14 +933,22 @@
     [userDefaults setObject:[NSNumber numberWithUnsignedInteger:showType] forKey:@"DisplayType"];
     [userDefaults synchronize];
     
-//    NSDictionary *userInfo = @{@"DisplayType" : [NSNumber numberWithUnsignedInteger:showType]};
-//    [[NSNotificationCenter defaultCenter] postNotificationName:CHANGEDISPALYTYPENOTIFICATIONNAME object:nil userInfo:userInfo];
+    //    NSDictionary *userInfo = @{@"DisplayType" : [NSNumber numberWithUnsignedInteger:showType]};
+    //    [[NSNotificationCenter defaultCenter] postNotificationName:CHANGEDISPALYTYPENOTIFICATIONNAME object:nil userInfo:userInfo];
     
     [self changeDispalyType:showType];
 }
 
+- (void)setIsShow:(BOOL)isShow {
+    if (isShow && _isShow != isShow) {
+        _isRefreshing = NO;
+    }
+    
+    _isShow = isShow;
+}
+
 - (void)refresh {
-    if (_isRefreshing) {
+    if (!_isShow || _isRefreshing) {
         return;
     }
     
@@ -883,15 +960,19 @@
 }
 
 - (void)configRefresh {
-    if (_status == DeleteStatus) {
-        _scrollView.tg_header = nil;
-        return;
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (_status == DeleteStatus) {
+            _scrollView.tg_header = nil;
+            return;
+        }
+        
+        //默认为QQ效果
+        _scrollView.tg_header = [TGRefreshOC  refreshWithTarget:self action:@selector(doRefreshSenior) config:^(TGRefreshOC *refresh) {
+            refresh.tg_bgColor(SPBgColor);
+        }];
     
-    //默认为QQ效果
-    _scrollView.tg_header = [TGRefreshOC  refreshWithTarget:self action:@selector(doRefreshSenior) config:^(TGRefreshOC *refresh) {
-        refresh.tg_bgColor(SPBgColor);
-    }];
+        self.scrollView.userInteractionEnabled = YES;
+    });
 }
 
 - (void)showScrollViewWithAnimation {
@@ -902,6 +983,28 @@
     }];
 }
 
+- (void)showOrHiddenBackgrondView:(BOOL)isShow {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (_type == AirScreenType && isShow && !_bgview) {
+            [self.view addSubview:self.bgview];
+            
+        }else if(_type == AirScreenType && !isShow){
+            [_bgview removeFromSuperview];
+            _bgview = nil;
+        }
+        
+        if (isShow) {
+            [self.view bringSubviewToFront:self.scrollView];
+            self.bgview.hidden = NO;
+            [self.bgview showOrHidden:YES];
+        }else {
+            _bgview.hidden = YES;
+            [_bgview showOrHidden:NO];
+        }
+    });
+    
+}
+
 - (void)reload {
     dispatch_async(dispatch_get_main_queue(), ^{
         [_scrollView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
@@ -910,42 +1013,35 @@
         [self enableNavigationItems:NO];
         if(!_dataArr || _dataArr.count <= 0) {
             _isHidden = NO;
+            
             [UIView animateWithDuration:0.2 animations:^{
                 self.menuBtn.alpha = 0.4;
                 self.menuBtn.enabled = NO;
-
+                
                 self.deleteBtn.alpha = 0.4;
                 self.deleteBtn.enabled = NO;
             }];
             
-                switch (_type) {
-                    case LocalFilesType:
-                    {
-                        NSUInteger selectedIndex = -1;
-                        NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:HomeHelpMiddleVCType],
-                                                 kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
-                                                 @"Done": @NO
-                                                 };
-                        
-                        [self.view bubbleEventWithUserInfo:notify];
-                        
-                        return;
-                    }
-                        break;
-                    case AirScreenType:
-                    {
-                        SPBackgrondView *backgroundView = [[SPBackgrondView alloc] initWithFrame:self.view.bounds backgroundType:NoAirScreenResult];
-                        
-                        if (!_emptyView) {
-                            [self.view insertSubview:backgroundView aboveSubview:self.scrollView];
-                        }
-                        _emptyView = backgroundView;
-                    }
-                        break;
-                    default:
-                        break;
+            switch (_type) {
+                case LocalFilesType:
+                {
+                    NSUInteger selectedIndex = -1;
+                    NSDictionary *notify = @{kEventType : [NSNumber numberWithUnsignedInteger:HomeHelpMiddleVCType],
+                                             kSelectTabBarItem: [NSNumber numberWithUnsignedInteger:selectedIndex],
+                                             @"Done": @NO
+                                             };
+                    
+                    [self.view bubbleEventWithUserInfo:notify];
+                    
+                    return;
                 }
-                
+                    break;
+                default: {
+                    [self showOrHiddenBackgrondView:YES];
+                }
+                    break;
+            }
+            
             
         }else{
             _isHidden = YES;
@@ -956,15 +1052,15 @@
                 self.deleteBtn.alpha = 1.0;
                 self.deleteBtn.enabled = YES;
             }];
-            [_emptyView removeFromSuperview];
-            _emptyView = nil;
+            
+            [self showOrHiddenBackgrondView:NO];
         }
-    
+        
+        [self.view bringSubviewToFront:self.scrollView];
         switch (_showType) {
             case TableViewType:
             {
                 UITableView *tableView = (UITableView *)self.scrollView;
-                tableView.backgroundView.hidden = _isHidden;
                 if (_showIndexpath) {
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         [UIView animateWithDuration:0.02 animations:^{
@@ -979,43 +1075,42 @@
                         [UIScrollView animateWithDuration:0.02 animations:^{
                             self.scrollView.contentOffset = CGPointMake(0, 0);
                             self.scrollView.alpha = 1.0;
-                         } completion:^(BOOL finished) {
+                        } completion:^(BOOL finished) {
                             [self enableNavigationItems:YES];
                         }];
                     });
                     
                     
-//                    CGFloat offsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
-//                    //     NSLog(@"offsetY ===== %f", offsetY);
-//                    //                    [self.scrollView setContentOffset:CGPointMake(0, offsetY) animated:YES];
-//                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//                        [UIScrollView animateWithDuration:0.02 animations:^{
-//                            self.scrollView.contentOffset = (offsetY == 0) ? CGPointMake(0, 0) : CGPointMake(0, offsetY);
-//                        } completion:^(BOOL finished) {
-//
-//                            [self addGradientLayer:offsetY];
-//                             [self showScrollViewWithAnimation];
-//                        }];
-//                    });
+                    //                    CGFloat offsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
+                    //                    //     NSLog(@"offsetY ===== %f", offsetY);
+                    //                    //                    [self.scrollView setContentOffset:CGPointMake(0, offsetY) animated:YES];
+                    //                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    //                        [UIScrollView animateWithDuration:0.02 animations:^{
+                    //                            self.scrollView.contentOffset = (offsetY == 0) ? CGPointMake(0, 0) : CGPointMake(0, offsetY);
+                    //                        } completion:^(BOOL finished) {
+                    //
+                    //                            [self addGradientLayer:offsetY];
+                    //                             [self showScrollViewWithAnimation];
+                    //                        }];
+                    //                    });
                 }
             }
                 break;
             case CollectionViewType:
             {
-                UICollectionView *collectionView = (UICollectionView *)self.scrollView;
-                collectionView.backgroundView.hidden = _isHidden;
+                SPVerticalScrollCollectionView *scrollCollectionView = (SPVerticalScrollCollectionView *)self.scrollView;
                 if (_showIndexpath) {
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                            [UIView animateWithDuration:0.02 animations:^{
-                                [collectionView scrollToItemAtIndexPath:_showIndexpath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:NO];
+                        [UIView animateWithDuration:0.02 animations:^{
+                            [scrollCollectionView.collectionView scrollToItemAtIndexPath:_showIndexpath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:NO];
+                        } completion:^(BOOL finished) {
+                            _showIndexpath = nil;
+                            [UIView animateWithDuration:0.5 animations:^{
+                                self.scrollView.alpha = 1.0;
                             } completion:^(BOOL finished) {
-                                _showIndexpath = nil;
-                                [UIView animateWithDuration:0.5 animations:^{
-                                    self.scrollView.alpha = 1.0;
-                                } completion:^(BOOL finished) {
-                                    [self showScrollViewWithAnimation];
-                                }];
+                                [self showScrollViewWithAnimation];
                             }];
+                        }];
                     });
                     
                 }else {
@@ -1027,17 +1122,17 @@
                             [self enableNavigationItems:YES];
                         }];
                     });
-//                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//                        CGFloat offsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
-//
-//                        [UIView animateWithDuration:0.02 animations:^{
-//                            offsetY == 0 ? nil : [self.scrollView setContentOffset:CGPointMake(0, offsetY)];
-//                        } completion:^(BOOL finished) {
-//
-//                            [self addGradientLayer:offsetY];
-//                             [self showScrollViewWithAnimation];
-//                        }];
-//                    });
+                    //                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.02 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    //                        CGFloat offsetY = [[SPDataManager shareSPDataManager] getContentOffsetY:_type];
+                    //
+                    //                        [UIView animateWithDuration:0.02 animations:^{
+                    //                            offsetY == 0 ? nil : [self.scrollView setContentOffset:CGPointMake(0, offsetY)];
+                    //                        } completion:^(BOOL finished) {
+                    //
+                    //                            [self addGradientLayer:offsetY];
+                    //                             [self showScrollViewWithAnimation];
+                    //                        }];
+                    //                    });
                 }
             }
                 break;
@@ -1051,8 +1146,9 @@
 - (void)didFinishRequest:(NSArray *)arr {
     BOOL refresh = NO;
     NSArray *array = nil;
-    if (arr) {
-        array = [SPVideo mj_objectArrayWithKeyValuesArray:arr];
+    if(arr) array = [SPVideo mj_objectArrayWithKeyValuesArray:arr];
+    
+    if (self.isShow) {
         NSMutableArray *paths = [[NSMutableArray alloc] initWithCapacity:array.count];
         for (SPVideo *video in array) {
             [paths addObject:video.path];
@@ -1065,22 +1161,28 @@
         
         if (dataHash != newHash) {
             refresh = YES;
+            _showFirstWithAnimation = YES;
             [dataManager setCacheWithDataSource:_type dataSourceString:newHash];
+        }else {
+            _showFirstWithAnimation = NO;
         }
     }
     
-//    //test
-//    refresh = YES;
-//
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         //        _scrollView.tg_header.refreshResultStr = @"成功刷新数据";
         [_scrollView.tg_header endRefreshing];
-        _dataArr = array;
-        (refresh || !_dataArr || _dataArr.count == 0) ? [self reload] : nil;
+//        _isRefreshing = NO;
         
-        if (!refresh && _type == HistoryVideosType) {
+        if(!self.isShow)  return;
+        
+        _dataArr = array;
+        if (refresh || !_dataArr || _dataArr.count == 0) {
+            [self reload];
+        }else {
             [self updateVisiableCell];
         }
+        
+        _isRefreshing = NO;
     });
 }
 
@@ -1088,7 +1190,6 @@
     _isRefreshing = YES;
     __weak typeof(self) ws = self;
     self.refreshBlock = ^(NSString *dataStr){
-        _isRefreshing = NO;
         //     NSLog(@"dataStr === %@", dataStr);
         NSArray *arr = [NSJSONSerialization JSONObjectWithData:[dataStr mj_JSONData] options:NSJSONReadingAllowFragments error:nil];
         
@@ -1127,10 +1228,9 @@
     
     //test
 //    NSString *jsonstr = @"[{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240},{\"videoWidth\":600,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"EasyMovieTexture\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/772239E4-98E6-4B6D-BDED-196E35A1ED95.png\",\"duration\":176000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/EasyMovieTexture.mp4\",\"videoHeight\":360},{\"videoWidth\":1920,\"isFavourite\":1,\"rcg_type\":\"2\",\"title\":\"Eagle1080 60\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/26010039-ED3A-4A43-A9D9-3BDCCC582D5E.png\",\"duration\":17000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/Eagle1080-60.mp4\",\"videoHeight\":1080},{\"videoWidth\":1280,\"isFavourite\":0,\"rcg_type\":\"2\",\"title\":\"aO3\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/83D0895F-29DD-45F4-9D6B-D1F59EEC154D.png\",\"duration\":307000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/aO3.mkv\",\"videoHeight\":720},{\"videoWidth\":1920,\"isFavourite\":1,\"rcg_type\":\"5\",\"title\":\"abcd3D\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/8E607AF6-2B7D-48B2-8985-E7244B338E8E.png\",\"duration\":180000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/abcd3D.mp4\",\"videoHeight\":1080},{\"videoWidth\":1024,\"isFavourite\":0,\"rcg_type\":\"2\",\"title\":\"abc\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/33E9B4E8-7895-4169-9D20-A1B97903E7B8.png\",\"duration\":132000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/abc.mp4\",\"videoHeight\":512},{\"videoWidth\":1920,\"isFavourite\":1,\"rcg_type\":\"1\",\"title\":\"333\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/4E3FE121-3FDA-4577-A729-F11E43E3A71C.png\",\"duration\":207000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/333.mp4\",\"videoHeight\":1080},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"2\",\"title\":\"2017\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/794A9A52-1F6F-4193-AAE6-09AFA44ACC41.png\",\"duration\":28000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/2017.mp4\",\"videoHeight\":480},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb2\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb3.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb5\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb6\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb8.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb9.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb11\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240},{\"videoWidth\":320,\"isFavourite\":0,\"rcg_type\":\"1\",\"title\":\"ed 1024 512kb\",\"thumbnail_uri\":\"file:\\\/\\\/\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Library\\\/Caches\\\/Thumbnails\\\/449A3F79-82ED-4648-A798-2DFB392CFBC3.png\",\"duration\":653000,\"path\":\"file:\\\/\\\/\\\/private\\\/var\\\/mobile\\\/Containers\\\/Data\\\/Application\\\/06FB109F-800E-4588-BBB8-DE10412BFE7B\\\/Documents\\\/ed_1024_512kb.mp4\",\"videoHeight\":240}]";
-//
+//    
 //    NSArray *arr = [NSJSONSerialization JSONObjectWithData:[jsonstr dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingAllowFragments error:nil];
-//    //        NSArray *arr = nil;
-//    //                    [self didFinishRequest:[arr subarrayWithRange:NSMakeRange(0, 0)]];
+//    //  [self didFinishRequest:[arr subarrayWithRange:NSMakeRange(0, 0)]];
 //    [self didFinishRequest:arr];
 }
 
@@ -1176,7 +1276,7 @@
         cell = [[SPVideoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[self cellIditify]];
     }
     
-    if (_status == CommomStatus && _type != HistoryVideosType && indexPath.row == 0) {
+    if (_showFirstWithAnimation && _status == CommomStatus && _type == LocalFilesType && indexPath.row == 0) {
         cell.alpha = 0.0;
         [UIView animateWithDuration:0.3 animations:^{
             cell.alpha = 1.0;
@@ -1187,7 +1287,7 @@
     SPVideo *video =  _dataArr[indexPath.row];
     video.dataSource = _type;
     cell.videoView.status = _status;
-//    cell.videoView.indexPath = indexPath;
+    //    cell.videoView.indexPath = indexPath;
     if (_status == CommomStatus) {
         video.isDelete = NO;
     }
@@ -1204,7 +1304,7 @@
         }
     }
     
-    if(_status == CommomStatus && [video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
+    if(_status == CommomStatus && _type == HistoryVideosType && [video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         cell.userInteractionEnabled = NO;
         [cell hiddenShadow:YES];
     }else {
@@ -1223,9 +1323,25 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return TopInset;
 }
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    return 1.0 * 208 / (324 / SCREEN_WIDTH);
-//}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static CGFloat cellHeight = 0;
+    if (cellHeight == 0) {
+        CGFloat imgvHeight = 0;
+        CGFloat bottomHeight = 0;
+        if ([SPDeviceUtil isiPhoneX]) {
+            imgvHeight = 1.0 * 155;
+            bottomHeight = 29;
+        }else {
+            imgvHeight = 1.0 * 155 *kHSCALE;
+            bottomHeight = 29*kHSCALE;
+        }
+        
+        cellHeight = imgvHeight + 60 + bottomHeight;
+    }
+    
+    return cellHeight;
+}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     return  [SPDeviceUtil isiPhoneX] ?  kWSCALE*94 - 29 + 34 : kWSCALE*94 - 29;
@@ -1256,7 +1372,7 @@
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     SPVideoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:[self cellIditify] forIndexPath:indexPath];
     
-    if (_status == CommomStatus && _type != HistoryVideosType && indexPath.row == 0) {
+    if (_showFirstWithAnimation && _status == CommomStatus && _type == LocalFilesType && indexPath.row == 0) {
         cell.alpha = 0.0;
         [UIView animateWithDuration:0.3 animations:^{
             cell.alpha = 1.0;
@@ -1265,7 +1381,7 @@
     SPVideo *video =  _dataArr[indexPath.row];
     video.dataSource = _type;
     cell.videoView.status = _status;
-//    cell.videoView.indexPath = indexPath;
+    //    cell.videoView.indexPath = indexPath;
     if (_status == DeleteStatus) {
         [cell enableLongPressGestureRecognizer:NO];
     }else {
@@ -1280,7 +1396,7 @@
     
     cell.videoView.delegate = self;
     
-    if(_status == CommomStatus && [video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
+    if(_status == CommomStatus && _type == HistoryVideosType && [video.type isEqualToString:@"Airscreen"] && ([video.remote_id hash] != [[SPDataManager shareSPDataManager].airscreen.computerId hash])) {
         cell.userInteractionEnabled = NO;
         [cell hiddenShadow:YES];
     }else {
@@ -1303,7 +1419,7 @@
         height = labelHeight + durationLabelHeight + imgvHeight + 8 + 8;
     }
     
-   return CGSizeMake((SCREEN_WIDTH / 2 - 17 * 3 / 2), height);
+    return CGSizeMake((SCREEN_WIDTH / 2 - 17 * 3 / 2), height);
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
@@ -1349,7 +1465,7 @@ static CGFloat height = 0;
 
 - (UIEdgeInsets)edgeInsetsOfWaterFallLayout:(SPWaterFallLayout *)waterFallLayout
 {
-    return UIEdgeInsetsMake(0, 17, [SPDeviceUtil isiPhoneX] ?  kWSCALE*94 - 29 + 34 : kWSCALE*94 - 29, 17);
+    return UIEdgeInsetsMake(TopInset, 17, [SPDeviceUtil isiPhoneX] ?  kWSCALE*94 - 29 + 34 : kWSCALE*94 - 29, 17);
 }
 
 
@@ -1358,8 +1474,8 @@ static CGFloat height = 0;
     return;
     
     if (_type == FavoriteVideosType) {
-//        [_dataArr removeObject:video];
-//        [self reload];
+        //        [_dataArr removeObject:video];
+        //        [self reload];
     }
 }
 
@@ -1369,11 +1485,11 @@ static CGFloat height = 0;
         return;
     }
     
-//    SystemSoundID scoreClickBtnID;
-//    NSURL *url =  [Commons getResourceFromBundleResource:@"1" extension:@"aiff"];
-//    AudioServicesCreateSystemSoundID((__bridge CFURLRef)(url), &scoreClickBtnID);
-//    AudioServicesPlaySystemSoundWithCompletion(scoreClickBtnID, nil);  // 震动
-//    AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil);  // 震动
+    //    SystemSoundID scoreClickBtnID;
+    //    NSURL *url =  [Commons getResourceFromBundleResource:@"1" extension:@"aiff"];
+    //    AudioServicesCreateSystemSoundID((__bridge CFURLRef)(url), &scoreClickBtnID);
+    //    AudioServicesPlaySystemSoundWithCompletion(scoreClickBtnID, nil);  // 震动
+    //    AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil);  // 震动
     
     if (@available(iOS 10.0, *)) {
         UIImpactFeedbackGenerator *generator = [[UIImpactFeedbackGenerator alloc] initWithStyle: UIImpactFeedbackStyleLight];
@@ -1381,8 +1497,8 @@ static CGFloat height = 0;
         [generator impactOccurred];
     } else {
         // Fallback on earlier versions
-//        AudioServicesPlaySystemSoundWithCompletion((1519), ^{
-//        });
+        //        AudioServicesPlaySystemSoundWithCompletion((1519), ^{
+        //        });
     }
     
     if (anima) {
@@ -1411,13 +1527,12 @@ static CGFloat height = 0;
             self.titleLabel.text = til;
             self.mainVC.navigationItem.titleView = self.titleLabel;
         }
-
+        
         self.mainVC.navigationController.navigationBar.alpha = 1.0;
     }
 }
 
 - (void)SPVideoView:(SPVideoView *)videoView changeToDeleteStyle:(BOOL)state {
-//    SPVideo *video = _dataArr[videoView.indexPath.row];
     SPVideo *video = videoView.video;
     video.isDelete = YES;
     if (_status == DeleteStatus) {
@@ -1452,14 +1567,14 @@ static CGFloat height = 0;
 }
 
 - (void)SPVideoView:(SPVideoView *)videoView deleteAction:(BOOL)state {
-//    SPVideo *video = _dataArr[videoView.indexPath.row];
+    //    SPVideo *video = _dataArr[videoView.indexPath.row];
     SPVideo *video = videoView.video;
     state ? [_selectArr addObject:video] : [_selectArr removeObject:video];
     [self resetTitleView:state];
 }
 
 - (void)SPVideoCollectionView:(SPVideoCollectionView *)videoView changeToDeleteStyle:(BOOL)state {
-//    SPVideo *video = _dataArr[videoView.indexPath.item];
+    //    SPVideo *video = _dataArr[videoView.indexPath.item];
     SPVideo *video = videoView.video;
     video.isDelete = YES;
     if (_status == DeleteStatus) {
@@ -1493,7 +1608,7 @@ static CGFloat height = 0;
 }
 
 - (void)SPVideoCollectionView:(SPVideoCollectionView *)videoView deleteAction:(BOOL)state {
-//    SPVideo *video = _dataArr[videoView.indexPath.item];
+    //    SPVideo *video = _dataArr[videoView.indexPath.item];
     SPVideo *video = videoView.video;
     state ? [_selectArr addObject:video] : [_selectArr removeObject:video];
     [self resetTitleView:state];
@@ -1503,8 +1618,8 @@ static CGFloat height = 0;
     return;
     
     if (_type == FavoriteVideosType) {
-//        [_dataArr removeObject:video];
-//        [self reload];
+        //        [_dataArr removeObject:video];
+        //        [self reload];
     }
 }
 
@@ -1563,14 +1678,14 @@ static CGFloat height = 0;
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-//    [self alertViewSubviews:self];
+    //    [self alertViewSubviews:self];
 }
 
 #pragma -mark private
 - (NSArray <UIView *>*)alertControllerActionView:(UIView *)view {
     NSMutableArray *labels = [[NSMutableArray alloc] init];
     for (UIView *v in view.subviews) {
-//        //     NSLog(@"alertControllerActionView ===  %@", v);
+        //        //     NSLog(@"alertControllerActionView ===  %@", v);
         if ([v isKindOfClass:[UILabel class]]) {
             [labels addObject:v];
         }else{

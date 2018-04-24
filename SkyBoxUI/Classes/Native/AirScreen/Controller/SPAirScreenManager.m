@@ -138,7 +138,15 @@ static SPAirScreenManager *_manager = nil;
 }
 
 - (void)dealloc {
-    
 }
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    [self startupAirscreen];
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    _socketOpened = NO;
+}
+
 @end
 

@@ -51,15 +51,16 @@ SkyBoxUI 使用cocoapods 管理的 UI插件
 
   s.xcconfig = { 'HEADER_SEARCH_PATHS' => '/usr/include/libxml2' }
 
-  s.dependency 'AFNetworking', '~> 3.1.0'
-  s.dependency 'MJExtension', '~> 3.0.13'
-  s.dependency 'SDWebImage', '~> 4.2.2'
-  s.dependency 'Masonry', '~> 1.1.0'
-  s.dependency 'MBProgressHUD', '~> 1.1.0'
-  s.dependency 'FMDB', '~> 2.7.2'
-  s.dependency 'MMDrawerController', '~> 0.6.0'
-  s.dependency 'YHPDFImageLoader', '~> 1.0.0'
-  s.dependency 'KissXML', '~> 5.2.0'
+    s.dependency 'AFNetworking', '~> 3.1.0'
+    s.dependency 'MJExtension', '~> 3.0.13'
+    s.dependency 'SDWebImage', '~> 4.2.2'
+    s.dependency 'Masonry', '~> 1.1.0'
+    s.dependency 'MBProgressHUD', '~> 1.0.0'
+    s.dependency 'MBProgressHUD+Add', '~> 0.0.2'
+    s.dependency 'FMDB', '~> 2.7.2'
+    s.dependency 'MMDrawerController', '~> 0.6.0'
+    s.dependency 'YHPDFImageLoader', '~> 1.0.0'
+    s.dependency 'KissXML', '~> 5.2.0'
 
   s.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.0' }
 

@@ -142,7 +142,8 @@ typedef enum : NSUInteger {
             if (!keyWindow) {
                 return ;
             }
-            [MBProgressHUD showHUDAddedTo:KEYWINDOW animated:YES];
+            UIView *hud = [MBProgressHUD showHUDAddedTo:KEYWINDOW animated:YES];
+            [KEYWINDOW bringSubviewToFront:hud];
         });
         [self.airScreenManager connectServer:_airscreen complete:^(NSArray *listResult, NSString *resultStr) {
             //                [listResult removeAllObjects];
@@ -257,7 +258,20 @@ typedef enum : NSUInteger {
     self.contentView.backgroundColor = [UIColor clearColor];
     
     [self monitorNetWorkState];
+    
+//    ///注册系统通知
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
+
+//#pragma -mark UIApplicationDelegate
+//- (void)applicationDidBecomeActive:(UIApplication *)application {
+//    
+//}
+//
+//- (void)applicationDidEnterBackground:(UIApplication *)application {
+//    [self.airScreenManager applicationDidEnterBackground:application];
+//}
 
 - (NSString *)titleOfLabelView {
     return NSLocalizedString(@"Menu_AirScreen", @"AIRSCREEN");
@@ -291,6 +305,7 @@ typedef enum : NSUInteger {
     _instruction1Label.hidden = hidden;
     _instruction2Label.hidden = hidden;
 }
+
 - (void)resetViewsAndConstraints {
     if (_status == AirScreenStartupStatus) {
         self.searchButton.titleLabel.font = [UIFont fontWithName:@"Calibri-Bold" size:15.0];
@@ -327,6 +342,7 @@ typedef enum : NSUInteger {
     self.pcImgVWidthConstraint.constant = SCREEN_WIDTH;
     self.pcImgVHeightConstraint.constant = 270 * kHSCALE;
     self.pcImgV.clipsToBounds = YES;
+    self.pcImgV.image = [Commons getImageFromResource:@"AirScreen_PC"];
     switch (_status) {
         case AirScreenStartupStatus:
         {
@@ -441,6 +457,9 @@ typedef enum : NSUInteger {
 - (void)dealloc {
     _airScreenManager = nil;
     //     NSLog(@"airscreen 销毁。。。。。。。");
+    
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
 #pragma -mark private   DB
@@ -565,7 +584,7 @@ void dispatchTimer(id target, double timeInterval,void (^handler)(dispatch_sourc
         _tableView.backgroundColor = [UIColor whiteColor];
         _tableView.delegate = self;
         _tableView.dataSource = self;
-        _tableView.separatorColor = [UIColor darkGrayColor];
+//        _tableView.separatorColor = [UIColor darkGrayColor];
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.layer.cornerRadius = 21;
         _tableView.layer.masksToBounds = YES;
@@ -624,7 +643,7 @@ void dispatchTimer(id target, double timeInterval,void (^handler)(dispatch_sourc
         
         [_resultView addSubview:self.topView];
         [self.topView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(30*kHSCALE);
+            make.height.mas_equalTo(30);
             make.leading.mas_equalTo(0);
             make.top.mas_equalTo(0);
             make.trailing.mas_equalTo(0);

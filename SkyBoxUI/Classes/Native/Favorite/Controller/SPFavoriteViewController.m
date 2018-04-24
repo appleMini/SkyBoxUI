@@ -32,5 +32,4 @@
 - (NSString *)cellIditify {
     return @"FAVORITE_VIDEOS_CellID";
 }
-
 @end

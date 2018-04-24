@@ -53,6 +53,7 @@
 
 - (void)doRefresh {
     _canRefresh = YES;
+    self.homeVC.refreshEnable = YES;
 }
 
 - (NSString *)titleOfLabelView {
@@ -101,6 +102,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    //清除缓存
+    [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
+    [[SDImageCache sharedImageCache] clearMemory];
+    
     // Do any additional setup after loading the view.
     //注册DLAN回调
     [[NSNotificationCenter defaultCenter] postNotificationName:UITOUNITYNOTIFICATIONNAME object:nil userInfo:@{@"method" : @"RegisterDLANCallBack"}];
@@ -118,6 +123,7 @@
     _homeVC = homeVC;
     _homeVC.refreshEnable = YES;
     _homeVC.mainVC = self;
+    _homeVC.isShow = YES;
     
     NSArray <UIViewController *>*childVCs = @[self.menuVC, homeVC, self.historyVC];
     [self setUpWithChildVCs:childVCs];
@@ -134,10 +140,6 @@
     //设置打开抽屉模式
     [self.mm_drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModePanningNavigationBar];
     [self.view bringSubviewToFront:[SPSwitchBar shareSPSwitchBar]];
-    
-    //清除缓存
-    [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
-    [[SDImageCache sharedImageCache] clearMemory];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -252,6 +254,7 @@
     }
     
     self.navigationController.navigationBar.hidden = !isShow;
+    [self.navigationController.navigationBar setNeedsLayout];
     return vc;
 }
 
@@ -518,6 +521,7 @@
                 }
                 SPBaseViewController *vc = self.childViewControllers[1];
                 [vc releaseAction];
+                vc.isShow = NO;
                 
                 NSMutableDictionary *params = [self NativeToUnityWithParams];
                 if (path) {
@@ -525,6 +529,12 @@
                 }else {
                     [params addEntriesFromDictionary:@{@"path" : @"no_media_location"}];
                 }
+                
+                NSString *mediaType = [userInfo objectForKey:@"mediaType"];
+                if (mediaType) {
+                    [params addEntriesFromDictionary:@{@"mediaType" : mediaType}];
+                }
+                
                 [self.jumpDelegate nativeToUnity:[params copy] intoVRMode:nil];
             }
         }
@@ -560,11 +570,16 @@
                 [UIView animateWithDuration:0.5 animations:^{
                     oldvc.view.alpha = 0.0;
                 } completion:^(BOOL finished) {
-                    SPBaseViewController *vc = [[SPHomeViewController alloc] initWithSomething];
-                    [self changeMiddleContentView:vc shouldRefresh:YES];
-                    vc.view.alpha = 0.0;
+                    SPBaseViewController *VC = nil;
+                    if (!self.homeVC) {
+                       self.homeVC =  [[SPHomeViewController alloc] initWithSomething];
+                    }
+                    VC = self.homeVC;
+                 
+                    [self changeMiddleContentView:VC shouldRefresh:YES];
+                    VC.view.alpha = 0.0;
                     [UIView animateWithDuration:1.5 animations:^{
-                        vc.view.alpha = 1.0;
+                        VC.view.alpha = 1.0;
                     }];
                 }];
             });

@@ -66,6 +66,7 @@
 #import "SPNavigationBar.h"
 #import "SPSwitchBar.h"
 #import "SPTabBar.h"
+#import "SPVerticalScrollCollectionView.h"
 #import "SPVideoCell.h"
 #import "SPVideoCollectionCell.h"
 #import "SPVideoCollectionView.h"
